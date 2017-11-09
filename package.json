@@ -1,8 +1,8 @@
 {
-  "name": "webpack-library-template",
-  "version": "1.0.1",
-  "description": "Library template with es6 and css bundled by webpack",
-  "main": "dist/ExampleModule.js",
+  "name": "timeline-map",
+  "version": "0.0.1",
+  "description": "Map with timeline scrollbar component",
+  "main": "dist/TimeLineMap.js",
   "scripts": {
     "build": "webpack --env production",
     "dev": "webpack --progress --colors --env dev",
@@ -30,23 +30,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mikemenaker/webpack-library-template.git"
+    "url": "https://github.com/MapsForAll/timelineMap.git"
   },
   "keywords": [
-    "webpack",
-    "es6",
-    "starter",
-    "library",
-    "universal",
-    "umd",
-    "commonjs"
+    "map"
   ],
-  "author": "Krasimir Tsonev",
+  "author": "Michael Menaker",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mikemenaker/webpack-library-template.git/issues"
+    "url": "https://github.com/MapsForAll/timelineMap.git/issues"
   },
-  "homepage": "https://github.com/mikemenaker/webpack-library-template.git",
+  "homepage": "https://github.com/MapsForAll/timelineMap.git",
   "dependencies": {
     "google-charts": "^1.0.0"
   }

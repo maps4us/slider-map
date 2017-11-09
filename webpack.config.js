@@ -11,7 +11,7 @@ let libraryName = 'TimeLineMap';
 let plugins = [], outputFile;
 
 if (env === 'production') {
-  plugins.push(new UglifyJsPlugin({ minimize: true }));
+  plugins.push(new UglifyJsPlugin({ minimize: true, uglifyOptions: { ecma: 8 } }));
   outputFile = libraryName + '.min.js';
 } else {
   outputFile = libraryName + '.js';
@@ -31,8 +31,7 @@ const config = {
     rules: [
       {
         test: /(\.jsx|\.js)$/,
-        loader: 'babel-loader',
-        exclude: /(node_modules|bower_components)/
+        loader: 'babel-loader'
       },
       {
         test: /\.css$/,
