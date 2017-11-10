@@ -1,7 +1,7 @@
 {
   "name": "timeline-map",
   "version": "0.0.1",
-  "description": "Map with timeline scrollbar component",
+  "description": "TimeLine Map Component from MapsForAll",
   "main": "dist/TimeLineMap.js",
   "scripts": {
     "build": "webpack --env production",
@@ -35,7 +35,7 @@
   "keywords": [
     "map"
   ],
-  "author": "Michael Menaker",
+  "author": "MapsForAll",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/MapsForAll/timelineMap.git/issues"
