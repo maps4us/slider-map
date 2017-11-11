@@ -175,14 +175,14 @@ function drawMap(map, data, view, min, max) {
     const timelineStart = min.getFullYear();
     const timelineEnd = max.getFullYear();
     const rows = data.getFilteredRows([
-      {
-        column: 1,
-        test: (personStart, row) => {
-          const y = new Date(data.getValue(row, 2), 0, 1);
-          const personEnd = y.getFullYear();
-          return personStart <= timelineEnd && personEnd >= timelineStart
+        {
+            column: 1,
+            test: (personStart, row) => {
+                const y = new Date(data.getValue(row, 2), 0, 1);
+                const personEnd = y.getFullYear();
+                return personStart <= timelineEnd && personEnd >= timelineStart;
+            }
         }
-      }
     ]);
 
     view.setRows(rows);
