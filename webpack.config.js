@@ -12,10 +12,9 @@ let plugins = [], outputFile;
 
 if (env === 'production') {
   plugins.push(new UglifyJsPlugin({ minimize: true, uglifyOptions: { ecma: 8 } }));
-  outputFile = libraryName + '.min.js';
-} else {
-  outputFile = libraryName + '.js';
 }
+
+outputFile = libraryName + '.js';
 
 const config = {
   entry: __dirname + '/src/index.js',
@@ -40,7 +39,7 @@ const config = {
           {
             loader: 'css-loader',
             options: {
-              modules: true
+              modules: false
             }
           }
         ]

@@ -1,6 +1,6 @@
 /* global describe, it, before */
 import chai from 'chai';
-import * as MapModule from '../dist/TimeLineMap.min.js';
+import * as MapModule from '../dist/TimeLineMap.js';
 chai.expect();
 
 const expect = chai.expect;

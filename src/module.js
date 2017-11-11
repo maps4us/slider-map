@@ -172,15 +172,15 @@ function getMapControl() {
 }
 
 function drawMap(map, data, view, min, max) {
-    const minY = min.getFullYear();
-    const maxY = max.getFullYear();
+    const timelineStart = min.getFullYear();
+    const timelineEnd = max.getFullYear();
     const rows = data.getFilteredRows([
         {
             column: 1,
-            test: function (value, row) {
+            test: (personStart, row) => {
                 const y = new Date(data.getValue(row, 2), 0, 1);
-                const yY = y.getFullYear();
-                return !((value > maxY) || (yY < minY));
+                const personEnd = y.getFullYear();
+                return personStart <= timelineEnd && personEnd >= timelineStart;
             }
         }
     ]);
