@@ -155,10 +155,7 @@ function getMapControl() {
         containerId: _mapControlId,
         options:
         {
-            height: 450,
-            width: 900,
             mapType: 'normal',
-            showTip: true,
             showInfoWindow: true,
             zoomLevel: 3,
             icons: {
