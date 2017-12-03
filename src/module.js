@@ -9,7 +9,7 @@ let dateControlId = 'timeLineDateControl';
 
 export default function createMap() {
     mapId = arguments[0];
-    if (arguments.length == 3) {
+    if (arguments.length === 3) {
         mapControlId = arguments[1];
         dateControlId = arguments[2];
 
@@ -23,7 +23,7 @@ export default function createMap() {
         const parentDivId = arguments[1];
 
         // create elements
-        const controlDiv = document.getElementById(controlId);
+        const controlDiv = document.getElementById(parentDivId);
 
         const mapControlDiv = document.createElement('div');
         mapControlDiv.id = mapControlId;
@@ -31,9 +31,9 @@ export default function createMap() {
         controlDiv.appendChild(mapControlDiv);
 
         const dateControlDiv = document.createElement('div');
-        mapControlDiv.id = dateControlId;
-        mapControlDiv.className = 'date-control';
-        controlDiv.appendChild(mapControlDiv);
+        dateControlDiv.id = dateControlId;
+        dateControlDiv.className = 'date-control';
+        controlDiv.appendChild(dateControlDiv);
     }
 
     GoogleCharts.load(init, 'map');
