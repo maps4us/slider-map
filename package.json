@@ -42,6 +42,7 @@
   },
   "homepage": "https://github.com/MapsForAll/timelineMap.git",
   "dependencies": {
+    "axios": "^0.17.1",
     "google-charts": "^1.0.0"
   }
 }
