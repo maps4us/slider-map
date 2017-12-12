@@ -69,13 +69,13 @@ function init() {
 function convertResponseToDataTable(response, todayYear) {
     const data = createDataTable();
 
-    response.data.persons.forEach(person => data.addRow(createRow(person)));
+    response.data.persons.forEach(person => data.addRow(createRow(person, todayYear)));
 
     data.addColumn('string', 'Desc');
     data.addColumn('date', 'startDate');
     const lenRows = data.getNumberOfRows();
     for (let i = 0; i < lenRows; i++) {
-        data.setCell(i, 5, getContentForPerson(data, i, todayYear));
+        data.setCell(i, 5, getContentForPerson(data, response.data.persons, i, todayYear));
         data.setCell(i, 6, new Date(data.getValue(i, 1), 0, 1));
     }
 
@@ -94,35 +94,46 @@ function createDataTable() {
 }
 
 function createRow(person, todayYear) {
+    console.log(person.name + "   " + person.yearTo);
     const name = person.name;
     const from = parseInt(person.yearFrom);
     let to = parseInt(person.yearTo);
-    if (to <= 0) {
+    if (to === undefined || to <= 0) {
         to = todayYear;
     }
 
     let lat = parseFloat(person.lat);
     if (isNaN(lat)) {
-        lat = parseFloat(person.gen_lat);
+        lat = parseFloat(person.generated.lat);
     }
 
     let lng = parseFloat(person.long);
     if (isNaN(lng)) {
-        lng = parseFloat(person.gen_long);
+        lng = parseFloat(person.generated.long);
     }
 
     return [name, from, to, lat, lng];
 }
 
-function getContentForPerson(data, i, todayYear) {
+function getContentForPerson(data, people, i, todayYear) {
     const yearStr = (todayYear + 1).toString();
 
     let endYear = data.getValue(i, 2);
     if (endYear === yearStr || isNaN(endYear)) {
         endYear = 'present';
     }
+
+    const person = people[i];
+    let displayLocation = '';
+    if (person.generated.hasOwnProperty('location')) {
+        displayLocation = person.generated.location;
+    } else if (person.state.length > 0) {
+        displayLocation = `${person.city}, ${person.state}, ${person.country}`;
+    } else {
+        displayLocation = `${person.city}, ${person.country}`;
+    }
     return `<img src="http://216.92.159.135/tkfgen.png"><b> ${data.getValue(i, 0)}</b>
-        <br>place<br>${data.getValue(i, 1)} - ${endYear}`;
+        <br>${displayLocation}<br>${data.getValue(i, 1)} - ${endYear}`;
 }
 
 function getMinYear(response, todayYear) {
