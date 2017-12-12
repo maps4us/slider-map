@@ -111,7 +111,7 @@ function createRow(person, todayYear) {
     if (isNaN(lng)) {
         lng = parseFloat(person.generated.long);
     }
-    
+
     return [name, from, to, lat, lng];
 }
 
