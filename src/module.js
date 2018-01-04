@@ -132,7 +132,7 @@ function getContentForPerson(data, people, i, todayYear) {
 
     const person = people[i];
     let displayLocation = '';
-    if (person.generated.hasOwnProperty('location')) {
+    if (person.hasOwnProperty('generated') && person.generated.hasOwnProperty('location')) {
         displayLocation = person.generated.location;
     } else if (person.state.length > 0) {
         displayLocation = `${person.city}, ${person.state}, ${person.country}`;
