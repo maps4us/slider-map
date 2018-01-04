@@ -43,26 +43,34 @@ function init() {
     axios.get(`https://mapsforall-96ddd.firebaseio.com/publishedMaps/${mapId}.json`).then((response => {
         const todayYear = new Date().getFullYear();
 
-        const data = convertResponseToDataTable(response, todayYear);
-        const rangeMin = getMinYear(response, todayYear);
+        if (response.data) {
+            if (response.data.persons != null && response.data.persons.length > 0) {
+                const data = convertResponseToDataTable(response, todayYear);
+                const rangeMin = getMinYear(response, todayYear);
 
-        let view = new GoogleCharts.api.visualization.DataView(data);
-        view.setColumns([3, 4, 5]);
+                let view = new GoogleCharts.api.visualization.DataView(data);
+                view.setColumns([3, 4, 5]);
 
-        const dateControl = getTimeControl(data, todayYear, rangeMin);
-        const map = getMapControl();
+                const dateControl = getTimeControl(data, todayYear, rangeMin);
+                const map = getMapControl();
 
-        GoogleCharts.api.visualization.events.addListener(dateControl, 'ready', () => {
-            const state = dateControl.getState();
-            drawMap(map, data, view, state.lowValue, state.highValue);
-        });
+                GoogleCharts.api.visualization.events.addListener(dateControl, 'ready', () => {
+                    const state = dateControl.getState();
+                    drawMap(map, data, view, state.lowValue, state.highValue);
+                });
 
-        GoogleCharts.api.visualization.events.addListener(dateControl, 'statechange', () => {
-            const state = dateControl.getState();
-            drawMap(map, data, view, state.lowValue, state.highValue);
-        });
+                GoogleCharts.api.visualization.events.addListener(dateControl, 'statechange', () => {
+                    const state = dateControl.getState();
+                    drawMap(map, data, view, state.lowValue, state.highValue);
+                });
 
-        dateControl.draw();
+                dateControl.draw();
+            } else {
+                console.log('No person data');
+            }
+        } else {
+            console.log('Map not found');
+        }
     }));
 }
 
@@ -94,7 +102,6 @@ function createDataTable() {
 }
 
 function createRow(person, todayYear) {
-    console.log(person.name + "   " + person.yearTo);
     const name = person.name;
     const from = parseInt(person.yearFrom);
     let to = parseInt(person.yearTo);
@@ -125,7 +132,7 @@ function getContentForPerson(data, people, i, todayYear) {
 
     const person = people[i];
     let displayLocation = '';
-    if (person.generated.hasOwnProperty('location')) {
+    if (person.hasOwnProperty('generated') && person.generated.hasOwnProperty('location')) {
         displayLocation = person.generated.location;
     } else if (person.state.length > 0) {
         displayLocation = `${person.city}, ${person.state}, ${person.country}`;
