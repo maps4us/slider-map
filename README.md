@@ -3,7 +3,7 @@ To add to your the timeline map component to your website (after setting up your
 ####  Browser
 
 Import the component by adding a src tag in the header (<head>):  
-`<script src="https://unpkg.com/timeline-map@0.0.3/dist/TimeLineMap.min.js">`
+`<script src="https://unpkg.com/timeline-map@0.0.6/dist/TimeLineMap.min.js">`
 
 Create elements in page:  
 `<div id="mapid"></div>`  
@@ -29,6 +29,6 @@ Create elements in page:
 <small class="text-muted">You can set your own ids for the elements</small>
 
 And then running:  
-`import * as timelineMap from 'timeline-map';`  
+`import {createMap} from 'timeline-map';`  
 `timelineMap.createMap("{{ currMap.id }}", "mapid", "controlid");`  
 <small class="text-muted">If you are using different ids, pass them here</small>
