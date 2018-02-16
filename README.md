@@ -12,7 +12,7 @@ Create elements in page:
 
 And then running in the script section:
 `<script>`
-`  TimeLineMap.createMap("{{ currMap.id }}", "mapid", "controlid");`
+`  TimeLineMap.createMap("your-id-goes-here", "mapid", "controlid");`
 `</script>`
 <small class="text-muted">If you are using different ids, pass them here</small>
 
@@ -30,5 +30,5 @@ Create elements in page:
 
 And then running:
 `import * as timelineMap from 'timeline-map';`
-`timelineMap.createMap("{{ currMap.id }}", "mapid", "controlid");`
+`timelineMap.createMap("your-id-goes-here", "mapid", "controlid");`
 <small class="text-muted">If you are using different ids, pass them here</small>
