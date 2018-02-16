@@ -1,6 +1,6 @@
 {
   "name": "timeline-map",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "TimeLine Map Component from MapsForAll",
   "main": "dist/TimeLineMap.js",
   "scripts": {
@@ -10,12 +10,10 @@
     "lint": "eslint ./src --ext .js"
   },
   "devDependencies": {
-    "babel-cli": "6.24.1",
-    "babel-core": "6.24.1",
-    "babel-eslint": "7.2.3",
-    "babel-loader": "7.0.0",
-    "babel-plugin-add-module-exports": "0.2.1",
-    "babel-preset-es2015": "6.24.1",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
     "chai": "3.5.0",
     "css-loader": "^0.28.7",
     "eslint": "3.19.0",

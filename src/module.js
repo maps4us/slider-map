@@ -87,7 +87,7 @@ function convertResponseToDataTable(response, todayYear) {
         data.setCell(i, 6, new Date(data.getValue(i, 1), 0, 1));
     }
 
-    data.setCell(lenRows - 1, 6, new Date(todayYear, 0, 1));
+    data.addRow(['', 0, 0, 0, 0, '', new Date(todayYear, 0, 1)]);
     return data;
 }
 
@@ -110,12 +110,12 @@ function createRow(person, todayYear) {
     }
 
     let lat = parseFloat(person.lat);
-    if (isNaN(lat)) {
+    if (isNaN(lat) && person.hasOwnProperty('generated') && person.generated.hasOwnProperty('lat')) {
         lat = parseFloat(person.generated.lat);
     }
 
     let lng = parseFloat(person.long);
-    if (isNaN(lng)) {
+    if (isNaN(lng) && person.hasOwnProperty('generated') && person.generated.hasOwnProperty('long')) {
         lng = parseFloat(person.generated.long);
     }
 
