@@ -29,6 +29,6 @@ Create elements in page:
 <small class="text-muted">You can set your own ids for the elements</small>
 
 And then running:
-`import * as timelineMap from 'timeline-map';`
-`timelineMap.createMap("your-id-goes-here", "mapid", "controlid");`
+`import {createMap} from 'timeline-map';`
+`createMap("your-id-goes-here", "mapid", "controlid");`
 <small class="text-muted">If you are using different ids, pass them here</small>
