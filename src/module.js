@@ -1,114 +1,154 @@
+import GoogleMapsLoader from 'google-maps';
+import MarkerClusterer from 'node-js-marker-clusterer';
+import noUiSlider from 'nouislider';
+import 'nouislider/distribute/nouislider.css';
+import axios from 'axios';
 import "./style.css";
 
-import { GoogleCharts } from 'google-charts';
-import axios from 'axios';
-
-let mapId = '';
-let mapControlId = 'timeLineMapControl';
-let dateControlId = 'timeLineDateControl';
+let _google = null;
+let _infoWindow = null;
+const _imagePath = {
+    imagePath:
+    'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+};
+let _mapId = null;
+let _people = null;
+let _mapControlId = 'timeLineMapControl';
+let _dateControlId = 'timeLineDateControl';
+let _bounds = null;
+let _map = null;
 
 export default function createMap() {
-    mapId = arguments[0];
-    if (arguments.length === 3) {
-        mapControlId = arguments[1];
-        dateControlId = arguments[2];
+    processArguments(arguments);
 
-        // add classes
-        const mapControlDiv = document.getElementById(mapControlId);
-        mapControlDiv.className += " map-control";
+    if (window.google !== undefined) {
+        _google = window.google;
 
-        const dateControlDiv = document.getElementById(dateControlId);
-        dateControlDiv.className += " date-control";
+        createEverything();
     } else {
-        const parentDivId = arguments[1];
+        GoogleMapsLoader.load(google => {
+            _google = google;
+            createEverything();
+        });
+    }
+}
 
-        // create elements
+function processArguments(passedArguments) {
+    _mapId = passedArguments[0];
+    if (passedArguments.length === 3) {
+        _mapControlId = passedArguments[1];
+        _dateControlId = passedArguments[2];
+
+        const mapControlDiv = document.getElementById(_mapControlId);
+        mapControlDiv.className += ' map-control';
+
+        const dateControlDiv = document.getElementById(_dateControlId);
+        dateControlDiv.className += ' date-control';
+    } else {
+        const parentDivId = passedArguments[1];
+
         const controlDiv = document.getElementById(parentDivId);
 
         const mapControlDiv = document.createElement('div');
-        mapControlDiv.id = mapControlId;
+        mapControlDiv.id = _mapControlId;
         mapControlDiv.className = 'map-control';
         controlDiv.appendChild(mapControlDiv);
 
         const dateControlDiv = document.createElement('div');
-        dateControlDiv.id = dateControlId;
+        dateControlDiv.id = _dateControlId;
         dateControlDiv.className = 'date-control';
         controlDiv.appendChild(dateControlDiv);
     }
 
-    GoogleCharts.load(init, 'map');
+    if (document.getElementById(_mapControlId).offsetHeight === 0) {
+        document.getElementById(_mapControlId).style.height = '400px';
+    }
 }
 
-function init() {
-    axios.get(`https://mapsforall-96ddd.firebaseio.com/publishedMaps/${mapId}.json`).then((response => {
+function createEverything() {
+    axios.get(`https://mapsforall-96ddd.firebaseio.com/publishedMaps/${_mapId}.json`).then(response => {
+        _people = response.data.persons;
         const todayYear = new Date().getFullYear();
+        const minYear = getMinYear(response, todayYear);
+        const maxYear = getMaxYear(response, todayYear);
 
-        if (response.data) {
-            if (response.data.persons != null && response.data.persons.length > 0) {
-                const data = convertResponseToDataTable(response, todayYear);
-                const rangeMin = getMinYear(response, todayYear);
+        _map = createGMap();
+        let slider = createSlider(minYear, maxYear);
 
-                let view = new GoogleCharts.api.visualization.DataView(data);
-                view.setColumns([3, 4, 5]);
+        let markerClusterer = new MarkerClusterer(_map, getMarkers(_people), _imagePath);
 
-                const dateControl = getTimeControl(data, todayYear, rangeMin);
-                const map = getMapControl();
+        _map.fitBounds(_bounds);
 
-                GoogleCharts.api.visualization.events.addListener(dateControl, 'ready', () => {
-                    const state = dateControl.getState();
-                    drawMap(map, data, view, state.lowValue, state.highValue);
-                });
+        slider.noUiSlider.on('set', ([yearStart, yearEnd]) => {
+            markerClusterer.clearMarkers();
+            markerClusterer = new MarkerClusterer(_map, getFilteredMarkers(yearStart, yearEnd), _imagePath);
+            _map.fitBounds(_bounds);
+        });
+    });
+}
 
-                GoogleCharts.api.visualization.events.addListener(dateControl, 'statechange', () => {
-                    const state = dateControl.getState();
-                    drawMap(map, data, view, state.lowValue, state.highValue);
-                });
+function createSlider(minYear, maxYear) {
+    let slider = document.getElementById(_dateControlId);
 
-                dateControl.draw();
-            } else {
-                console.log('No person data');
-            }
-        } else {
-            console.log('Map not found');
+    noUiSlider.create(slider, {
+        start: [minYear, maxYear],
+        connect: true,
+        range: {
+            min: minYear,
+            max: maxYear
+        },
+        pips: {
+            mode: 'positions',
+            values: [0, 25, 50, 75, 100],
+            density: 4
         }
-    }));
+    });
+
+    return slider;
 }
 
-function convertResponseToDataTable(response, todayYear) {
-    const data = createDataTable();
+function createGMap() {
+    return new _google.maps.Map(document.getElementById(_mapControlId), {
+        zoom: 3,
+        center: {
+            lat: -28.024,
+            lng: 140.887
+        }
+    });
+}
 
-    response.data.persons.forEach(person => data.addRow(createRow(person, todayYear)));
+function getFilteredMarkers(yearStart, yearEnd) {
+    return getMarkers(filterPeople(yearStart, yearEnd));
+}
 
-    data.addColumn('string', 'Desc');
-    data.addColumn('date', 'startDate');
-    const lenRows = data.getNumberOfRows();
-    for (let i = 0; i < lenRows; i++) {
-        data.setCell(i, 5, getContentForPerson(data, response.data.persons, i, todayYear));
-        data.setCell(i, 6, new Date(data.getValue(i, 1), 0, 1));
+function getMarkers(people) {
+    let markers = [];
+    _bounds = new _google.maps.LatLngBounds();
+
+    people.forEach(person => {
+        const marker = getMarkerForPerson(person);
+        const content = getContentString(person);
+
+        _bounds.extend(marker.position);
+        marker.addListener('click', () => openInfoWindow(content, marker));
+
+        markers.push(marker);
+    });
+
+    return markers;
+}
+
+function openInfoWindow(content, marker) {
+    if (_infoWindow != null) {
+        _infoWindow.close();
     }
-
-    data.addRow(['', 0, 0, 0, 0, '', new Date(todayYear, 0, 1)]);
-    return data;
+    _infoWindow = new _google.maps.InfoWindow({
+        content: content
+    });
+    _infoWindow.open(_map, marker);
 }
 
-function createDataTable() {
-    const data = new GoogleCharts.api.visualization.DataTable();
-    data.addColumn('string', 'Name');
-    data.addColumn('number', 'From');
-    data.addColumn('number', 'To');
-    data.addColumn('number', 'Lat');
-    data.addColumn('number', 'Long');
-    return data;
-}
-
-function createRow(person, todayYear) {
-    const name = person.name;
-    const from = parseInt(person.yearFrom);
-    let to = parseInt(person.yearTo);
-    if (to === undefined || to <= 0) {
-        to = todayYear;
-    }
-
+function getMarkerForPerson(person) {
     let lat = parseFloat(person.lat);
     if (isNaN(lat) && person.hasOwnProperty('generated') && person.generated.hasOwnProperty('lat')) {
         lat = parseFloat(person.generated.lat);
@@ -119,18 +159,16 @@ function createRow(person, todayYear) {
         lng = parseFloat(person.generated.long);
     }
 
-    return [name, from, to, lat, lng];
+    return new _google.maps.Marker({
+        position: {
+            lat: lat,
+            lng: lng
+        },
+        title: person.name
+    });
 }
 
-function getContentForPerson(data, people, i, todayYear) {
-    const yearStr = (todayYear + 1).toString();
-
-    let endYear = data.getValue(i, 2);
-    if (endYear === yearStr || isNaN(endYear)) {
-        endYear = 'present';
-    }
-
-    const person = people[i];
+function getContentString(person) {
     let displayLocation = '';
     if (person.hasOwnProperty('generated') && person.generated.hasOwnProperty('location')) {
         displayLocation = person.generated.location;
@@ -139,83 +177,43 @@ function getContentForPerson(data, people, i, todayYear) {
     } else {
         displayLocation = `${person.city}, ${person.country}`;
     }
-    return `<img src="http://216.92.159.135/tkfgen.png"><b> ${data.getValue(i, 0)}</b>
-        <br>${displayLocation}<br>${data.getValue(i, 1)} - ${endYear}`;
+    return `<img src="http://216.92.159.135/tkfgen.png"><b> ${person.name}</b>
+      <br>${displayLocation}<br>${person.yearFrom} - ${person.yearTo}`;
+}
+
+function filterPeople(yearStart, yearEnd) {
+    return _people.filter(person => {
+        return person.yearFrom <= yearEnd && person.yearTo >= yearStart;
+    });
 }
 
 function getMinYear(response, todayYear) {
-    let rangeMin = todayYear;
+    let minYear = todayYear;
 
     response.data.persons.forEach(person => {
         const from = parseInt(person.yearFrom);
-        if (from < rangeMin) {
-            rangeMin = from;
+        if (from < minYear) {
+            minYear = from;
         }
     });
 
-    return rangeMin;
+    return minYear;
 }
 
-function getTimeControl(data, todayYear, rangeMin) {
-    return new GoogleCharts.api.visualization.ControlWrapper(
-        {
-            controlType: 'DateRangeFilter',
-            containerId: dateControlId,
-            dataTable: data,
-            maxValue: new Date(todayYear + 50, 0, 1),
-            minValue: new Date(rangeMin - 10, 0, 1),
-            options:
-            {
-                filterColumnLabel: 'startDate',
-                ui:
-                {
-                    'format': { 'pattern': 'yyyy' },
-                    'label': ''
-                }
-            },
-            state: {
-                'lowValue': new Date(rangeMin - 10, 0, 1),
-                'highValue': new Date(todayYear + 50, 0, 1)
-            }
-        });
-}
+function getMaxYear(response, todayYear) {
+    let maxYear = 0;
 
-function getMapControl() {
-    const iconURL = 'http://216.92.159.135/';
-    return new GoogleCharts.api.visualization.ChartWrapper({
-        chartType: 'Map',
-        containerId: mapControlId,
-        options:
-        {
-            mapType: 'normal',
-            showInfoWindow: true,
-            zoomLevel: 3,
-            icons: {
-                default: {
-                    normal: iconURL + 'Map-Marker-Ball-Pink-icon.png',
-                    selected: iconURL + 'Map-Marker-Ball-Right-Pink-icon.png'
-                }
-            }
+    response.data.persons.forEach(person => {
+        let to = parseInt(person.yearTo);
+
+        if (to === undefined || to <= 0) {
+            to = todayYear;
+        }
+
+        if (to > maxYear) {
+            maxYear = to;
         }
     });
-}
 
-function drawMap(map, data, view, min, max) {
-    const timelineStart = min.getFullYear();
-    const timelineEnd = max.getFullYear();
-    const rows = data.getFilteredRows([
-        {
-            column: 1,
-            test: (personStart, row) => {
-                const y = new Date(data.getValue(row, 2), 0, 1);
-                const personEnd = y.getFullYear();
-                return personStart <= timelineEnd && personEnd >= timelineStart;
-            }
-        }
-    ]);
-
-    view.setRows(rows);
-
-    map.setDataTable(view);
-    map.draw();
+    return maxYear;
 }

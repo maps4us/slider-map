@@ -43,6 +43,8 @@
   "homepage": "https://github.com/MapsForAll/timelineMap.git",
   "dependencies": {
     "axios": "^0.17.1",
-    "google-charts": "^1.0.0"
+    "google-maps": "^3.2.1",
+    "node-js-marker-clusterer": "^1.0.0",
+    "nouislider": "^11.0.3"
   }
 }
