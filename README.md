@@ -2,6 +2,8 @@ To add to your the timeline map component to your website (after setting up your
 
 ####  Browser
 
+FORMAT CODE CORRECTLY
+
 Import the component by adding a src tag in the header (<head>):
 `<script src="https://unpkg.com/timeline-map@0.0.7/dist/TimeLineMap.js">`
 

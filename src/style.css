@@ -1,23 +1,2 @@
- .date-control .google-visualization-controls-slider-horizontal
-{
-  border: 1px solid #6a7eac;
-  background-color: #fff;
-  height: 20px;
-  border-radius: 3px;
-  -moz-border-radius: 3px;
-}
-.date-control .google-visualization-controls-slider-horizontal .google-visualization-controls-slider-handle
-{
-  height: 20px;
-}
-.date-control .google-visualization-controls-slider-thumb
-{
-  width: 10px;
-  height: 25px;
-  border-radius: 3px;
-  -moz-border-radius: 3px;
-  background-color: #6391de;
-  border: 1px solid #426dc9;
-}
-.map-control { height: 92%; }
-.date-control { height: 8%; padding-top:15px; padding-bottom:15px;}
+.map-control {  }
+.date-control { margin: 30px; }
