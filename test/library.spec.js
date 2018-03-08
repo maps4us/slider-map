@@ -1,13 +1,13 @@
 /* global describe, it, before */
 import chai from 'chai';
-import * as MapModule from '../dist/TimeLineMap.js';
+import {TimeLineMap} from '../dist/TimeLineMap.js';
 chai.expect();
 
 const expect = chai.expect;
 
-describe('Given an createMap', () => {
-  it('createMap should be a function', () => {
-    expect(MapModule.createMap).to.be.an('function');
-  });
+describe('Given a TimeLineMap', () => {
+    it('should be a class/constructor(function)', () => {
+        expect(TimeLineMap).to.be.an('function');
+    });
 });
 
