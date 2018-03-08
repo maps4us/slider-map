@@ -35,7 +35,6 @@ function processArguments(passedArguments) {
     if (passedArguments.length === 3) {
         _mapControlId = passedArguments[1];
         _dateControlId = passedArguments[2];
-
         const mapControlDiv = document.getElementById(_mapControlId);
         mapControlDiv.className += ' map-control';
 
