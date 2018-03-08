@@ -1,2 +1,2 @@
-import createMap from './module.js';
-export { createMap };
+import TimeLineMap from './module.js';
+export { TimeLineMap };
