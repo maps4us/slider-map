@@ -5,7 +5,7 @@ To add to your the timeline map component to your website (after setting up your
 Import the component by adding a src tag in the header (```<head>```):
 
 ```html
-<script src="https://unpkg.com/timeline-map@0.0.7/dist/TimeLineMap.js">
+<script src="https://unpkg.com/timeline-map@0.0.9/dist/TimeLineMap.js">
 ```
 
 Create elements in page:
@@ -20,7 +20,8 @@ You can set your own ids for the elements
 And then running in the script section:
 ```html
 <script>
-  TimeLineMap.createMap("your-id-goes-here", "mapid", "controlid");
+  const map = new TimeLineMap('your-id-goes-here', 'mapid', 'controlid');
+  map.create();
 </script>
 ```
 If you are using different ids, pass them here
@@ -41,7 +42,8 @@ You can set your own ids for the elements
 
 And then running:
 ```javascript
-import {createMap} from 'timeline-map';
-createMap("your-id-goes-here", "mapid", "controlid");
+import {TimeLineMap} from 'timeline-map';
+const map = new TimeLineMap('your-id-goes-here', 'mapid', 'controlid');
+map.create();
 ```
 If you are using different ids, pass them here
