@@ -3,8 +3,9 @@ import * as peopleHelper from './people';
 
 const _clusterOptions = {
     imagePath:
-  'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
-    gridSize: 10
+    'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+    gridSize: 10,
+    maxZoom: 15
 };
 
 let _google = null;
