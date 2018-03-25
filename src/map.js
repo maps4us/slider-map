@@ -3,7 +3,8 @@ import * as peopleHelper from './people';
 
 const _imagePath = {
     imagePath:
-  'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+  'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+    gridSize: 10
 };
 
 let _google = null;
