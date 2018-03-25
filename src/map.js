@@ -1,7 +1,7 @@
 import MarkerClusterer from 'node-js-marker-clusterer';
 import * as peopleHelper from './people';
 
-const _imagePath = {
+const _clusterOptions = {
     imagePath:
   'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
     gridSize: 10
@@ -26,7 +26,7 @@ export function createMap(google, mapControlId) {
 }
 
 export function createClusterer(people) {
-    _markerClusterer = new MarkerClusterer(_map, getMarkers(people), _imagePath);
+    _markerClusterer = new MarkerClusterer(_map, getMarkers(people), _clusterOptions);
     _map.fitBounds(_bounds);
 }
 
