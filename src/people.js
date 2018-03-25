@@ -1,20 +1,11 @@
-export function getContentString(person) {
-    let displayLocation = '';
-    if (person.hasOwnProperty('generated') && person.generated.hasOwnProperty('location')) {
-        displayLocation = person.generated.location;
-    } else if (person.state.length > 0) {
-        displayLocation = `${person.city}, ${person.state}, ${person.country}`;
-    } else {
-        displayLocation = `${person.city}, ${person.country}`;
-    }
-
-    const todayYear = new Date().getFullYear().toString;
-    let endYear = person.yearTo;
-    if (endYear === todayYear || isNaN(endYear) || endYear === undefined || endYear <= 0) {
-        endYear = 'present';
-    }
-    return `<img src="http://216.92.159.135/tkfgen.png"><b> ${person.name}</b>
-    <br>${displayLocation}<br>${person.yearFrom} - ${endYear}`;
+export function parsePeople(people) {
+    return people.map(person => {
+        person.displayLocation = getDisplayLocation(person);
+        person.yearRange = getYearRange(person);
+        person.lat = getLatForPerson(person);
+        person.lng = getLongForPerson(person);
+        return person;
+    });
 }
 
 export function filterPeople(people, yearStart, yearEnd) {
@@ -60,7 +51,29 @@ export function getMaxYear(people) {
     return maxYear;
 }
 
-export function getLatForPerson(person) {
+function getDisplayLocation(person) {
+    let displayLocation = '';
+    if (person.hasOwnProperty('generated') && person.generated.hasOwnProperty('location')) {
+        displayLocation = person.generated.location;
+    } else if (person.state.length > 0) {
+        displayLocation = `${person.city}, ${person.state}, ${person.country}`;
+    } else {
+        displayLocation = `${person.city}, ${person.country}`;
+    }
+
+    return displayLocation;
+}
+
+function getYearRange(person) {
+    const todayYear = new Date().getFullYear().toString;
+    let endYear = person.yearTo;
+    if (endYear === todayYear || isNaN(endYear) || endYear === undefined || endYear <= 0) {
+        endYear = 'present';
+    }
+    return `${person.yearFrom} - ${endYear}`;
+}
+
+function getLatForPerson(person) {
     let lat = parseFloat(person.lat);
     if (isNaN(lat) && person.hasOwnProperty('generated') && person.generated.hasOwnProperty('lat')) {
         lat = parseFloat(person.generated.lat);
@@ -70,7 +83,7 @@ export function getLatForPerson(person) {
 
 }
 
-export function getLongForPerson(person) {
+function getLongForPerson(person) {
     let lng = parseFloat(person.long);
     if (isNaN(lng) && person.hasOwnProperty('generated') && person.generated.hasOwnProperty('long')) {
         lng = parseFloat(person.generated.long);
