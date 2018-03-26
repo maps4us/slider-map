@@ -1,6 +1,7 @@
 import GoogleMapsLoader from 'google-maps';
 import axios from 'axios';
 import * as peopleHelper from './people';
+import * as domHelper from './dom';
 import { createSlider } from './slider';
 import * as mapHelper from './map';
 import "./style.css";
@@ -10,6 +11,7 @@ let _mapId = null;
 let _people = null;
 let _mapControlId = 'timeLineMapControl';
 let _dateControlId = 'timeLineDateControl';
+let _listeners = {};
 
 export default class TimeLineMap {
     constructor() {
@@ -28,6 +30,14 @@ export default class TimeLineMap {
             });
         }
     }
+
+    addListener(type, cb) {
+        _listeners[type] = cb; // initial list
+    }
+
+    select(person) {
+        mapHelper.panTo(person);
+    }
 }
 
 function processArguments(passedArguments) {
@@ -35,43 +45,36 @@ function processArguments(passedArguments) {
     if (passedArguments.length === 3) {
         _mapControlId = passedArguments[1];
         _dateControlId = passedArguments[2];
-        const mapControlDiv = document.getElementById(_mapControlId);
-        mapControlDiv.className += ' map-control';
-
-        const dateControlDiv = document.getElementById(_dateControlId);
-        dateControlDiv.className += ' date-control';
+        domHelper.addClasses(_mapControlId, _dateControlId);
     } else {
         const parentDivId = passedArguments[1];
-
-        const controlDiv = document.getElementById(parentDivId);
-
-        const mapControlDiv = document.createElement('div');
-        mapControlDiv.id = _mapControlId;
-        mapControlDiv.className = 'map-control';
-        controlDiv.appendChild(mapControlDiv);
-
-        const dateControlDiv = document.createElement('div');
-        dateControlDiv.id = _dateControlId;
-        dateControlDiv.className = 'date-control';
-        controlDiv.appendChild(dateControlDiv);
+        domHelper.createControlDivs(parentDivId, _mapControlId, _dateControlId);
     }
 
-    if (document.getElementById(_mapControlId).offsetHeight === 0) {
-        document.getElementById(_mapControlId).style.height = '400px';
-    }
+    domHelper.ensureMapHeight(_mapControlId);
 }
 
 function createTimeLineMap() {
     axios.get(`https://mapsforall-96ddd.firebaseio.com/publishedMaps/${_mapId}.json`).then(response => {
-        _people = response.data.persons;
+        _people = peopleHelper.parsePeople(response.data.persons);
         const minYear = peopleHelper.getMinYear(_people);
         const maxYear = peopleHelper.getMaxYear(_people);
 
         mapHelper.createMap(_google, _mapControlId);
 
         mapHelper.createClusterer(_people);
+        update(_people);
 
-        createSlider(_dateControlId, minYear, maxYear, ([yearStart, yearEnd]) =>
-          mapHelper.updateClusterer(_people, yearStart, yearEnd));
+        createSlider(_dateControlId, minYear, maxYear, ([yearStart, yearEnd]) => {
+            const people = peopleHelper.filterPeople(_people, yearStart, yearEnd);
+            mapHelper.updateClusterer(people);
+            update(people);
+        });
     });
+}
+
+function update(people) {
+    if ('update' in _listeners) {
+        _listeners['update'](people);
+    }
 }

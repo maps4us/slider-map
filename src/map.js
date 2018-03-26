@@ -33,14 +33,14 @@ export function createClusterer(people) {
     _map.fitBounds(_bounds);
 }
 
-export function updateClusterer(people, yearStart, yearEnd) {
+export function updateClusterer(people) {
     _markerClusterer.clearMarkers();
     _markerClusterer = new MarkerClusterer(_map, getFilteredMarkers(people, yearStart, yearEnd), _clusterOptions);
     _map.fitBounds(_bounds);
 }
 
-function getFilteredMarkers(people, yearStart, yearEnd) {
-    return getMarkers(peopleHelper.filterPeople(people, yearStart, yearEnd));
+export function panTo(position) {
+    _map.panTo(position);
 }
 
 function getMarkers(people) {
@@ -50,8 +50,9 @@ function getMarkers(people) {
 
     people.forEach(person => {
         const marker = getMarkerForPerson(person);
-        const content = peopleHelper.getContentString(person);
 
+        const content = `<img src="http://216.92.159.135/tkfgen.png"><b> ${person.name}</b>` +
+            `<br>${person.displayLocation}<br>${person.yearRange}`;
         _bounds.extend(marker.position);
         marker.addListener('click', () => openInfoWindow(content, marker));
         // _oms.addListener('click', () => openInfoWindow(content, marker));
@@ -82,10 +83,7 @@ function openInfoWindow(content, marker) {
 
 function getMarkerForPerson(person) {
     return new _google.maps.Marker({
-        position: {
-            lat: peopleHelper.getLatForPerson(person),
-            lng: peopleHelper.getLongForPerson(person)
-        },
+        position: person,
         title: person.name
     });
 }
