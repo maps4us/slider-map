@@ -1,8 +1,11 @@
 import MarkerClusterer from 'node-js-marker-clusterer';
+// import OverlappingMarkerSpiderfier from './oms.min';
 
-const _imagePath = {
+const _clusterOptions = {
     imagePath:
-  'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+    'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+    gridSize: 10,
+    maxZoom: 15
 };
 
 let _google = null;
@@ -10,6 +13,7 @@ let _map = null;
 let _bounds = null;
 let _markerClusterer = null;
 let _infoWindow = null;
+// let _oms = null;
 
 export function createMap(google, mapControlId) {
     _google = google;
@@ -24,13 +28,13 @@ export function createMap(google, mapControlId) {
 }
 
 export function createClusterer(people) {
-    _markerClusterer = new MarkerClusterer(_map, getMarkers(people), _imagePath);
+    _markerClusterer = new MarkerClusterer(_map, getMarkers(people), _clusterOptions);
     _map.fitBounds(_bounds);
 }
 
 export function updateClusterer(people) {
     _markerClusterer.clearMarkers();
-    _markerClusterer = new MarkerClusterer(_map, getMarkers(people), _imagePath);
+    _markerClusterer = new MarkerClusterer(_map, getMarkers(people), _clusterOptions);
     _map.fitBounds(_bounds);
 }
 
@@ -41,6 +45,7 @@ export function panTo(position) {
 function getMarkers(people) {
     let markers = [];
     _bounds = new _google.maps.LatLngBounds();
+    // overlappingMarker();
 
     people.forEach(person => {
         const marker = getMarkerForPerson(person);
@@ -49,6 +54,8 @@ function getMarkers(people) {
             `<br>${person.displayLocation}<br>${person.yearRange}`;
         _bounds.extend(marker.position);
         marker.addListener('click', () => openInfoWindow(content, marker));
+        // _oms.addListener('click', () => openInfoWindow(content, marker));
+        // _oms.addMarker(marker);
 
         markers.push(marker);
     });
@@ -65,6 +72,13 @@ function openInfoWindow(content, marker) {
     });
     _infoWindow.open(_map, marker);
 }
+
+// function overlappingMarker() {
+//     if (_oms == null) {
+//         _oms = new OverlappingMarkerSpiderfier(_map,
+//             {markersWontMove: true, markersWontHide: true});
+//     }
+// }
 
 function getMarkerForPerson(person) {
     return new _google.maps.Marker({
