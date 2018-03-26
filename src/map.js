@@ -1,10 +1,10 @@
 import MarkerClusterer from 'node-js-marker-clusterer';
 import * as peopleHelper from './people';
-//import OverlappingMarkerSpiderfier from './oms.min';
+// import OverlappingMarkerSpiderfier from './oms.min';
 
 const _clusterOptions = {
     imagePath:
-   'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+    'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
     gridSize: 10,
     maxZoom: 15
 };
@@ -14,7 +14,7 @@ let _map = null;
 let _bounds = null;
 let _markerClusterer = null;
 let _infoWindow = null;
-let _oms = null;
+// let _oms = null;
 
 export function createMap(google, mapControlId) {
     _google = google;
@@ -35,7 +35,7 @@ export function createClusterer(people) {
 
 export function updateClusterer(people, yearStart, yearEnd) {
     _markerClusterer.clearMarkers();
-    _markerClusterer = new MarkerClusterer(_map, getFilteredMarkers(people, yearStart, yearEnd), _imagePath);
+    _markerClusterer = new MarkerClusterer(_map, getFilteredMarkers(people, yearStart, yearEnd), _clusterOptions);
     _map.fitBounds(_bounds);
 }
 
