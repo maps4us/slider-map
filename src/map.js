@@ -1,5 +1,4 @@
 import MarkerClusterer from 'node-js-marker-clusterer';
-import * as peopleHelper from './people';
 // import OverlappingMarkerSpiderfier from './oms.min';
 
 const _clusterOptions = {
@@ -35,7 +34,7 @@ export function createClusterer(people) {
 
 export function updateClusterer(people) {
     _markerClusterer.clearMarkers();
-    _markerClusterer = new MarkerClusterer(_map, getFilteredMarkers(people, yearStart, yearEnd), _clusterOptions);
+    _markerClusterer = new MarkerClusterer(_map, getMarkers(people), _clusterOptions);
     _map.fitBounds(_bounds);
 }
 
