@@ -1,5 +1,4 @@
 import MarkerClusterer from 'node-js-marker-clusterer';
-// import OverlappingMarkerSpiderfier from './oms.min';
 
 const _clusterOptions = {
     imagePath:
@@ -13,7 +12,6 @@ let _map = null;
 let _bounds = null;
 let _markerClusterer = null;
 let _infoWindow = null;
-// let _oms = null;
 
 export function createMap(google, mapControlId) {
     _google = google;
@@ -45,7 +43,6 @@ export function panTo(position) {
 function getMarkers(people) {
     let markers = [];
     _bounds = new _google.maps.LatLngBounds();
-    // overlappingMarker();
 
     people.forEach(person => {
         const marker = getMarkerForPerson(person);
@@ -54,8 +51,6 @@ function getMarkers(people) {
             `<br>${person.displayLocation}<br>${person.yearRange}`;
         _bounds.extend(marker.position);
         marker.addListener('click', () => openInfoWindow(content, marker));
-        // _oms.addListener('click', () => openInfoWindow(content, marker));
-        // _oms.addMarker(marker);
 
         markers.push(marker);
     });
@@ -72,13 +67,6 @@ function openInfoWindow(content, marker) {
     });
     _infoWindow.open(_map, marker);
 }
-
-// function overlappingMarker() {
-//     if (_oms == null) {
-//         _oms = new OverlappingMarkerSpiderfier(_map,
-//             {markersWontMove: true, markersWontHide: true});
-//     }
-// }
 
 function getMarkerForPerson(person) {
     return new _google.maps.Marker({

@@ -79,7 +79,7 @@ function getLatForPerson(person) {
         lat = parseFloat(person.generated.lat);
     }
 
-    return lat;
+    return adjustLocation(lat);
 
 }
 
@@ -89,5 +89,11 @@ function getLongForPerson(person) {
         lng = parseFloat(person.generated.long);
     }
 
-    return lng;
+    return adjustLocation(lng);
+}
+
+const min = 0.999999;
+const max = 1.000001;
+function adjustLocation(location) {
+    return location * (Math.random() * (max - min) + min);
 }
