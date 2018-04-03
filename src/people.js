@@ -93,7 +93,7 @@ function getLongForPerson(person) {
 }
 
 const min = 0.999999;
-const max = 1.000001;
+const max = 1.000030;
 function adjustLocation(location) {
     return location * (Math.random() * (max - min) + min);
 }
