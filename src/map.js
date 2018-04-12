@@ -47,8 +47,12 @@ function getMarkers(people) {
     people.forEach(person => {
         const marker = getMarkerForPerson(person);
 
-        const content = `<img src="http://216.92.159.135/tkfgen.png"><b> ${person.name}</b>` +
-            `<br>${person.displayLocation}<br>${person.yearRange}`;
+        const icon = person.icon ? person.icon : 'https://image.ibb.co/e11PK7/unknown.png';
+        const content = `<img src="${icon}" width="32" height="32"><b> ${person.name}</b>` +
+            `<br>${person.displayLocation}<br>${person.yearRange}` +
+            `${person.addInfo ? `<br>${person.addInfo}` : ``}` +
+            `${person.website ? `<br><a href="${person.website}" target="_blank">website</a>` : ``}`;
+
         _bounds.extend(marker.position);
         marker.addListener('click', () => openInfoWindow(content, marker));
 

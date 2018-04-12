@@ -32,7 +32,7 @@ export default class TimeLineMap {
     }
 
     addListener(type, cb) {
-        _listeners[type] = cb; // initial list
+        _listeners[type] = cb;
     }
 
     select(person) {

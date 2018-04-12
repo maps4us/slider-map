@@ -1,11 +1,11 @@
 {
   "name": "timeline-map",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "TimeLine Map Component from MapsForAll",
   "main": "dist/TimeLineMap.js",
   "scripts": {
     "build": "webpack --mode production",
-    "dev": "webpack --mode dev",
+    "dev": "webpack --mode development --output-path ../webmap/webapp/node_modules/timeline-map/dist/ --watch",
     "test": "mocha -r jsdom-global/register --compilers js:babel-core/register --colors ./test/*.spec.js",
     "lint": "eslint ./src --ext .js"
   },
