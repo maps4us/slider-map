@@ -12,8 +12,9 @@ let _map = null;
 let _bounds = null;
 let _markerClusterer = null;
 let _infoWindow = null;
+let _icon = 'https://image.ibb.co/cf584S/favicon.png';
 
-export function createMap(google, mapControlId) {
+export function createMap(google, mapControlId, icon) {
     _google = google;
 
     _map = new _google.maps.Map(document.getElementById(mapControlId), {
@@ -23,6 +24,10 @@ export function createMap(google, mapControlId) {
             lng: 140.887
         }
     });
+
+    if (icon && icon.length) {
+        _icon = icon;
+    }
 }
 
 export function createClusterer(people) {
@@ -47,7 +52,7 @@ function getMarkers(people) {
     people.forEach(person => {
         const marker = getMarkerForPerson(person);
 
-        const icon = person.icon ? person.icon : 'https://image.ibb.co/e11PK7/unknown.png';
+        const icon = person.icon ? person.icon : _icon;
         const content = `<img src="${icon}" width="32" height="32"><b> ${person.name}</b>` +
             `<br>${person.displayLocation}<br>${person.yearRange}` +
             `${person.addInfo ? `<br>${person.addInfo}` : ``}` +

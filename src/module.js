@@ -12,6 +12,7 @@ let _people = null;
 let _mapControlId = 'timeLineMapControl';
 let _dateControlId = 'timeLineDateControl';
 let _listeners = {};
+let _metaData = {};
 
 export default class TimeLineMap {
     constructor() {
@@ -56,11 +57,15 @@ function processArguments(passedArguments) {
 
 function createTimeLineMap() {
     axios.get(`https://mapsforall-96ddd.firebaseio.com/publishedMaps/${_mapId}.json`).then(response => {
+        _metaData = Object.assign({}, response.data);
+        delete _metaData.persons;
+        sendMetaData(_metaData);
+
         _people = peopleHelper.parsePeople(response.data.persons);
         const minYear = peopleHelper.getMinYear(_people);
         const maxYear = peopleHelper.getMaxYear(_people);
 
-        mapHelper.createMap(_google, _mapControlId);
+        mapHelper.createMap(_google, _mapControlId, _metaData.icon);
 
         mapHelper.createClusterer(_people);
         update(_people);
@@ -76,5 +81,11 @@ function createTimeLineMap() {
 function update(people) {
     if ('update' in _listeners) {
         _listeners['update'](people);
+    }
+}
+
+function sendMetaData(metaData) {
+    if ('metaData' in _listeners) {
+        _listeners['metaData'](metaData);
     }
 }
