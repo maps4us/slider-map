@@ -161,15 +161,14 @@ workflows:
       - test:
           requires:
             - lint
-      # - hold:
-      #     type: approval
-      #     requires:
-      #      - test
-      #     filters:
-      #       branches:
-      #         only: master
+      - hold:
+          type: approval
+          requires:
+           - test
+          # filters:
+          #   branches:
+          #     only: master
       - publish:
           requires:
-            -test
-            # - hold
+            -hold
 
