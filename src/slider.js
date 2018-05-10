@@ -3,6 +3,10 @@ import 'nouislider/distribute/nouislider.css';
 
 export function createSlider(controlId, minYear, maxYear, changeCb) {
     let slider = document.getElementById(controlId);
+    // clear out any slider that might have been created
+    while (slider.firstChild) {
+        slider.removeChild(slider.firstChild);
+    }
 
     noUiSlider.create(slider, {
         start: [minYear, maxYear],
