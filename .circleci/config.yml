@@ -146,13 +146,12 @@ jobs:
       - run:
            command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
 
-      # run tests!
       - run:
            command: npm publish
 
 workflows:
   version: 2
-  build_and_lint_and_test:
+  build_lint_test_publish:
     jobs:
       - build
       - lint:
@@ -170,5 +169,5 @@ workflows:
           #     only: master
       - publish:
           requires:
-            -hold
+            - hold
 
