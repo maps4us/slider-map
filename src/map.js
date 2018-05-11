@@ -13,6 +13,7 @@ let _bounds = null;
 let _markerClusterer = null;
 let _infoWindow = null;
 let _icon = 'https://image.ibb.co/cf584S/favicon.png';
+let _markers = [];
 
 export function createMap(google, mapControlId, icon) {
     _google = google;
@@ -43,10 +44,16 @@ export function updateClusterer(people) {
 
 export function panTo(position) {
     _map.panTo(position);
+
+    const marker = _markers.find(marker => marker.title === position.name &&
+      marker.getPosition().lat() === position.lat);
+
+    _map.setZoom(_clusterOptions.maxZoom);
+    _google.maps.event.trigger(marker, 'click');
 }
 
 function getMarkers(people) {
-    let markers = [];
+    _markers = [];
     _bounds = new _google.maps.LatLngBounds();
 
     people.forEach(person => {
@@ -61,10 +68,10 @@ function getMarkers(people) {
         _bounds.extend(marker.position);
         marker.addListener('click', () => openInfoWindow(content, marker));
 
-        markers.push(marker);
+        _markers.push(marker);
     });
 
-    return markers;
+    return _markers;
 }
 
 function openInfoWindow(content, marker) {
