@@ -5,7 +5,7 @@ To add to your the timeline map component to your website (after setting up your
 Import the component by adding a src tag in the header (```<head>```):
 
 ```html
-<script src="https://unpkg.com/timeline-map@0.0.9/dist/TimeLineMap.js">
+<script src="https://unpkg.com/timeline-map">
 ```
 
 Create elements in page:
