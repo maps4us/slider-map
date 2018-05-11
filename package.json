@@ -6,13 +6,14 @@
   "scripts": {
     "build": "webpack --mode production",
     "dev": "webpack --mode development --output-path ../maps4us/node_modules/timeline-map/dist/ --watch",
-    "test": "mocha -r jsdom-global/register --compilers js:babel-core/register --colors ./test/*.spec.js",
+    "test": "mocha -r jsdom-global/register --compilers js:@babel/register --colors ./test/*.spec.js",
     "lint": "eslint ./src --ext .js"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.42",
     "@babel/core": "^7.0.0-beta.42",
     "@babel/preset-env": "^7.0.0-beta.42",
+    "@babel/register": "^7.0.0-beta.46",
     "babel-eslint": "^8.2.2",
     "babel-loader": "^8.0.0-beta.2",
     "chai": "3.5.0",
