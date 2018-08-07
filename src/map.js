@@ -13,7 +13,7 @@ let _bounds = null;
 let _markerClusterer = null;
 let _infoWindow = null;
 let _icon = 'https://image.ibb.co/cf584S/favicon.png';
-let _markers = [];
+let _gmarkers = [];
 
 export function createMap(google, mapControlId, icon) {
     _google = google;
@@ -31,62 +31,58 @@ export function createMap(google, mapControlId, icon) {
     }
 }
 
-export function createClusterer(people) {
-    _markerClusterer = new MarkerClusterer(_map, getMarkers(people), _clusterOptions);
+export function createClusterer(markers) {
+    _markerClusterer = new MarkerClusterer(_map, getGMarkers(markers), _clusterOptions);
     _map.fitBounds(_bounds);
 }
 
-export function updateClusterer(people) {
+export function updateClusterer(markers) {
     _markerClusterer.clearMarkers();
-    _markerClusterer = new MarkerClusterer(_map, getMarkers(people), _clusterOptions);
+    _markerClusterer = new MarkerClusterer(_map, getGMarkers(markers), _clusterOptions);
     _map.fitBounds(_bounds);
 }
 
 export function panTo(position) {
     _map.panTo(position);
 
-    const marker = _markers.find(marker => marker.title === position.name &&
+    const marker = _gmarkers.find(marker => marker.title === position.name &&
       marker.getPosition().lat() === position.lat);
 
     _map.setZoom(_clusterOptions.maxZoom);
     _google.maps.event.trigger(marker, 'click');
 }
 
-function getMarkers(people) {
-    _markers = [];
+function getGMarkers(markers) {
+    _gmarkers = [];
     _bounds = new _google.maps.LatLngBounds();
 
-    people.forEach(person => {
-        const marker = getMarkerForPerson(person);
+    markers.forEach(marker => {
+        const gmarker = new _google.maps.Marker({
+            position: marker,
+            title: marker.name
+        });
 
-        const icon = person.icon ? person.icon : _icon;
-        const content = `<img src="${icon}" width="32" height="32"><b> ${person.name}</b>` +
-            `<br>${person.displayLocation}<br>${person.yearRange}` +
-            `${person.addInfo ? `<br>${person.addInfo}` : ``}` +
-            `${person.website ? `<br><a href="${person.website}" target="_blank">website</a>` : ``}`;
+        const icon = marker.icon ? marker.icon : _icon;
+        const content = `<img src="${icon}" width="32" height="32"><b> ${marker.name}</b>` +
+            `<br>${marker.displayLocation}<br>${marker.yearRange}` +
+            `${marker.addInfo ? `<br>${marker.addInfo}` : ``}` +
+            `${marker.website ? `<br><a href="${marker.website}" target="_blank">website</a>` : ``}`;
 
-        _bounds.extend(marker.position);
-        marker.addListener('click', () => openInfoWindow(content, marker));
+        _bounds.extend(gmarker.position);
+        gmarker.addListener('click', () => openInfoWindow(content, gmarker));
 
-        _markers.push(marker);
+        _gmarkers.push(gmarker);
     });
 
-    return _markers;
+    return _gmarkers;
 }
 
-function openInfoWindow(content, marker) {
+function openInfoWindow(content, gmarker) {
     if (_infoWindow != null) {
         _infoWindow.close();
     }
     _infoWindow = new _google.maps.InfoWindow({
         content: content
     });
-    _infoWindow.open(_map, marker);
-}
-
-function getMarkerForPerson(person) {
-    return new _google.maps.Marker({
-        position: person,
-        title: person.name
-    });
+    _infoWindow.open(_map, gmarker);
 }

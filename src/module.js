@@ -1,6 +1,6 @@
 import GoogleMapsLoader from 'google-maps';
 import axios from 'axios';
-import * as peopleHelper from './people';
+import * as markerHelper from './markers';
 import * as domHelper from './dom';
 import { createSlider } from './slider';
 import * as mapHelper from './map';
@@ -8,7 +8,7 @@ import "./style.css";
 
 let _google = null;
 let _mapId = null;
-let _people = null;
+let _markers = null;
 let _mapControlId = 'timeLineMapControl';
 let _dateControlId = 'timeLineDateControl';
 let _listeners = {};
@@ -36,8 +36,8 @@ export default class TimeLineMap {
         _listeners[type] = cb;
     }
 
-    select(person) {
-        mapHelper.panTo(person);
+    select(marker) {
+        mapHelper.panTo(marker);
     }
 }
 
@@ -58,29 +58,30 @@ function processArguments(passedArguments) {
 function createTimeLineMap() {
     axios.get(`https://mapsforall-96ddd.firebaseio.com/publishedMaps/${_mapId}.json`).then(response => {
         _metaData = Object.assign({}, response.data);
+        delete _metaData.markers;
         delete _metaData.persons;
         sendMetaData(_metaData);
 
-        _people = peopleHelper.parsePeople(response.data.persons);
-        const minYear = peopleHelper.getMinYear(_people);
-        const maxYear = peopleHelper.getMaxYear(_people);
+        _markers = markerHelper.parseMarkers(response.data.markers ? response.data.markers : response.data.persons);
+        const minYear = markerHelper.getMinYear(_markers);
+        const maxYear = markerHelper.getMaxYear(_markers);
 
         mapHelper.createMap(_google, _mapControlId, _metaData.icon);
 
-        mapHelper.createClusterer(_people);
-        update(_people);
+        mapHelper.createClusterer(_markers);
+        update(_markers);
 
         createSlider(_dateControlId, minYear, maxYear, ([yearStart, yearEnd]) => {
-            const people = peopleHelper.filterPeople(_people, yearStart, yearEnd);
-            mapHelper.updateClusterer(people);
-            update(people);
+            const markers = markerHelper.filterMarkers(_markers, yearStart, yearEnd);
+            mapHelper.updateClusterer(markers);
+            update(markers);
         });
     });
 }
 
-function update(people) {
+function update(markers) {
     if ('update' in _listeners) {
-        _listeners['update'](people);
+        _listeners['update'](markers);
     }
 }
 
