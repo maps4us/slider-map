@@ -63,10 +63,16 @@ function getGMarkers(markers) {
         });
 
         const icon = marker.icon ? marker.icon : _icon;
+        let website = marker.website;
+
+        if (website && typeof website === 'string') {
+            website = { url: marker.website, title: 'website'};
+        }
+
         const content = `<img src="${icon}" width="32" height="32"><b> ${marker.name}</b>` +
             `<br>${marker.displayLocation}<br>${marker.yearRange}` +
             `${marker.addInfo ? `<br>${marker.addInfo}` : ``}` +
-            `${marker.website ? `<br><a href="${marker.website}" target="_blank">website</a>` : ``}`;
+            `${website ? `<br><a href="${website.url}" target="_blank">${website.title}</a>` : ``}`;
 
         _bounds.extend(gmarker.position);
         gmarker.addListener('click', () => openInfoWindow(content, gmarker));
