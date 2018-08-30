@@ -26,11 +26,7 @@ export function createMap(google, mapControlId, icon) {
         }
     });
 
-    let centerControlDiv = document.createElement('div');
-    let centerControl = new CenterControl(centerControlDiv, _map);
-
-    centerControlDiv.index = 1;
-    _map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(centerControlDiv);
+    createResetZoomControl();
 
     if (icon && icon.length) {
         _icon = icon;
@@ -99,8 +95,9 @@ function openInfoWindow(content, gmarker) {
     _infoWindow.open(_map, gmarker);
 }
 
-function CenterControl(controlDiv, map) {
-    // https://jsfiddle.net/api/post/library/pure/
+function createResetZoomControl() {
+    let controlDiv = document.createElement('div');
+
     // https://developers.google.com/maps/documentation/javascript/controls
     // Set CSS for the control border.
     var controlUI = document.createElement('div');
@@ -111,7 +108,7 @@ function CenterControl(controlDiv, map) {
     controlUI.style.cursor = 'pointer';
     controlUI.style.marginLeft = '10px';
     controlUI.style.textAlign = 'center';
-    controlUI.title = 'Fully zoom out';
+    controlUI.title = 'Reset Zoom';
     controlDiv.appendChild(controlUI);
 
     // Set CSS for the control interior.
@@ -122,8 +119,11 @@ function CenterControl(controlDiv, map) {
     controlText.style.lineHeight = '38px';
     controlText.style.paddingLeft = '5px';
     controlText.style.paddingRight = '5px';
-    controlText.innerHTML = 'Fully zoom out';
+    controlText.innerHTML = 'Reset Zoom';
     controlUI.appendChild(controlText);
 
-    controlUI.addEventListener('click', () => map.setZoom(3));
+    controlUI.addEventListener('click', () => _map.setZoom(3));
+
+    controlDiv.index = 1;
+    _map.controls[_google.maps.ControlPosition.LEFT_BOTTOM].push(controlDiv);
 }
