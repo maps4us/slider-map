@@ -26,6 +26,12 @@ export function createMap(google, mapControlId, icon) {
         }
     });
 
+    let centerControlDiv = document.createElement('div');
+    let centerControl = new CenterControl(centerControlDiv, _map);
+
+    centerControlDiv.index = 1;
+    _map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(centerControlDiv);
+
     if (icon && icon.length) {
         _icon = icon;
     }
@@ -91,4 +97,33 @@ function openInfoWindow(content, gmarker) {
         content: content
     });
     _infoWindow.open(_map, gmarker);
+}
+
+function CenterControl(controlDiv, map) {
+    // https://jsfiddle.net/api/post/library/pure/
+    // https://developers.google.com/maps/documentation/javascript/controls
+    // Set CSS for the control border.
+    var controlUI = document.createElement('div');
+    controlUI.style.backgroundColor = '#fff';
+    controlUI.style.border = '2px solid #fff';
+    controlUI.style.borderRadius = '3px';
+    controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+    controlUI.style.cursor = 'pointer';
+    controlUI.style.marginLeft = '10px';
+    controlUI.style.textAlign = 'center';
+    controlUI.title = 'Fully zoom out';
+    controlDiv.appendChild(controlUI);
+
+    // Set CSS for the control interior.
+    let controlText = document.createElement('div');
+    controlText.style.color = 'rgb(25,25,25)';
+    controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+    controlText.style.fontSize = '16px';
+    controlText.style.lineHeight = '38px';
+    controlText.style.paddingLeft = '5px';
+    controlText.style.paddingRight = '5px';
+    controlText.innerHTML = 'Fully zoom out';
+    controlUI.appendChild(controlText);
+
+    controlUI.addEventListener('click', () => map.setZoom(3));
 }
