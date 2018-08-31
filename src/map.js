@@ -122,7 +122,7 @@ function createResetZoomControl() {
     controlText.innerHTML = 'Reset Zoom';
     controlUI.appendChild(controlText);
 
-    controlUI.addEventListener('click', () => _map.setZoom(3));
+    controlUI.addEventListener('click', () => _map.fitBounds(_bounds));
 
     controlDiv.index = 1;
     _map.controls[_google.maps.ControlPosition.LEFT_BOTTOM].push(controlDiv);
