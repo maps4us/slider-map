@@ -14,6 +14,8 @@ let _markerClusterer = null;
 let _infoWindow = null;
 let _icon = 'https://image.ibb.co/cf584S/favicon.png';
 let _gmarkers = [];
+let _pinUrl = 'https://firebasestorage.googleapis.com/v0/b/mapsforall-96ddd.appspot.com/o/images%2Fpins%2FPin-01.png?alt=media&token=6406d96b-283e-47cd-a4f9-ad73f38e72f5';
+let _pin = null;
 
 export function createMap(google, mapControlId, icon) {
     _google = google;
@@ -25,6 +27,16 @@ export function createMap(google, mapControlId, icon) {
             lng: 140.887
         }
     });
+
+    _pin = {
+        url: _pinUrl,
+        // The origin for this image is (0, 0).
+        origin: new _google.maps.Point(0, 0),
+        // The anchor for this image is the base of the flagpole at (0, 32).
+        anchor: new _google.maps.Point(0, 24),
+        // scale size
+        scaledSize: new _google.maps.Size(24, 24)
+  };
 
     createResetZoomControl();
 
@@ -61,7 +73,8 @@ function getGMarkers(markers) {
     markers.forEach(marker => {
         const gmarker = new _google.maps.Marker({
             position: marker,
-            title: marker.name
+            title: marker.name,
+            icon: _pin
         });
 
         const icon = marker.icon ? marker.icon : _icon;
