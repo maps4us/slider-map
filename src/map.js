@@ -2,7 +2,8 @@ import MarkerClusterer from 'node-js-marker-clusterer';
 
 const _clusterOptions = {
     imagePath:
-    'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+    'https://firebasestorage.googleapis.com/v0/b/mapsforall-96ddd.appspot.com/o/images%2Fpins%2FNumbered-pin-0',
+    imageExtension: 'png?alt=media&token=c8fe627d-32ae-40bc-9f21-d5832fe82aae',
     gridSize: 10,
     maxZoom: 15
 };
@@ -14,7 +15,7 @@ let _markerClusterer = null;
 let _infoWindow = null;
 let _icon = 'https://image.ibb.co/cf584S/favicon.png';
 let _gmarkers = [];
-let _pinUrl = 'https://firebasestorage.googleapis.com/v0/b/mapsforall-96ddd.appspot.com/o/images%2Fpins%2FPin-01.png?alt=media&token=6406d96b-283e-47cd-a4f9-ad73f38e72f5';
+let _pinUrl = 'https://firebasestorage.googleapis.com/v0/b/mapsforall-96ddd.appspot.com/o/images%2Fpins%2Ftransparent-pin-no-border.png?alt=media&token=e5769cf5-15cd-4073-93d8-014349368f7a';
 let _pin = null;
 
 export function createMap(google, mapControlId, icon) {
@@ -30,12 +31,9 @@ export function createMap(google, mapControlId, icon) {
 
     _pin = {
         url: _pinUrl,
-        // The origin for this image is (0, 0).
-        origin: new _google.maps.Point(0, 0),
-        // The anchor for this image is the base of the flagpole at (0, 32).
-        anchor: new _google.maps.Point(0, 24),
-        // scale size
-        scaledSize: new _google.maps.Size(24, 24)
+        anchor: new _google.maps.Point(12, 29),
+        size: new _google.maps.Size(24, 29),
+        scaledSize: new _google.maps.Size(24, 29)
   };
 
     createResetZoomControl();
