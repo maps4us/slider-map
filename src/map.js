@@ -1,9 +1,7 @@
 import MarkerClusterer from 'node-js-marker-clusterer';
 
 const _clusterOptions = {
-    imagePath:
-    'https://firebasestorage.googleapis.com/v0/b/mapsforall-96ddd.appspot.com/o/images%2Fpins%2FNumbered-pin-0',
-    imageExtension: 'png?alt=media&token=c8fe627d-32ae-40bc-9f21-d5832fe82aae',
+    imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
     gridSize: 10,
     maxZoom: 15
 };
@@ -15,10 +13,11 @@ let _markerClusterer = null;
 let _infoWindow = null;
 let _icon = 'https://image.ibb.co/cf584S/favicon.png';
 let _gmarkers = [];
-let _pinUrl = 'https://firebasestorage.googleapis.com/v0/b/mapsforall-96ddd.appspot.com/o/images%2Fpins%2Ftransparent-pin-no-border.png?alt=media&token=e5769cf5-15cd-4073-93d8-014349368f7a';
+let _pinUrl = 'https://firebasestorage.googleapis.com/v0/b/mapsforall-96ddd.appspot.com/o/images%2Fpins%2F' +
+  'transparent-pin-no-border.png?alt=media&token=e5769cf5-15cd-4073-93d8-014349368f7a';
 let _pin = null;
 
-export function createMap(google, mapControlId, icon) {
+export async function createMap(google, mapControlId, icon, pin) {
     _google = google;
 
     _map = new _google.maps.Map(document.getElementById(mapControlId), {
@@ -29,18 +28,13 @@ export function createMap(google, mapControlId, icon) {
         }
     });
 
-    _pin = {
-        url: _pinUrl,
-        anchor: new _google.maps.Point(12, 29),
-        size: new _google.maps.Size(24, 29),
-        scaledSize: new _google.maps.Size(24, 29)
-  };
-
     createResetZoomControl();
 
-    if (icon && icon.length) {
+    if (icon && icon.length > 0) {
         _icon = icon;
     }
+
+    await createPin(pin);
 }
 
 export function createClusterer(markers) {
@@ -104,6 +98,40 @@ function openInfoWindow(content, gmarker) {
         content: content
     });
     _infoWindow.open(_map, gmarker);
+}
+
+async function createPin(pin) {
+    if (pin && pin.length > 0) {
+        const img = await getImage(pin);
+
+        let height = img.height;
+        let width = img.width;
+
+        if (img.height > 100 || img.weight > 100) {
+            height = height * (32.0 / width);
+            width = 32;
+        }
+
+        _pin = {
+            url: pin,
+            anchor: new _google.maps.Point(width / 2, height),
+            scaledSize: new _google.maps.Size(width, height)
+        };
+    } else {
+        _pin = {
+            url: _pinUrl,
+            anchor: new _google.maps.Point(12, 29),
+            scaledSize: new _google.maps.Size(24, 29)
+        };
+    }
+}
+
+function getImage(imgUrl) {
+    return new Promise((resolve) => {
+        let img = new Image();
+        img.src = imgUrl;
+        img.onload = () => resolve(img);
+    });
 }
 
 function createResetZoomControl() {

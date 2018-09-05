@@ -55,27 +55,25 @@ function processArguments(passedArguments) {
     domHelper.ensureMapHeight(_mapControlId);
 }
 
-function createTimeLineMap() {
-    axios.get(`https://mapsforall-96ddd.firebaseio.com/publishedMaps/${_mapId}.json`).then(response => {
-        _metaData = Object.assign({}, response.data);
-        delete _metaData.markers;
-        delete _metaData.persons;
-        sendMetaData(_metaData);
+async function createTimeLineMap() {
+    const response = await axios.get(`https://mapsforall-96ddd.firebaseio.com/publishedMaps/${_mapId}.json`);
+    _metaData = Object.assign({}, response.data);
+    delete _metaData.markers;
+    delete _metaData.persons;
+    sendMetaData(_metaData);
 
-        _markers = markerHelper.parseMarkers(response.data.markers ? response.data.markers : response.data.persons);
-        const minYear = markerHelper.getMinYear(_markers);
-        const maxYear = markerHelper.getMaxYear(_markers);
+    _markers = markerHelper.parseMarkers(response.data.markers ? response.data.markers : response.data.persons);
+    const minYear = markerHelper.getMinYear(_markers);
+    const maxYear = markerHelper.getMaxYear(_markers);
 
-        mapHelper.createMap(_google, _mapControlId, _metaData.icon);
+    await mapHelper.createMap(_google, _mapControlId, _metaData.icon, _metaData.pin);
+    mapHelper.createClusterer(_markers);
+    update(_markers);
 
-        mapHelper.createClusterer(_markers);
-        update(_markers);
-
-        createSlider(_dateControlId, minYear, maxYear, ([yearStart, yearEnd]) => {
-            const markers = markerHelper.filterMarkers(_markers, yearStart, yearEnd);
-            mapHelper.updateClusterer(markers);
-            update(markers);
-        });
+    createSlider(_dateControlId, minYear, maxYear, ([yearStart, yearEnd]) => {
+        const markers = markerHelper.filterMarkers(_markers, yearStart, yearEnd);
+        mapHelper.updateClusterer(markers);
+        update(markers);
     });
 }
 
