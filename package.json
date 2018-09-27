@@ -1,6 +1,6 @@
 {
   "name": "timeline-map",
-  "version": "0.21.0",
+  "version": "0.22.0",
   "description": "TimeLine Map Component from MapsForAll",
   "main": "dist/TimeLineMap.js",
   "scripts": {
@@ -46,6 +46,7 @@
     "axios": "^0.17.1",
     "google-maps": "^3.2.1",
     "node-js-marker-clusterer": "^1.0.0",
-    "nouislider": "^11.0.3"
+    "nouislider": "^11.0.3",
+    "overlapping-marker-spiderfier": "^1.1.4"
   }
 }
