@@ -79,7 +79,7 @@ function getLatForMarker(marker) {
         lat = parseFloat(marker.generated.lat);
     }
 
-    return adjustLocation(lat);
+    return lat;
 
 }
 
@@ -89,11 +89,5 @@ function getLongForMarker(marker) {
         lng = parseFloat(marker.generated.long);
     }
 
-    return adjustLocation(lng);
-}
-
-const min = 0.999999;
-const max = 1.000500;
-function adjustLocation(location) {
-    return location * (Math.random() * (max - min) + min);
+    return lng;
 }

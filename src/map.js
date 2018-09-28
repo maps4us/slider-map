@@ -6,6 +6,12 @@ const _clusterOptions = {
     maxZoom: 15
 };
 
+const _spiderfierOptions = {
+    legWeight: 3,
+    keepSpiderfied: true,
+    spiderfiedShadowColor: false
+};
+
 let _google = null;
 let _map = null;
 let _bounds = null;
@@ -16,6 +22,7 @@ let _gmarkers = [];
 let _pinUrl = 'https://firebasestorage.googleapis.com/v0/b/mapsforall-96ddd.appspot.com/o/images%2Fpins%2F' +
   'transparent-pin-no-border.png?alt=media&token=e5769cf5-15cd-4073-93d8-014349368f7a';
 let _pin = null;
+let _spiderfier = null;
 
 export async function createMap(google, mapControlId, icon, pin) {
     _google = google;
@@ -28,6 +35,7 @@ export async function createMap(google, mapControlId, icon, pin) {
         }
     });
 
+    createSpiderfier();
     createResetZoomControl();
 
     if (icon && icon.length > 0) {
@@ -37,14 +45,29 @@ export async function createMap(google, mapControlId, icon, pin) {
     await createPin(pin);
 }
 
+function createSpiderfier() {
+    // only require after google has been loaded
+    const OverlappingMarkerSpiderfier = require('overlapping-marker-spiderfier');
+    _spiderfier = new OverlappingMarkerSpiderfier(_map, _spiderfierOptions);
+    _spiderfier.addListener('click', gmarker => openInfoWindow(gmarker));
+
+    const mti = _google.maps.MapTypeId;
+    _spiderfier.legColors.usual[mti.HYBRID] = _spiderfier.legColors.usual[mti.SATELLITE] = '#444';
+    _spiderfier.legColors.usual[mti.TERRAIN] = _spiderfier.legColors.usual[mti.ROADMAP] = '#444';
+    _spiderfier.legColors.highlighted[mti.HYBRID] = _spiderfier.legColors.highlighted[mti.SATELLITE] =
+      _spiderfier.legColors.highlighted[mti.TERRAIN] = _spiderfier.legColors.highlighted[mti.ROADMAP] = '#444';
+}
+
 export function createClusterer(markers) {
     _markerClusterer = new MarkerClusterer(_map, getGMarkers(markers), _clusterOptions);
+    setSpiderfierMarkers(_gmarkers);
     _map.fitBounds(_bounds);
 }
 
 export function updateClusterer(markers) {
     _markerClusterer.clearMarkers();
     _markerClusterer = new MarkerClusterer(_map, getGMarkers(markers), _clusterOptions);
+    setSpiderfierMarkers(_gmarkers);
     _map.fitBounds(_bounds);
 }
 
@@ -56,6 +79,11 @@ export function panTo(position) {
 
     _map.setZoom(_clusterOptions.maxZoom);
     _google.maps.event.trigger(marker, 'click');
+}
+
+function setSpiderfierMarkers(markers) {
+    _spiderfier.clearMarkers();
+    markers.forEach(marker => _spiderfier.addMarker(marker));
 }
 
 function getGMarkers(markers) {
@@ -76,13 +104,13 @@ function getGMarkers(markers) {
             website = { url: marker.website, title: 'website'};
         }
 
-        const content = `<img src="${icon}" width="32" height="32"><b> ${marker.name}</b>` +
+        gmarker.content = `<img src="${icon}" width="32" height="32"><b> ${marker.name}</b>` +
             `<br>${marker.displayLocation}<br>${marker.yearRange}` +
             `${marker.addInfo ? `<br>${marker.addInfo}` : ``}` +
             `${website ? `<br><a href="${website.url}" target="_blank">${website.title}</a>` : ``}`;
 
         _bounds.extend(gmarker.position);
-        gmarker.addListener('click', () => openInfoWindow(content, gmarker));
+        gmarker.addListener('click', () => openInfoWindow(gmarker));
 
         _gmarkers.push(gmarker);
     });
@@ -90,12 +118,12 @@ function getGMarkers(markers) {
     return _gmarkers;
 }
 
-function openInfoWindow(content, gmarker) {
+function openInfoWindow(gmarker) {
     if (_infoWindow != null) {
         _infoWindow.close();
     }
     _infoWindow = new _google.maps.InfoWindow({
-        content: content
+        content: gmarker.content
     });
     _infoWindow.open(_map, gmarker);
 }
