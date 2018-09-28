@@ -1,5 +1,4 @@
 import MarkerClusterer from 'node-js-marker-clusterer';
-import OverlappingMarkerSpiderfier from 'overlapping-marker-spiderfier';
 
 const _clusterOptions = {
     imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
@@ -47,6 +46,8 @@ export async function createMap(google, mapControlId, icon, pin) {
 }
 
 function createSpiderfier() {
+    // only require after google has been loaded
+    const OverlappingMarkerSpiderfier = require('overlapping-marker-spiderfier');
     _spiderfier = new OverlappingMarkerSpiderfier(_map, _spiderfierOptions);
     _spiderfier.addListener('click', gmarker => openInfoWindow(gmarker));
 
