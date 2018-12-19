@@ -70,11 +70,13 @@ async function createTimeLineMap() {
     mapHelper.createClusterer(_markers);
     update(_markers);
 
-    createSlider(_dateControlId, minYear, maxYear, ([yearStart, yearEnd]) => {
-        const markers = markerHelper.filterMarkers(_markers, yearStart, yearEnd);
-        mapHelper.updateClusterer(markers);
-        update(markers);
-    });
+    if (markerHelper.hasYears(_markers)) {
+        createSlider(_dateControlId, minYear, maxYear, ([yearStart, yearEnd]) => {
+            const markers = markerHelper.filterMarkers(_markers, yearStart, yearEnd);
+            mapHelper.updateClusterer(markers);
+            update(markers);
+        });
+    }
 }
 
 function update(markers) {

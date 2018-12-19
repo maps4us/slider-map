@@ -1,4 +1,8 @@
+let _minYear = -1;
+let _maxYear = -1;
 export function parseMarkers(markers) {
+    _minYear = -1;
+    _maxYear = -1;
     return markers.map(marker => {
         marker.displayLocation = getDisplayLocation(marker);
         marker.yearRange = getYearRange(marker);
@@ -11,44 +15,66 @@ export function parseMarkers(markers) {
 export function filterMarkers(markers, yearStart, yearEnd) {
     return markers.filter(marker => {
         const from = parseInt(marker.yearFrom);
+        if (from === undefined || from <= 0) {
+            to = getMinYear(markers);
+        }
+
         let to = parseInt(marker.yearTo);
         if (to === undefined || to <= 0) {
-            to = new Date().getFullYear();
+            to = getMaxYear(markers);
         }
         return from <= yearEnd && to >= yearStart;
     });
 }
 
 export function getMinYear(markers) {
-    let minYear = new Date().getFullYear();
+    if (_minYear == -1) {
+        _minYear = new Date().getFullYear();
 
-    markers.forEach(marker => {
-        const from = parseInt(marker.yearFrom);
-        if (from < minYear) {
-            minYear = from;
-        }
-    });
-
-    return minYear;
+        markers.forEach(marker => {
+            const from = parseInt(marker.yearFrom);
+            if (from < _minYear) {
+                _minYear = from;
+            }
+        });
+    }
+    return _minYear;
 }
 
 export function getMaxYear(markers) {
-    const todayYear = new Date().getFullYear();;
-    let maxYear = 0;
+    if (_maxYear == -1) {
+        const todayYear = new Date().getFullYear();;
+        _maxYear = 0;
 
-    markers.forEach(marker => {
+        markers.forEach(marker => {
+            let to = parseInt(marker.yearTo);
+
+            if (to === undefined || to <= 0) {
+                to = todayYear;
+            }
+
+            if (to > _maxYear) {
+                _maxYear = to;
+            }
+        });
+    }
+    return _maxYear;
+}
+
+export function hasYears(markers) {
+    return markers.some(marker => {
+        const from = parseInt(marker.yearFrom);
+        if (from !== undefined || from > 0) {
+            return true;
+        }
+
         let to = parseInt(marker.yearTo);
-
-        if (to === undefined || to <= 0) {
-            to = todayYear;
+        if (to !== undefined || to > 0) {
+            return true;
         }
 
-        if (to > maxYear) {
-            maxYear = to;
-        }
+        return false;
     });
-
-    return maxYear;
 }
 
 function getDisplayLocation(marker) {
