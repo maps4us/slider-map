@@ -28,7 +28,7 @@ export function filterMarkers(markers, yearStart, yearEnd) {
 }
 
 export function getMinYear(markers) {
-    if (_minYear == -1) {
+    if (_minYear === -1) {
         _minYear = new Date().getFullYear();
 
         markers.forEach(marker => {
@@ -42,7 +42,7 @@ export function getMinYear(markers) {
 }
 
 export function getMaxYear(markers) {
-    if (_maxYear == -1) {
+    if (_maxYear === -1) {
         const todayYear = new Date().getFullYear();;
         _maxYear = 0;
 
