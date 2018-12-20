@@ -1,7 +1,7 @@
 /* global describe, it, before */
 import chai from 'chai';
 import {TimeLineMap} from '../dist/TimeLineMap.js';
-import { JSDOM, ResourceLoader } from 'jsdom';
+import { JSDOM } from 'jsdom';
 chai.expect();
 
 const expect = chai.expect;
@@ -29,12 +29,6 @@ describe('Given a TimeLineMap', () => {
 });
 
 const getDomWithGoogleApi = () => new Promise(res => {
-    const resourceLoader = new ResourceLoader({
-        proxy: "http://127.0.0.1:9001",
-        strictSSL: false,
-        userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36",
-      });
-
     const dom = new JSDOM(`
       <!doctype html>
       <html>
@@ -46,7 +40,7 @@ const getDomWithGoogleApi = () => new Promise(res => {
               </body>
           </head>
       </html>`,
-      {runScripts: 'dangerously', resources: 'usable', resourceLoader: resourceLoader});
+      {runScripts: 'dangerously', resources: 'usable'});
 
     dom.window.googleReady = () => {
         res(dom);
