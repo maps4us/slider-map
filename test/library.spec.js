@@ -33,7 +33,7 @@ const getDomWithGoogleApi = () => new Promise(res => {
       <!doctype html>
       <html>
           <head>
-              <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDcRzhgDwvAiAcXKvDnXhczwOrKNCHhKS0&libraries=places&callback=googleReady"></script>
+              <script src="https://maps.googleapis.com/maps/api/js?v=3.33&key=AIzaSyDcRzhgDwvAiAcXKvDnXhczwOrKNCHhKS0&libraries=places&callback=googleReady"></script>
               <body>
                 <div id="mapControlId"></div>
                 <div id="dateControlId"></div>
