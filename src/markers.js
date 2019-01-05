@@ -1,11 +1,14 @@
 let _minYear = -1;
 let _maxYear = -1;
+let _hasYears = null;
+
 export function parseMarkers(markers) {
     _minYear = -1;
     _maxYear = -1;
+
     return markers.map(marker => {
         marker.displayLocation = getDisplayLocation(marker);
-        marker.yearRange = getYearRange(marker);
+        marker.yearRange = hasYears(markers) ? getYearRange(marker) : null;
         marker.lat = getLatForMarker(marker);
         marker.lng = getLongForMarker(marker);
         return marker;
@@ -62,19 +65,23 @@ export function getMaxYear(markers) {
 }
 
 export function hasYears(markers) {
-    return markers.some(marker => {
-        const from = parseInt(marker.yearFrom);
-        if (from !== undefined || from > 0) {
-            return true;
-        }
+    if (_hasYears == null) {
+        _hasYears = markers.some(marker => {
+            const from = parseInt(marker.yearFrom);
+            if (from !== undefined && from > 0) {
+                return true;
+            }
 
-        let to = parseInt(marker.yearTo);
-        if (to !== undefined || to > 0) {
-            return true;
-        }
+            let to = parseInt(marker.yearTo);
+            if (to !== undefined && to > 0) {
+                return true;
+            }
 
-        return false;
-    });
+            return false;
+        });
+    }
+
+    return _hasYears;
 }
 
 function getDisplayLocation(marker) {
