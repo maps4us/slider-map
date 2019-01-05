@@ -1,6 +1,6 @@
 {
   "name": "timeline-map",
-  "version": "0.23.0",
+  "version": "0.24.0",
   "description": "TimeLine Map Component from MapsForAll",
   "main": "dist/TimeLineMap.js",
   "scripts": {
