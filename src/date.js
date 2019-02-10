@@ -18,20 +18,34 @@ export function formatDate(date, mode) {
     return "";
 }
 
-export function formatStrDate(val, mode) {
-    const date = new Date(val.toString());
-
-    return formatDate(date, mode);
-}
-
 export function createDate(yearStr, dateStr) {
     const convertStr = dateStr != null ? dateStr : yearStr;
 
-    if (convertStr != null && convertStr.length > 0) {
+    if (convertStr != null && convertStr.length > 0 && convertStr !== "0" && convertStr !== 0) {
+
+        const count = (convertStr.match(/\//g) || []).length;
+
+        if (count === 0) {
+            let date = new Date();
+            date.setFullYear(parseInt(convertStr));
+            return date;
+        } else if (count === 1) {
+            let date = new Date();
+            let dateParts = convertStr.split("/");
+
+            date.setFullYear(parseInt(dateParts(1)));
+            date.setFullYear(parseInt(dateParts(0) - 1));
+            return date;
+        }
         return new Date(convertStr);
     }
     return null;
+}
 
+export function dateFromTime(time) {
+    let date = new Date();
+    date.setTime(time);
+    return date;
 }
 
 export function getDateRange(marker, dateMode) {
@@ -61,7 +75,7 @@ export function getDateMode(markers) {
         if (dateEnd !== null && dateEnd !== '') {
             const countEnd = (dateEnd.match(/\//g) || []).length;
                 // check if bigger
-            count = countEnd > count ? countEnd : count;
+            count = Math.max(count, countEnd);
         }
 
         if (count > dateMode) {

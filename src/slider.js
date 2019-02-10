@@ -1,6 +1,6 @@
 import noUiSlider from 'nouislider';
 import 'nouislider/distribute/nouislider.css';
-import { formatStrDate } from './date.js';
+import { formatDate, dateFromTime } from './date.js';
 
 export default class Slider {
     constructor(controlId, dateMode, minYear, maxYear, changeCb) {
@@ -8,7 +8,7 @@ export default class Slider {
 
         this._dateFormatMode = dateMode;
 
-        this._createSlider(minYear, maxYear);
+        this._createSlider(minYear.toString(), maxYear.toString());
 
         this._changeCb = changeCb;
         this._slider.noUiSlider.on('set', this._changeCb);
@@ -37,7 +37,8 @@ export default class Slider {
             pips: {
                 mode: 'positions',
                 values: [0, 25, 50, 75, 100],
-                density: 4
+                density: 4,
+                format: this._formatter()
             }
         });
     }
@@ -45,12 +46,12 @@ export default class Slider {
     _formatter() {
         return {
             to: (value) => {
-                return formatStrDate(Math.round(value), this._dateFormatMode);
+                return formatDate(dateFromTime(value), this._dateFormatMode);
             }
         };
     }
 
-    _timestamp(str) {
-        return new Date(str).getTime();
+    _timestamp(date) {
+        return new Date(date).getTime();
     }
 }
