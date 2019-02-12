@@ -10,7 +10,7 @@
         "lint": "eslint --ext .js,.ts src/",
         "check-types": "tsc",
         "pretty": "prettier --write \"./**/*.{js,ts,json}\"",
-        "check-pretty": "prettier --check \"./**/*.{js,ts,json}"
+        "check-pretty": "prettier --check \"./**/*.{js,ts,json}\""
     },
     "devDependencies": {
         "@babel/cli": "^7.2.3",

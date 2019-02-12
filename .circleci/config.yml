@@ -192,7 +192,7 @@ jobs:
 
 workflows:
   version: 2
-  build_lint_test_publish:
+  timeline_component_workflow:
     jobs:
       - lint
       - check-pretty
