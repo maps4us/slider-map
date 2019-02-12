@@ -3,23 +3,25 @@ import 'nouislider/distribute/nouislider.css';
 import {formatDate, dateFromTime} from './date.js';
 
 export default class Slider {
-    slider: any;
-    dateFormatMode: number;
-    changeCb: noUiSlider.Callback;
+    private slider: noUiSlider.Instance;
+    private dateFormatMode: number;
 
-    constructor(controlId: string, dateMode: number, minYear: number, maxYear: number, changeCb: any) {
+    public constructor(
+        controlId: string,
+        dateMode: number,
+        minYear: number,
+        maxYear: number,
+        changeCb: noUiSlider.Callback
+    ) {
         this.slider = this.getSliderDom(controlId);
-
         this.dateFormatMode = dateMode;
 
-        this.createSlider(minYear.toString(), maxYear.toString());
-
-        this.changeCb = changeCb;
-        this.slider.noUiSlider.on('set', this.changeCb);
+        this.createSlider(this.timestamp(minYear), this.timestamp(maxYear));
+        this.slider.noUiSlider.on('set', changeCb);
     }
 
-    private getSliderDom(controlId: string): HTMLElement {
-        const slider: any = document.getElementById(controlId);
+    private getSliderDom(controlId: string): noUiSlider.Instance {
+        const slider: noUiSlider.Instance = document.getElementById(controlId) as noUiSlider.Instance;
 
         // clear out any slider that might have been created
         if (slider != null && slider.noUiSlider) {
@@ -29,13 +31,13 @@ export default class Slider {
         return slider;
     }
 
-    private createSlider(minYear: string, maxYear: string) {
+    private createSlider(minYear: number, maxYear: number): void {
         noUiSlider.create(this.slider, {
-            start: [this.timestamp(minYear), this.timestamp(maxYear)],
+            start: [minYear, maxYear],
             connect: true,
             range: {
-                min: this.timestamp(minYear),
-                max: this.timestamp(maxYear)
+                min: minYear,
+                max: maxYear
             },
             tooltips: [this.formatter(), this.formatter()],
             pips: {
@@ -47,7 +49,7 @@ export default class Slider {
         });
     }
 
-    private formatter() {
+    private formatter(): object {
         return {
             to: (value: number) => {
                 return formatDate(dateFromTime(value), this.dateFormatMode);
@@ -55,7 +57,7 @@ export default class Slider {
         };
     }
 
-    private timestamp(date: string) {
-        return new Date(date).getTime();
+    private timestamp(date: number): number {
+        return new Date(date.toString()).getTime();
     }
 }
