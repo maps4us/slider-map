@@ -7,22 +7,18 @@ export function formatDate(date, mode) {
     if (mode === YEAR_DATES) {
         return date.getFullYear();
     } else if (mode === YEAR_MONTH_DATES) {
-        return date.getMonth() + "/" +
-            date.getFullYear();
+        return date.getMonth() + '/' + date.getFullYear();
     } else if (mode === YEAR_MONTH_DAY_DATES) {
-        return date.getDay() + "/" +
-                date.getMonth() + "/" +
-                date.getFullYear();
+        return date.getDay() + '/' + date.getMonth() + '/' + date.getFullYear();
     }
 
-    return "";
+    return '';
 }
 
 export function createDate(yearStr, dateStr) {
     const convertStr = dateStr != null ? dateStr : yearStr;
 
-    if (convertStr != null && convertStr.length > 0 && convertStr !== "0" && convertStr !== 0) {
-
+    if (convertStr != null && convertStr.length > 0 && convertStr !== '0' && convertStr !== 0) {
         const count = (convertStr.match(/\//g) || []).length;
 
         if (count === 0) {
@@ -31,12 +27,13 @@ export function createDate(yearStr, dateStr) {
             return date;
         } else if (count === 1) {
             let date = new Date();
-            let dateParts = convertStr.split("/");
+            let dateParts = convertStr.split('/');
 
             date.setFullYear(parseInt(dateParts(1)));
             date.setFullYear(parseInt(dateParts(0) - 1));
             return date;
         }
+
         return new Date(convertStr);
     }
     return null;
@@ -46,19 +43,6 @@ export function dateFromTime(time) {
     let date = new Date();
     date.setTime(time);
     return date;
-}
-
-export function getDateRange(marker, dateMode) {
-    let dateEnd = "";
-    if (marker.dateEnd == null) {
-        dateEnd = 'present';
-    } else {
-        dateEnd = formatDate(marker.dateEnd, dateMode);
-    }
-
-    let dateStart = formatDate(marker.dateStart, dateMode);
-
-    return `${dateStart} - ${dateEnd}`;
 }
 
 export function getDateMode(markers) {
@@ -74,7 +58,7 @@ export function getDateMode(markers) {
         let dateEnd = marker.dateEnd ? marker.dateEnd : marker.yearTo;
         if (dateEnd !== null && dateEnd !== '') {
             const countEnd = (dateEnd.match(/\//g) || []).length;
-                // check if bigger
+            // check if bigger
             count = Math.max(count, countEnd);
         }
 

@@ -5,13 +5,16 @@ const config = {
         libraryTarget: 'umd',
         umdNamedDefine: true
     },
+    resolve: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx', '.json']
+    },
     module: {
         rules: [
-            { test: /\.js$/, loader: 'babel-loader' },
+            {test: /\.(ts|js)x?$/, loader: 'babel-loader'},
             {
                 test: /\.css$/,
                 use: [
-                    { loader: 'style-loader' },
+                    {loader: 'style-loader'},
                     {
                         loader: 'css-loader',
                         options: {

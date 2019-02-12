@@ -19,8 +19,9 @@ let _markerClusterer = null;
 let _infoWindow = null;
 let _icon = 'https://image.ibb.co/cf584S/favicon.png';
 let _gmarkers = [];
-let _pinUrl = 'https://firebasestorage.googleapis.com/v0/b/mapsforall-96ddd.appspot.com/o/images%2Fpins%2F' +
-  'transparent-pin-no-border.png?alt=media&token=e5769cf5-15cd-4073-93d8-014349368f7a';
+let _pinUrl =
+    'https://firebasestorage.googleapis.com/v0/b/mapsforall-96ddd.appspot.com/o/images%2Fpins%2F' +
+    'transparent-pin-no-border.png?alt=media&token=e5769cf5-15cd-4073-93d8-014349368f7a';
 let _pin = null;
 let _spiderfier = null;
 
@@ -54,8 +55,9 @@ function createSpiderfier() {
     const mti = _google.maps.MapTypeId;
     _spiderfier.legColors.usual[mti.HYBRID] = _spiderfier.legColors.usual[mti.SATELLITE] = '#444';
     _spiderfier.legColors.usual[mti.TERRAIN] = _spiderfier.legColors.usual[mti.ROADMAP] = '#444';
-    _spiderfier.legColors.highlighted[mti.HYBRID] = _spiderfier.legColors.highlighted[mti.SATELLITE] =
-      _spiderfier.legColors.highlighted[mti.TERRAIN] = _spiderfier.legColors.highlighted[mti.ROADMAP] = '#444';
+    _spiderfier.legColors.highlighted[mti.HYBRID] = _spiderfier.legColors.highlighted[
+        mti.SATELLITE
+    ] = _spiderfier.legColors.highlighted[mti.TERRAIN] = _spiderfier.legColors.highlighted[mti.ROADMAP] = '#444';
 }
 
 export function createClusterer(markers) {
@@ -74,8 +76,9 @@ export function updateClusterer(markers) {
 export function panTo(position) {
     _map.panTo(position);
 
-    const marker = _gmarkers.find(marker => marker.title === position.name &&
-      marker.getPosition().lat() === position.lat);
+    const marker = _gmarkers.find(
+        marker => marker.title === position.name && marker.getPosition().lat() === position.lat
+    );
 
     _map.setZoom(_clusterOptions.maxZoom);
     _google.maps.event.trigger(marker, 'click');
@@ -101,10 +104,11 @@ function getGMarkers(markers) {
         let website = marker.website;
 
         if (website && typeof website === 'string') {
-            website = { url: marker.website, title: 'website'};
+            website = {url: marker.website, title: 'website'};
         }
 
-        gmarker.content = `<img src="${icon}" width="32" height="32"><b> ${marker.name}</b>` +
+        gmarker.content =
+            `<img src="${icon}" width="32" height="32"><b> ${marker.name}</b>` +
             `<br>${marker.displayLocation}` +
             `${marker.dateRange ? `<br>${marker.dateRange}` : ``}` +
             `${marker.addInfo ? `<br>${marker.addInfo}` : ``}` +
@@ -156,7 +160,7 @@ async function createPin(pin) {
 }
 
 function getImage(imgUrl) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
         let img = new Image();
         img.src = imgUrl;
         img.onload = () => resolve(img);

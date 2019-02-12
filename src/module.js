@@ -4,7 +4,7 @@ import Markers from './markers';
 import * as domHelper from './dom';
 import Slider from './slider';
 import * as mapHelper from './map';
-import "./style.css";
+import './style.css';
 
 export default class TimeLineMap {
     constructor() {
@@ -68,12 +68,17 @@ export default class TimeLineMap {
         this._update(this._markers.getMarkers());
 
         if (this._markers.hasDates()) {
-            this._slider = new Slider(this._dateControlId, this._markers.getDateMode(),
-                this._markers.getMinYear(), this._markers.getMaxYear(), ([yearStart, yearEnd]) => {
+            this._slider = new Slider(
+                this._dateControlId,
+                this._markers.getDateMode(),
+                this._markers.getMinYear(),
+                this._markers.getMaxYear(),
+                ([yearStart, yearEnd]) => {
                     const markers = this._markers.filter(yearStart, yearEnd);
                     mapHelper.updateClusterer(markers);
                     this._update(markers);
-                });
+                }
+            );
         }
     }
 

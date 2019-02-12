@@ -1,7 +1,7 @@
 /* global describe, it, before */
 import chai from 'chai';
 import {TimeLineMap} from '../dist/TimeLineMap.js';
-import { JSDOM } from 'jsdom';
+import {JSDOM} from 'jsdom';
 chai.expect();
 
 const expect = chai.expect;
@@ -11,8 +11,8 @@ describe('Given a TimeLineMap', () => {
         expect(TimeLineMap).to.be.an('function');
     });
 
-    it('should mount google maps and slider', (done) => {
-        getDomWithGoogleApi().then((dom) => {
+    it('should mount google maps and slider', done => {
+        getDomWithGoogleApi().then(dom => {
             global.window = dom.window;
             global.document = dom.window.document;
             global.google = dom.window.google;
@@ -20,16 +20,18 @@ describe('Given a TimeLineMap', () => {
             const map = new TimeLineMap('1512409330904', 'mapControlId', 'dateControlId');
             map.create();
             setTimeout(() => {
-                expect(dom.window.document.getElementById("mapControlId").children).to.have.lengthOf(1);
-                expect(dom.window.document.getElementById("dateControlId").children).to.have.lengthOf(2);
+                expect(dom.window.document.getElementById('mapControlId').children).to.have.lengthOf(1);
+                expect(dom.window.document.getElementById('dateControlId').children).to.have.lengthOf(2);
                 done();
             }, 1000);
         });
     });
 });
 
-const getDomWithGoogleApi = () => new Promise(res => {
-    const dom = new JSDOM(`
+const getDomWithGoogleApi = () =>
+    new Promise(res => {
+        const dom = new JSDOM(
+            `
       <!doctype html>
       <html>
           <head>
@@ -40,9 +42,10 @@ const getDomWithGoogleApi = () => new Promise(res => {
               </body>
           </head>
       </html>`,
-      {runScripts: 'dangerously', resources: 'usable'});
+            {runScripts: 'dangerously', resources: 'usable'}
+        );
 
-    dom.window.googleReady = () => {
-        res(dom);
-    };
-});
+        dom.window.googleReady = () => {
+            res(dom);
+        };
+    });

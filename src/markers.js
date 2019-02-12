@@ -1,4 +1,4 @@
-import { createDate, getDateRange, getDateMode, getMinYear, getMaxYear, NO_DATES, dateFromTime } from './date';
+import {createDate, getDateMode, getMinYear, getMaxYear, NO_DATES, dateFromTime} from './date';
 
 export default class Markers {
     constructor(markers) {
@@ -6,9 +6,9 @@ export default class Markers {
 
         this._markers = markers.map(marker => {
             marker.displayLocation = this._getDisplayLocation(marker);
+            marker.dateRange = this.hasDates() ? this._getDateRange(marker) : null;
             marker.dateStart = createDate(marker.yearFrom, marker.dateStart);
             marker.dateEnd = createDate(marker.yearTo, marker.dateEnd);
-            marker.dateRange = this.hasDates() ? getDateRange(marker, this._dateMode) : null;
             marker.lat = this._getLatForMarker(marker);
             marker.lng = this._getLongForMarker(marker);
             return marker;
@@ -77,7 +77,6 @@ export default class Markers {
         }
 
         return lat;
-
     }
 
     _getLongForMarker(marker) {
@@ -89,4 +88,17 @@ export default class Markers {
         return lng;
     }
 
+    _getDateRange(marker) {
+        let dateEnd = marker.dateEnd ? marker.dateEnd : marker.yearTo;
+        if (dateEnd == null || dateEnd === '0' || dateEnd === 0) {
+            dateEnd = 'present';
+        }
+
+        let dateStart = marker.dateStart ? marker.dateStart : marker.yearFrom;
+        if (dateStart == null || dateStart === '0' || dateStart === 0) {
+            dateStart = 'beginning';
+        }
+
+        return `${dateStart} - ${dateEnd}`;
+    }
 }
