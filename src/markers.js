@@ -1,126 +1,104 @@
-let _minYear = -1;
-let _maxYear = -1;
-let _hasYears = null;
+import {createDate, getDateMode, getMinYear, getMaxYear, NO_DATES, dateFromTime} from './date';
 
-export function parseMarkers(markers) {
-    _minYear = -1;
-    _maxYear = -1;
+export default class Markers {
+    constructor(markers) {
+        this._dateMode = getDateMode(markers);
 
-    return markers.map(marker => {
-        marker.displayLocation = getDisplayLocation(marker);
-        marker.yearRange = hasYears(markers) ? getYearRange(marker) : null;
-        marker.lat = getLatForMarker(marker);
-        marker.lng = getLongForMarker(marker);
-        return marker;
-    });
-}
+        this._markers = markers.map(marker => {
+            marker.displayLocation = this._getDisplayLocation(marker);
+            marker.dateRange = this.hasDates() ? this._getDateRange(marker) : null;
+            marker.dateStart = createDate(marker.yearFrom, marker.dateStart);
+            marker.dateEnd = createDate(marker.yearTo, marker.dateEnd);
+            marker.lat = this._getLatForMarker(marker);
+            marker.lng = this._getLongForMarker(marker);
+            return marker;
+        });
 
-export function filterMarkers(markers, yearStart, yearEnd) {
-    return markers.filter(marker => {
-        const from = parseInt(marker.yearFrom);
-        if (from === undefined || from <= 0) {
-            to = getMinYear(markers);
+        this._minYear = getMinYear(this._markers);
+        this._maxYear = getMaxYear(this._markers);
+    }
+
+    getMarkers() {
+        return this._markers;
+    }
+
+    hasDates() {
+        return this._dateMode !== NO_DATES;
+    }
+
+    filter(dateStartVal, dateEndVal) {
+        const dateStart = dateFromTime(dateStartVal);
+        const dateEnd = dateFromTime(dateEndVal);
+
+        return this._markers.filter(marker => {
+            const start = marker.dateStart ? marker.dateStart : this._getMinYearAsDate();
+            const end = marker.dateEnd ? marker.dateEnd : this._getMaxYearAsDate();
+            return start <= dateEnd && end >= dateStart;
+        });
+    }
+
+    getMinYear() {
+        return this._minYear;
+    }
+
+    getMaxYear() {
+        return this._maxYear;
+    }
+
+    _getMinYearAsDate() {
+        return createDate(this.getMinYear().toString());
+    }
+
+    _getMaxYearAsDate() {
+        return createDate(this.getMaxYear().toString());
+    }
+
+    getDateMode() {
+        return this._dateMode;
+    }
+
+    _getDisplayLocation(marker) {
+        let displayLocation = '';
+        if (marker.hasOwnProperty('generated') && marker.generated.hasOwnProperty('location')) {
+            displayLocation = marker.generated.location;
+        } else if (marker.state.length > 0) {
+            displayLocation = `${marker.city}, ${marker.state}, ${marker.country}`;
+        } else {
+            displayLocation = `${marker.city}, ${marker.country}`;
         }
 
-        let to = parseInt(marker.yearTo);
-        if (to === undefined || to <= 0) {
-            to = getMaxYear(markers);
+        return displayLocation;
+    }
+
+    _getLatForMarker(marker) {
+        let lat = parseFloat(marker.lat);
+        if (isNaN(lat) && marker.hasOwnProperty('generated') && marker.generated.hasOwnProperty('lat')) {
+            lat = parseFloat(marker.generated.lat);
         }
-        return from <= yearEnd && to >= yearStart;
-    });
-}
 
-export function getMinYear(markers) {
-    if (_minYear === -1) {
-        _minYear = new Date().getFullYear();
-
-        markers.forEach(marker => {
-            const from = parseInt(marker.yearFrom);
-            if (from < _minYear) {
-                _minYear = from;
-            }
-        });
-    }
-    return _minYear;
-}
-
-export function getMaxYear(markers) {
-    if (_maxYear === -1) {
-        const todayYear = new Date().getFullYear();;
-        _maxYear = 0;
-
-        markers.forEach(marker => {
-            let to = parseInt(marker.yearTo);
-
-            if (to === undefined || to <= 0) {
-                to = todayYear;
-            }
-
-            if (to > _maxYear) {
-                _maxYear = to;
-            }
-        });
-    }
-    return _maxYear;
-}
-
-export function hasYears(markers) {
-    if (_hasYears == null) {
-        _hasYears = markers.some(marker => {
-            const from = parseInt(marker.yearFrom);
-            if (from !== undefined && from > 0) {
-                return true;
-            }
-
-            let to = parseInt(marker.yearTo);
-            if (to !== undefined && to > 0) {
-                return true;
-            }
-
-            return false;
-        });
+        return lat;
     }
 
-    return _hasYears;
-}
+    _getLongForMarker(marker) {
+        let lng = parseFloat(marker.long);
+        if (isNaN(lng) && marker.hasOwnProperty('generated') && marker.generated.hasOwnProperty('long')) {
+            lng = parseFloat(marker.generated.long);
+        }
 
-function getDisplayLocation(marker) {
-    let displayLocation = '';
-    if (marker.hasOwnProperty('generated') && marker.generated.hasOwnProperty('location')) {
-        displayLocation = marker.generated.location;
-    } else if (marker.state.length > 0) {
-        displayLocation = `${marker.city}, ${marker.state}, ${marker.country}`;
-    } else {
-        displayLocation = `${marker.city}, ${marker.country}`;
+        return lng;
     }
 
-    return displayLocation;
-}
+    _getDateRange(marker) {
+        let dateEnd = marker.dateEnd ? marker.dateEnd : marker.yearTo;
+        if (dateEnd == null || dateEnd === '0' || dateEnd === 0) {
+            dateEnd = 'present';
+        }
 
-function getYearRange(marker) {
-    const todayYear = new Date().getFullYear().toString;
-    let endYear = marker.yearTo;
-    if (endYear === todayYear || isNaN(endYear) || endYear === undefined || endYear <= 0) {
-        endYear = 'present';
+        let dateStart = marker.dateStart ? marker.dateStart : marker.yearFrom;
+        if (dateStart == null || dateStart === '0' || dateStart === 0) {
+            dateStart = 'beginning';
+        }
+
+        return `${dateStart} - ${dateEnd}`;
     }
-    return `${marker.yearFrom} - ${endYear}`;
-}
-
-function getLatForMarker(marker) {
-    let lat = parseFloat(marker.lat);
-    if (isNaN(lat) && marker.hasOwnProperty('generated') && marker.generated.hasOwnProperty('lat')) {
-        lat = parseFloat(marker.generated.lat);
-    }
-
-    return lat;
-
-}
-
-function getLongForMarker(marker) {
-    let lng = parseFloat(marker.long);
-    if (isNaN(lng) && marker.hasOwnProperty('generated') && marker.generated.hasOwnProperty('long')) {
-        lng = parseFloat(marker.generated.long);
-    }
-
-    return lng;
 }

@@ -5,40 +5,6 @@
 version: 2
 
 jobs:
-  build:
-    docker:
-      # specify the version you desire here
-      - image: circleci/node:7.10
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
-
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
-      - run:
-           command: yarn install
-
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-
-      # build
-      - run:
-           command: yarn build
-
   lint:
     docker:
       # specify the version you desire here
@@ -62,7 +28,7 @@ jobs:
           - v1-dependencies-
 
       - run:
-           command: yarn install
+           command: npm install
 
       - save_cache:
           paths:
@@ -71,24 +37,106 @@ jobs:
 
       # run tests!
       - run:
-           command: yarn lint
+           command: npm run lint
+  check-types:
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:7.10
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run:
+           command: npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      # run tests!
+      - run:
+           command: npm run check-types
+  check-pretty:
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:7.10
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run:
+           command: npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      # run tests!
+      - run:
+           command: npm run check-pretty
+  build:
+    docker:
+      - image: circleci/node:7.10
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run:
+           command: npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      # build
+      - run:
+           command: npm run build
 
   test:
     docker:
       # specify the version you desire here
       - image: circleci/node:7.10
 
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
-
     working_directory: ~/repo
 
     steps:
       - checkout
 
-      # Download and cache dependencies
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "package.json" }}
@@ -96,7 +144,7 @@ jobs:
           - v1-dependencies-
 
       - run:
-           command: yarn install
+           command: npm install
 
       - save_cache:
           paths:
@@ -104,28 +152,21 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       - run:
-           command: yarn build
+           command: npm run build
 
       # run tests!
       - run:
-           command: yarn test
+           command: npm run test
 
   publish:
     docker:
-      # specify the version you desire here
       - image: circleci/node:7.10
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
 
     working_directory: ~/repo
 
     steps:
       - checkout
 
-      # Download and cache dependencies
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "package.json" }}
@@ -133,7 +174,7 @@ jobs:
           - v1-dependencies-
 
       - run:
-           command: yarn install
+           command: npm install
 
       - save_cache:
           paths:
@@ -141,7 +182,7 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       - run:
-           command: yarn build
+           command: npm run build
 
       - run:
            command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
@@ -151,15 +192,19 @@ jobs:
 
 workflows:
   version: 2
-  build_lint_test_publish:
+  timeline_component_workflow:
     jobs:
-      - build
-      - lint:
+      - lint
+      - check-pretty
+      - check-types
+      - build:
           requires:
-            - build
+            - check-types
+            - lint
+            - check-pretty
       - test:
           requires:
-            - lint
+            - build
       - hold:
           type: approval
           requires:
