@@ -52,7 +52,6 @@ export default class Slider {
     private formatter(): object {
         return {
             to: (value: number) => {
-                console.log(dateHelper.dateFromTime(value));
                 return dateHelper.formatDate(dateHelper.dateFromTime(value), this.dateFormatMode);
             }
         };
@@ -62,8 +61,8 @@ export default class Slider {
         const date = dateHelper.createDate(null, year.toString());
         if (date !== null) {
             return date.getTime();
-        } else {
-            return -1;
         }
+
+        return -1;
     }
 }

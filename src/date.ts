@@ -11,13 +11,13 @@ export function formatDate(date: Date, mode: DateMode): string {
     } else if (mode === DateMode.YEAR_MONTH_DATES) {
         return date.getMonth() + 1 + '/' + date.getFullYear();
     } else if (mode === DateMode.YEAR_MONTH_DAY_DATES) {
-        return (date.getMonth() + 1) + '/' + date.getDate()  + '/' + date.getFullYear();
+        return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear();
     }
 
     return '';
 }
 
-export function hasDates(dateMode: DateMode) {
+export function hasDates(dateMode: DateMode): boolean {
     return dateMode !== DateMode.NO_DATES;
 }
 
@@ -34,15 +34,15 @@ export function createDate(yearStr: string | null, dateStr: string | null): Date
         } else if (count === 1) {
             let dateParts: string[] = convertStr.split('/');
             return new Date(parseInt(dateParts[1]), parseInt(dateParts[0]) - 1);
-        } else {
-            let dateParts: string[] = convertStr.split('/');
-            return new Date(parseInt(dateParts[2]), parseInt(dateParts[0]) - 1, parseInt(dateParts[1]));
         }
+
+        let dateParts: string[] = convertStr.split('/');
+        return new Date(parseInt(dateParts[2]), parseInt(dateParts[0]) - 1, parseInt(dateParts[1]));
     }
     return null;
 }
 
-export function dateFromTime(time: number) {
+export function dateFromTime(time: number): Date {
     let date = new Date();
     date.setTime(time);
     return date;
@@ -55,7 +55,7 @@ export interface Marker {
     yearTo?: string;
 }
 
-export function getDateMode(markers: Marker[]) {
+export function getDateMode(markers: Marker[]): DateMode {
     let dateMode: DateMode = DateMode.NO_DATES;
 
     markers.forEach(marker => {
@@ -91,7 +91,7 @@ export interface ProcessedMarker {
     yearTo?: Date;
 }
 
-export function getMinYear(markers: ProcessedMarker[]) {
+export function getMinYear(markers: ProcessedMarker[]): number {
     let minYear = new Date().getFullYear();
 
     markers.forEach(marker => {
@@ -103,7 +103,7 @@ export function getMinYear(markers: ProcessedMarker[]) {
     return minYear;
 }
 
-export function getMaxYear(markers: ProcessedMarker[]) {
+export function getMaxYear(markers: ProcessedMarker[]): number {
     const todayYear = new Date();
     let maxYear = 0;
 

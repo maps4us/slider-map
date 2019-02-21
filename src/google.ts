@@ -2,20 +2,22 @@ import GoogleMapsLoader from 'google-maps';
 
 declare global {
     interface Window {
-        google: google;
+        google: Google;
     }
 }
 
-export type google = {maps: typeof google.maps};
+export interface Google {
+    maps: typeof google.maps;
+}
 interface GCallBack {
-    (google: google): void;
+    (google: Google): void;
 }
 
-export function fetchGoogle(cb: GCallBack) {
+export function fetchGoogle(cb: GCallBack): void {
     if (window.google !== undefined) {
         cb(window.google);
     } else {
-        GoogleMapsLoader.load((google: google) => {
+        GoogleMapsLoader.load((google: Google) => {
             cb(google);
         });
     }

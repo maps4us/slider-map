@@ -4,15 +4,15 @@ import * as domHelper from './dom';
 import Slider from './slider';
 import * as mapHelper from './map';
 import './style.css';
-import {google, fetchGoogle} from './google';
+import {Google, fetchGoogle} from './google';
 
 export interface MapsCallBack {
     (data: object): void;
 }
 
 interface MetaData {
-    markers: any;
-    persons: any;
+    markers: object[];
+    persons: object[];
     pin: string;
     icon: string;
     publishedDate: string;
@@ -20,7 +20,7 @@ interface MetaData {
 }
 
 export default class TimeLineMap {
-    private google: google;
+    private google: Google;
     private mapId: string;
     private markers: Markers;
     private slider: Slider;
@@ -38,22 +38,22 @@ export default class TimeLineMap {
         this.processArguments(arguments);
     }
 
-    public create() {
-        fetchGoogle((google: google) => {
+    public create(): void {
+        fetchGoogle((google: Google) => {
             this.google = google;
             this.createTimeLineMap();
         });
     }
 
-    public addListener(type: string, cb: MapsCallBack) {
+    public addListener(type: string, cb: MapsCallBack): void {
         this.listeners.set(type, cb);
     }
 
-    public select(marker: object) {
+    public select(marker: object): void {
         mapHelper.panTo(marker);
     }
 
-    private processArguments(passedArguments: IArguments) {
+    private processArguments(passedArguments: IArguments): void {
         this.mapId = passedArguments[0];
         if (passedArguments.length === 3) {
             this.mapControlId = passedArguments[1];
@@ -67,7 +67,7 @@ export default class TimeLineMap {
         domHelper.ensureMapHeight(this.mapControlId);
     }
 
-    private async createTimeLineMap() {
+    private async createTimeLineMap(): Promise<void> {
         const response = await axios.get(`https://mapsforall-96ddd.firebaseio.com/publishedMaps/${this.mapId}.json`);
         const {markers, persons, ...metaData} = response.data;
         this.metaData = metaData;
@@ -93,14 +93,14 @@ export default class TimeLineMap {
         }
     }
 
-    private update(markers: object) {
+    private update(markers: object): void {
         if (this.listeners.has('update')) {
             const fn = this.listeners.get('update') as MapsCallBack;
             fn(markers);
         }
     }
 
-    private sendMetaData(metaData: MetaData) {
+    private sendMetaData(metaData: MetaData): void {
         if (this.listeners.has('metaData')) {
             const fn = this.listeners.get('metaData') as MapsCallBack;
             fn(metaData);
