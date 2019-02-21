@@ -1,4 +1,4 @@
-import {createDate, getDateMode, getMinYear, getMaxYear, NO_DATES, dateFromTime} from './date';
+import {createDate, getDateMode, getMinYear, getMaxYear, hasDates, dateFromTime} from './date';
 
 export default class Markers {
     constructor(markers) {
@@ -23,7 +23,7 @@ export default class Markers {
     }
 
     hasDates() {
-        return this._dateMode !== NO_DATES;
+        return hasDates(this._dateMode);
     }
 
     filter(dateStartVal, dateEndVal) {

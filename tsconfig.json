@@ -15,7 +15,9 @@
         // Import non-ES modules as default imports.
         "esModuleInterop": true,
         // skip checking dependency libraries
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        // things don't need to initialized in constructor
+        "strictPropertyInitialization": false
     },
     "include": ["src"],
     "exclude": ["./node_modules/*"]
