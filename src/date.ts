@@ -91,7 +91,7 @@ export interface ProcessedMarker {
     yearTo?: Date;
 }
 
-export function getMinYear(markers: ProcessedMarker[]): number {
+export function getMinYear(markers: ProcessedMarker[]): Date {
     let minYear = new Date().getFullYear();
 
     markers.forEach(marker => {
@@ -100,10 +100,10 @@ export function getMinYear(markers: ProcessedMarker[]): number {
         }
     });
 
-    return minYear;
+    return createDate(null, '1/1/' + minYear) as Date;
 }
 
-export function getMaxYear(markers: ProcessedMarker[]): number {
+export function getMaxYear(markers: ProcessedMarker[]): Date {
     const todayYear = new Date();
     let maxYear = 0;
 
@@ -119,5 +119,5 @@ export function getMaxYear(markers: ProcessedMarker[]): number {
         }
     });
 
-    return maxYear;
+    return createDate(null, '12/31/' + maxYear) as Date;
 }

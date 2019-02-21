@@ -9,14 +9,14 @@ export default class Slider {
     public constructor(
         controlId: string,
         dateMode: dateHelper.DateMode,
-        minYear: number,
-        maxYear: number,
+        minYear: Date,
+        maxYear: Date,
         changeCb: noUiSlider.Callback
     ) {
         this.slider = this.getSliderDom(controlId);
         this.dateFormatMode = dateMode;
 
-        this.createSlider(this.timestamp(minYear), this.timestamp(maxYear));
+        this.createSlider(minYear.getTime(), maxYear.getTime());
         this.slider.noUiSlider.on('set', changeCb);
     }
 
@@ -55,14 +55,5 @@ export default class Slider {
                 return dateHelper.formatDate(dateHelper.dateFromTime(value), this.dateFormatMode);
             }
         };
-    }
-
-    private timestamp(year: number): number {
-        const date = dateHelper.createDate(null, year.toString());
-        if (date !== null) {
-            return date.getTime();
-        }
-
-        return -1;
     }
 }
