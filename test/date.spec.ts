@@ -54,7 +54,8 @@ describe('Given a dateHelper', () => {
         });
 
         const minYear = dateHelper.getMinYear(markers);
-        expect(minYear).to.equal(1965);
+        const dateStr = dateHelper.formatDate(minYear, dateHelper.DateMode.YEAR_MONTH_DAY_DATES);
+        expect(dateStr).to.equal('1/1/1965');
     });
 
     it('should return max year', () => {
@@ -72,8 +73,9 @@ describe('Given a dateHelper', () => {
             dateEnd: dateHelper.createDate(null, '5/6/1999') as Date
         });
 
-        const minYear = dateHelper.getMaxYear(markers);
-        expect(minYear).to.equal(1999);
+        const maxYear = dateHelper.getMaxYear(markers);
+        const dateStr = dateHelper.formatDate(maxYear, dateHelper.DateMode.YEAR_MONTH_DAY_DATES);
+        expect(dateStr).to.equal('12/31/1999');
     });
 
     it('should return date mode years', () => {
