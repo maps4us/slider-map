@@ -1,2 +1,2 @@
-import TimeLineMap from './module.js';
+import TimeLineMap from './module';
 export {TimeLineMap};

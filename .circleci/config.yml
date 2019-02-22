@@ -1,19 +1,9 @@
-# Javascript Node CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-javascript/ for more details
-#
 version: 2
 
 jobs:
   lint:
     docker:
-      # specify the version you desire here
       - image: circleci/node:7.10
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
 
     working_directory: ~/repo
 
@@ -35,18 +25,11 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
-      # run tests!
       - run:
            command: npm run lint
   check-types:
     docker:
-      # specify the version you desire here
       - image: circleci/node:7.10
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
 
     working_directory: ~/repo
 
@@ -68,12 +51,10 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
-      # run tests!
       - run:
            command: npm run check-types
   check-pretty:
     docker:
-      # specify the version you desire here
       - image: circleci/node:7.10
 
     working_directory: ~/repo
@@ -96,7 +77,6 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
-      # run tests!
       - run:
            command: npm run check-pretty
   build:
@@ -123,13 +103,11 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
-      # build
       - run:
            command: npm run build
 
-  test:
+  e2e:
     docker:
-      # specify the version you desire here
       - image: circleci/node:7.10
 
     working_directory: ~/repo
@@ -154,9 +132,34 @@ jobs:
       - run:
            command: npm run build
 
-      # run tests!
       - run:
-           command: npm run test
+           command: npm run e2e
+
+  unit:
+    docker:
+      - image: circleci/node:7.10
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run:
+           command: npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      - run:
+           command: npm run unit
 
   publish:
     docker:
@@ -202,13 +205,17 @@ workflows:
             - check-types
             - lint
             - check-pretty
-      - test:
+      - unit:
+          requires:
+            - build
+      - e2e:
           requires:
             - build
       - hold:
           type: approval
           requires:
-           - test
+           - unit
+           - e2e
           filters:
             branches:
               only: master

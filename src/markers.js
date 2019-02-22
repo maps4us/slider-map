@@ -1,4 +1,4 @@
-import {createDate, getDateMode, getMinYear, getMaxYear, NO_DATES, dateFromTime} from './date';
+import {createDate, getDateMode, getMinYear, getMaxYear, hasDates, dateFromTime} from './date';
 
 export default class Markers {
     constructor(markers) {
@@ -23,7 +23,7 @@ export default class Markers {
     }
 
     hasDates() {
-        return this._dateMode !== NO_DATES;
+        return hasDates(this._dateMode);
     }
 
     filter(dateStartVal, dateEndVal) {
@@ -31,8 +31,8 @@ export default class Markers {
         const dateEnd = dateFromTime(dateEndVal);
 
         return this._markers.filter(marker => {
-            const start = marker.dateStart ? marker.dateStart : this._getMinYearAsDate();
-            const end = marker.dateEnd ? marker.dateEnd : this._getMaxYearAsDate();
+            const start = marker.dateStart ? marker.dateStart : this.getMinYear();
+            const end = marker.dateEnd ? marker.dateEnd : this.getMaxYear();
             return start <= dateEnd && end >= dateStart;
         });
     }
@@ -43,14 +43,6 @@ export default class Markers {
 
     getMaxYear() {
         return this._maxYear;
-    }
-
-    _getMinYearAsDate() {
-        return createDate(this.getMinYear().toString());
-    }
-
-    _getMaxYearAsDate() {
-        return createDate(this.getMaxYear().toString());
     }
 
     getDateMode() {
