@@ -1,3 +1,5 @@
+import {Marker, ProcessedMarker} from './markers';
+
 export enum DateMode {
     NO_DATES = -1,
     YEAR_DATES,
@@ -21,10 +23,11 @@ export function hasDates(dateMode: DateMode): boolean {
     return dateMode !== DateMode.NO_DATES;
 }
 
-export function createDate(yearStr: string | null, dateStr: string | null): Date | null {
-    const convertStr = dateStr != null ? dateStr : yearStr;
+// clean up input
+export function createDate(yearStr: string | null | undefined, dateStr: string | null | undefined): Date | null {
+    const convertStr = dateStr !== null && dateStr !== undefined ? dateStr : yearStr;
 
-    if (convertStr != null && convertStr.length > 0 && convertStr !== '0') {
+    if (convertStr !== null && convertStr !== undefined && convertStr.length > 0 && convertStr !== '0') {
         const count = (convertStr.match(/\//g) || []).length;
 
         if (count === 0) {
@@ -46,13 +49,6 @@ export function dateFromTime(time: number): Date {
     let date = new Date();
     date.setTime(time);
     return date;
-}
-
-export interface Marker {
-    dateStart?: string;
-    yearFrom?: string;
-    dateEnd?: string;
-    yearTo?: string;
 }
 
 export function getDateMode(markers: Marker[]): DateMode {
@@ -82,13 +78,6 @@ export function getDateMode(markers: Marker[]): DateMode {
     });
 
     return dateMode;
-}
-
-export interface ProcessedMarker {
-    dateStart?: Date;
-    yearFrom?: Date;
-    dateEnd?: Date;
-    yearTo?: Date;
 }
 
 export function getMinYear(markers: ProcessedMarker[]): Date {
