@@ -18,69 +18,59 @@ interface DateRange {
     end?: Date;
 }
 
-export interface Marker {
-    dateStart?: string;
-    yearFrom?: string;
-    dateEnd?: string;
-    yearTo?: string;
-    lat: string | number;
-    long: string;
-    lng: number;
-    city: string;
-    state: string;
-    country: string;
-    generated?: Generated;
+export class Marker {
+    public name: string;
+    public addInfo: string;
+    public icon: string;
+    public website: Website;
 
-    addInfo: string;
-    icon: string;
-    name: string;
-    website: Website;
+    public lat: string | number;
+    public long: string;
+    public lng: number;
+    public city: string;
+    public state: string;
+    public country: string;
 
-    dateRange: DateRange;
-    displayLocation: string;
-}
+    public dateStart?: string;
+    public yearFrom?: string;
+    public dateEnd?: string;
+    public yearTo?: string;
 
-export class Markers {
-    private markers: Marker[];
+    public generated?: Generated;
 
-    public constructor(markers: Marker[]) {
-        this.markers = markers.map(marker => {
-            // let marker = Object.assign(new Marker(), markerJsonObj);
+    public dateRange: DateRange;
+    public displayLocation: string;
 
-            marker.displayLocation = this.getDisplayLocation(marker);
-            let dateRange: DateRange = {
-                displayStr: ''
-            };
+    public process(hasDates: boolean): void {
+        this.displayLocation = this.getDisplayLocation(this);
+        let dateRange: DateRange = {
+            displayStr: ''
+        };
 
-            dateRange.displayStr = this.getDateRange(marker);
+        if (hasDates) {
+            dateRange.displayStr = this.getDateRange(this);
 
-            let dateStartStr = marker.yearFrom ? marker.yearFrom : marker.dateStart;
+            let dateStartStr = this.yearFrom ? this.yearFrom : this.dateStart;
             if (dateStartStr) {
                 dateRange.start = dateFromString(dateStartStr);
             }
-            let dateEndStr = marker.yearTo ? marker.yearTo : marker.dateEnd;
+            let dateEndStr = this.yearTo ? this.yearTo : this.dateEnd;
             if (dateEndStr) {
                 dateRange.end = dateFromString(dateEndStr);
             }
 
-            marker.dateRange = dateRange;
+            this.dateRange = dateRange;
+        }
 
-            marker.lat = this.getLatForMarker(marker);
-            marker.lng = this.getLongForMarker(marker);
-
-            return marker;
-        });
+        this.lat = this.getLatForMarker(this);
+        this.lng = this.getLongForMarker(this);
     }
 
-    public getMarkers(): Marker[] {
-        return this.markers;
-    }
-
-    public filter(dateStartVal: number, dateEndVal: number, metaData: MetaData): Marker[] {
+    public static filter(markers: Marker[], dateStartVal: number, dateEndVal: number, metaData: MetaData): Marker[] {
         const dateStart = dateFromTime(dateStartVal);
         const dateEnd = dateFromTime(dateEndVal);
 
-        return this.markers.filter(marker => {
+        return markers.filter(marker => {
             if (marker.dateRange) {
                 const start = marker.dateRange.start ? marker.dateRange.start : metaData.minDate;
                 const end = marker.dateRange.end ? marker.dateRange.end : metaData.maxDate;

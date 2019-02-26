@@ -1,4 +1,4 @@
-import {DateMode} from './markers';
+import {DateMode} from './dateMode';
 
 export function formatDate(date: Date, mode: DateMode): string {
     if (mode === DateMode.YEAR_DATES) {

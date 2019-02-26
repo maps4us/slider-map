@@ -1,4 +1,4 @@
-import {DateMode} from '../date/markers';
+import {DateMode} from '../date/dateMode';
 
 export interface MetaData {
     pin: string;
