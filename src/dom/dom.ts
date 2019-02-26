@@ -1,3 +1,5 @@
+import './style.css';
+
 export function addClasses(mapControlId: string, dateControlId: string): void {
     const mapControlDiv = document.getElementById(mapControlId);
     if (mapControlDiv != null) {

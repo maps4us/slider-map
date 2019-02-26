@@ -1,22 +1,13 @@
-import axios from 'axios';
-import Markers from './markers';
-import * as domHelper from './dom';
-import Slider from './slider';
-import * as mapHelper from './map';
-import './style.css';
-import {Google, fetchGoogle} from './google';
+import {Markers} from './marker/markers';
+import {MetaData} from './marker/metaData';
+import {fetch} from './marker/fetch';
+import * as domHelper from './dom/dom';
+import Slider from './slider/slider';
+import * as mapHelper from './map/map';
+import {Google, fetchGoogle} from './map/google';
 
 export interface MapsCallBack {
     (data: object): void;
-}
-
-interface MetaData {
-    markers: object[];
-    persons: object[];
-    pin: string;
-    icon: string;
-    publishedDate: string;
-    title: string;
 }
 
 export default class TimeLineMap {
@@ -68,28 +59,21 @@ export default class TimeLineMap {
     }
 
     private async createTimeLineMap(): Promise<void> {
-        const response = await axios.get(`https://mapsforall-96ddd.firebaseio.com/publishedMaps/${this.mapId}.json`);
-        const {markers, persons, ...metaData} = response.data;
+        const {markers, metaData} = await fetch(this.mapId);
+        this.markers = markers;
         this.metaData = metaData;
         this.sendMetaData(this.metaData);
 
-        this.markers = new Markers(markers ? markers : persons);
         await mapHelper.createMap(this.google, this.mapControlId, this.metaData.icon, this.metaData.pin);
         mapHelper.createClusterer(this.markers.getMarkers());
         this.update(this.markers.getMarkers());
 
-        if (this.markers.hasDates()) {
-            this.slider = new Slider(
-                this.dateControlId,
-                this.markers.getDateMode(),
-                this.markers.getMinYear(),
-                this.markers.getMaxYear(),
-                ([yearStart, yearEnd]: number[]) => {
-                    const markers = this.markers.filter(yearStart, yearEnd);
-                    mapHelper.updateClusterer(markers);
-                    this.update(markers);
-                }
-            );
+        if (this.metaData.hasDates) {
+            this.slider = new Slider(this.dateControlId, this.metaData, ([yearStart, yearEnd]: number[]) => {
+                const markers = this.markers.filter(yearStart, yearEnd, this.metaData);
+                mapHelper.updateClusterer(markers);
+                this.update(markers);
+            });
         }
     }
 
