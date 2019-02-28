@@ -3,7 +3,7 @@ version: 2
 jobs:
   lint:
     docker:
-      - image: circleci/node:7.10
+      - image: circleci/node:8.12
 
     working_directory: ~/repo
 
@@ -18,7 +18,7 @@ jobs:
           - v1-dependencies-
 
       - run:
-           command: npm install
+           command: npm ci
 
       - save_cache:
           paths:
@@ -29,7 +29,7 @@ jobs:
            command: npm run lint
   check-types:
     docker:
-      - image: circleci/node:7.10
+      - image: circleci/node:8.12
 
     working_directory: ~/repo
 
@@ -44,7 +44,7 @@ jobs:
           - v1-dependencies-
 
       - run:
-           command: npm install
+           command: npm ci
 
       - save_cache:
           paths:
@@ -55,7 +55,7 @@ jobs:
            command: npm run check-types
   check-pretty:
     docker:
-      - image: circleci/node:7.10
+      - image: circleci/node:8.12
 
     working_directory: ~/repo
 
@@ -70,7 +70,7 @@ jobs:
           - v1-dependencies-
 
       - run:
-           command: npm install
+           command: npm ci
 
       - save_cache:
           paths:
@@ -81,7 +81,7 @@ jobs:
            command: npm run check-pretty
   build:
     docker:
-      - image: circleci/node:7.10
+      - image: circleci/node:8.12
 
     working_directory: ~/repo
 
@@ -96,7 +96,7 @@ jobs:
           - v1-dependencies-
 
       - run:
-           command: npm install
+           command: npm ci
 
       - save_cache:
           paths:
@@ -108,7 +108,7 @@ jobs:
 
   e2e:
     docker:
-      - image: circleci/node:7.10
+      - image: circleci/node:8.12
 
     working_directory: ~/repo
 
@@ -122,7 +122,7 @@ jobs:
           - v1-dependencies-
 
       - run:
-           command: npm install
+           command: npm ci
 
       - save_cache:
           paths:
@@ -137,7 +137,7 @@ jobs:
 
   unit:
     docker:
-      - image: circleci/node:7.10
+      - image: circleci/node:8.12
 
     working_directory: ~/repo
 
@@ -151,7 +151,7 @@ jobs:
           - v1-dependencies-
 
       - run:
-           command: npm install
+           command: npm ci
 
       - save_cache:
           paths:
@@ -163,7 +163,7 @@ jobs:
 
   publish:
     docker:
-      - image: circleci/node:7.10
+      - image: circleci/node:8.12
 
     working_directory: ~/repo
 
@@ -177,7 +177,7 @@ jobs:
           - v1-dependencies-
 
       - run:
-           command: npm install
+           command: npm ci
 
       - save_cache:
           paths:

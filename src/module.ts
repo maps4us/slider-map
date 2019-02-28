@@ -1,28 +1,19 @@
-import axios from 'axios';
-import Markers from './markers';
-import * as domHelper from './dom';
-import Slider from './slider';
-import * as mapHelper from './map';
-import './style.css';
-import {Google, fetchGoogle} from './google';
+import {Marker} from './marker/marker';
+import {MetaData} from './marker/metaData';
+import {fetch} from './marker/fetch';
+import * as domHelper from './dom/dom';
+import Slider from './slider/slider';
+import * as mapHelper from './map/map';
+import {Google, fetchGoogle} from './map/google';
 
 export interface MapsCallBack {
     (data: object): void;
 }
 
-interface MetaData {
-    markers: object[];
-    persons: object[];
-    pin: string;
-    icon: string;
-    publishedDate: string;
-    title: string;
-}
-
 export default class TimeLineMap {
     private google: Google;
     private mapId: string;
-    private markers: Markers;
+    private markers: Marker[];
     private slider: Slider;
     private mapControlId: string;
     private dateControlId: string;
@@ -38,11 +29,11 @@ export default class TimeLineMap {
         this.processArguments(arguments);
     }
 
-    public create(): void {
-        fetchGoogle((google: Google) => {
-            this.google = google;
-            this.createTimeLineMap();
-        });
+    public async create(): Promise<void> {
+        this.google = await fetchGoogle();
+        await this.getMapData();
+        this.createMap();
+        this.createSlider();
     }
 
     public addListener(type: string, cb: MapsCallBack): void {
@@ -67,29 +58,24 @@ export default class TimeLineMap {
         domHelper.ensureMapHeight(this.mapControlId);
     }
 
-    private async createTimeLineMap(): Promise<void> {
-        const response = await axios.get(`https://mapsforall-96ddd.firebaseio.com/publishedMaps/${this.mapId}.json`);
-        const {markers, persons, ...metaData} = response.data;
-        this.metaData = metaData;
+    private async getMapData(): Promise<void> {
+        ({markers: this.markers, metaData: this.metaData} = await fetch(this.mapId));
         this.sendMetaData(this.metaData);
+        this.update(this.markers);
+    }
 
-        this.markers = new Markers(markers ? markers : persons);
+    private async createMap(): Promise<void> {
         await mapHelper.createMap(this.google, this.mapControlId, this.metaData.icon, this.metaData.pin);
-        mapHelper.createClusterer(this.markers.getMarkers());
-        this.update(this.markers.getMarkers());
+        mapHelper.createClusterer(this.markers);
+    }
 
-        if (this.markers.hasDates()) {
-            this.slider = new Slider(
-                this.dateControlId,
-                this.markers.getDateMode(),
-                this.markers.getMinYear(),
-                this.markers.getMaxYear(),
-                ([yearStart, yearEnd]: number[]) => {
-                    const markers = this.markers.filter(yearStart, yearEnd);
-                    mapHelper.updateClusterer(markers);
-                    this.update(markers);
-                }
-            );
+    private async createSlider(): Promise<void> {
+        if (this.metaData.hasDates) {
+            this.slider = new Slider(this.dateControlId, this.metaData, ([yearStart, yearEnd]: number[]) => {
+                const markers = Marker.filter(this.markers, yearStart, yearEnd, this.metaData);
+                mapHelper.updateClusterer(markers);
+                this.update(markers);
+            });
         }
     }
 

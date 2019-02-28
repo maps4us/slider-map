@@ -1,22 +1,18 @@
 import noUiSlider from 'nouislider';
 import 'nouislider/distribute/nouislider.css';
-import * as dateHelper from './date';
+import {formatDate} from '../date/format';
+import {dateFromTime} from '../date/conversion';
+import {MetaData} from '../marker/metaData';
 
 export default class Slider {
     private slider: noUiSlider.Instance;
     private dateFormatMode: number;
 
-    public constructor(
-        controlId: string,
-        dateMode: dateHelper.DateMode,
-        minYear: Date,
-        maxYear: Date,
-        changeCb: noUiSlider.Callback
-    ) {
+    public constructor(controlId: string, metaData: MetaData, changeCb: noUiSlider.Callback) {
         this.slider = this.getSliderDom(controlId);
-        this.dateFormatMode = dateMode;
+        this.dateFormatMode = metaData.dateMode;
 
-        this.createSlider(minYear.getTime(), maxYear.getTime());
+        this.createSlider(metaData.minDate.getTime(), metaData.maxDate.getTime());
         this.slider.noUiSlider.on('set', changeCb);
     }
 
@@ -31,13 +27,13 @@ export default class Slider {
         return slider;
     }
 
-    private createSlider(minYear: number, maxYear: number): void {
+    private createSlider(minDate: number, maxDate: number): void {
         noUiSlider.create(this.slider, {
-            start: [minYear, maxYear],
+            start: [minDate, maxDate],
             connect: true,
             range: {
-                min: minYear,
-                max: maxYear
+                min: minDate,
+                max: maxDate
             },
             tooltips: [this.formatter(), this.formatter()],
             pips: {
@@ -52,7 +48,7 @@ export default class Slider {
     private formatter(): object {
         return {
             to: (value: number) => {
-                return dateHelper.formatDate(dateHelper.dateFromTime(value), this.dateFormatMode);
+                return formatDate(dateFromTime(value), this.dateFormatMode);
             }
         };
     }
