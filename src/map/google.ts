@@ -9,16 +9,15 @@ declare global {
 export interface Google {
     maps: typeof google.maps;
 }
-interface GCallBack {
-    (google: Google): void;
-}
 
-export function fetchGoogle(cb: GCallBack): void {
-    if (window.google !== undefined) {
-        cb(window.google);
-    } else {
-        GoogleMapsLoader.load((google: Google) => {
-            cb(google);
-        });
-    }
+export function fetchGoogle(): Promise<Google> {
+    return new Promise(resolve => {
+        if (window.google !== undefined) {
+            resolve(window.google);
+        } else {
+            GoogleMapsLoader.load((google: Google) => {
+                resolve(google);
+            });
+        }
+    });
 }

@@ -12,7 +12,7 @@ export function hasDates(dateMode: DateMode): boolean {
 export function getDateModeFromString(date: string | undefined): DateMode {
     let dateMode: DateMode = DateMode.NO_DATES;
 
-    if (date !== undefined && date !== '') {
+    if (date !== undefined && date !== '' && date !== '0') {
         dateMode = (date.match(/\//g) || []).length;
     }
 

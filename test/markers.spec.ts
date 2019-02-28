@@ -3,7 +3,7 @@ import {dateFromString} from '../src/date/conversion';
 import {formatDate} from '../src/date/format';
 import {getMinDate, getMaxDate, getDateMode} from '../src/marker/fetch';
 import {DateMode} from '../src/date/dateMode';
-import {Marker} from '../src/marker/markers';
+import {Marker} from '../src/marker/marker';
 import {expect} from 'chai';
 
 function createEmptyMarker(): Marker {
@@ -56,7 +56,7 @@ describe('Given marker module', () => {
         let marker3 = createEmptyMarker();
         marker3.dateRange = {
             displayStr: '',
-            start: dateFromString('1/1/1965'),
+            start: dateFromString('1/5/1965'),
             end: dateFromString('5/6/1992')
         };
 
@@ -66,7 +66,7 @@ describe('Given marker module', () => {
 
         const minYear = getMinDate(markers);
         const dateStr = formatDate(minYear, DateMode.YEAR_MONTH_DAY_DATES);
-        expect(dateStr).to.equal('1/1/1965');
+        expect(dateStr).to.equal('1/5/1965');
     });
 
     it('should return max year', () => {
@@ -98,7 +98,27 @@ describe('Given marker module', () => {
 
         const maxYear = getMaxDate(markers);
         const dateStr = formatDate(maxYear, DateMode.YEAR_MONTH_DAY_DATES);
-        expect(dateStr).to.equal('12/31/1999');
+        expect(dateStr).to.equal('5/6/1999');
+    });
+
+    it('should return date mode no date', () => {
+        const markers: Marker[] = [];
+        let marker1 = createEmptyMarker();
+        marker1.dateStart = '';
+        marker1.dateEnd = '0';
+
+        let marker2 = createEmptyMarker();
+        marker2.dateEnd = '0';
+
+        let marker3 = createEmptyMarker();
+        marker3.dateStart = '';
+
+        markers.push(marker1);
+        markers.push(marker2);
+        markers.push(marker3);
+
+        const dateMode = getDateMode(markers);
+        expect(dateMode).to.equal(DateMode.NO_DATES);
     });
 
     it('should return date mode years', () => {

@@ -18,7 +18,7 @@ jobs:
           - v1-dependencies-
 
       - run:
-           command: npm install
+           command: npm ci
 
       - save_cache:
           paths:
@@ -44,7 +44,7 @@ jobs:
           - v1-dependencies-
 
       - run:
-           command: npm install
+           command: npm ci
 
       - save_cache:
           paths:
@@ -70,7 +70,7 @@ jobs:
           - v1-dependencies-
 
       - run:
-           command: npm install
+           command: npm ci
 
       - save_cache:
           paths:
@@ -96,7 +96,7 @@ jobs:
           - v1-dependencies-
 
       - run:
-           command: npm install
+           command: npm ci
 
       - save_cache:
           paths:
@@ -122,7 +122,7 @@ jobs:
           - v1-dependencies-
 
       - run:
-           command: npm install
+           command: npm ci
 
       - save_cache:
           paths:
@@ -151,7 +151,7 @@ jobs:
           - v1-dependencies-
 
       - run:
-           command: npm install
+           command: npm ci
 
       - save_cache:
           paths:
@@ -177,7 +177,7 @@ jobs:
           - v1-dependencies-
 
       - run:
-           command: npm install
+           command: npm ci
 
       - save_cache:
           paths:

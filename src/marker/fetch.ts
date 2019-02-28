@@ -1,8 +1,7 @@
 import axios from 'axios';
-import {Marker} from './markers';
+import {Marker} from './marker';
 import {MetaData} from './metaData';
 import {DateMode, hasDates, getDateModeFromString} from '../date/dateMode';
-import {dateFromString} from '../date/conversion';
 
 export function getDateMode(markers: Marker[]): DateMode {
     let dateMode: DateMode = DateMode.NO_DATES;
@@ -21,33 +20,27 @@ export function getDateMode(markers: Marker[]): DateMode {
 }
 
 export function getMinDate(markers: Marker[]): Date {
-    let minYear = new Date().getFullYear();
+    const dates = markers
+        .filter(marker => marker.dateRange && marker.dateRange.start)
+        .map(marker => marker.dateRange.start);
 
-    markers.forEach(marker => {
-        if (marker.dateRange && marker.dateRange.start && marker.dateRange.start.getFullYear() < minYear) {
-            minYear = marker.dateRange.start.getFullYear();
-        }
-    });
+    if (dates.length > 0) {
+        return dates.reduce((p, v) => (p && v && p < v ? p : v)) as Date;
+    }
 
-    return dateFromString('1/1/' + minYear) as Date;
+    return new Date();
 }
 
 export function getMaxDate(markers: Marker[]): Date {
-    const todayYear = new Date();
-    let maxYear = 0;
+    const dates = markers
+        .filter(marker => marker.dateRange && marker.dateRange.end)
+        .map(marker => marker.dateRange.end);
 
-    markers.forEach(marker => {
-        let dateEnd = todayYear;
-        if (marker.dateRange && marker.dateRange.end) {
-            dateEnd = marker.dateRange.end;
-        }
+    if (dates.length > 0) {
+        return dates.reduce((p, v) => (p && v && p > v ? p : v)) as Date;
+    }
 
-        if (dateEnd.getFullYear() > maxYear) {
-            maxYear = dateEnd.getFullYear();
-        }
-    });
-
-    return dateFromString('12/31/' + maxYear) as Date;
+    return new Date();
 }
 
 export async function fetch(mapId: string): Promise<{markers: Marker[]; metaData: MetaData}> {
@@ -63,8 +56,6 @@ export async function fetch(mapId: string): Promise<{markers: Marker[]; metaData
         marker.process(metaData.hasDates);
         return marker;
     });
-
-    console.log(markers);
 
     metaData.minDate = getMinDate(markers);
     metaData.maxDate = getMaxDate(markers);
