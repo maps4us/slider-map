@@ -110,7 +110,7 @@ function getGMarkers(markers) {
         gmarker.content =
             `<img src="${icon}" width="32" height="32"><b> ${marker.name}</b>` +
             `<br>${marker.displayLocation}` +
-            `${marker.dateRange ? `<br>${marker.dateRange}` : ``}` +
+            `${marker.dateRange ? `<br>${marker.dateRange.displayStr}` : ``}` +
             `${marker.addInfo ? `<br>${marker.addInfo}` : ``}` +
             `${website ? `<br><a href="${website.url}" target="_blank">${website.title}</a>` : ``}`;
 
