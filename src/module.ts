@@ -3,7 +3,7 @@ import {MetaData} from './marker/metaData';
 import {fetch} from './marker/fetch';
 import * as domHelper from './dom/dom';
 import Slider from './slider/slider';
-import * as mapHelper from './map/map';
+import {TheMap} from './map/map';
 import {Google, fetchGoogle} from './map/google';
 
 export interface MapsCallBack {
@@ -12,6 +12,7 @@ export interface MapsCallBack {
 
 export default class TimeLineMap {
     private google: Google;
+    private map: TheMap;
     private mapId: string;
     private markers: Marker[];
     private slider: Slider;
@@ -40,8 +41,8 @@ export default class TimeLineMap {
         this.listeners.set(type, cb);
     }
 
-    public select(marker: object): void {
-        mapHelper.panTo(marker);
+    public select(marker: Marker): void {
+        this.map.panTo(marker);
     }
 
     private processArguments(passedArguments: IArguments): void {
@@ -65,15 +66,16 @@ export default class TimeLineMap {
     }
 
     private async createMap(): Promise<void> {
-        await mapHelper.createMap(this.google, this.mapControlId, this.metaData.icon, this.metaData.pin);
-        mapHelper.createClusterer(this.markers);
+        this.map = new TheMap();
+        await this.map.createMap(this.google, this.mapControlId, this.metaData.icon, this.metaData.pin);
+        this.map.createClusterer(this.markers);
     }
 
     private async createSlider(): Promise<void> {
         if (this.metaData.hasDates) {
             this.slider = new Slider(this.dateControlId, this.metaData, ([yearStart, yearEnd]: number[]) => {
                 const markers = Marker.filter(this.markers, yearStart, yearEnd, this.metaData);
-                mapHelper.updateClusterer(markers);
+                this.map.updateClusterer(markers);
                 this.update(markers);
             });
         }
