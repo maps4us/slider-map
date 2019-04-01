@@ -15,9 +15,9 @@ const _spiderfierOptions = {
     spiderfiedShadowColor: false
 };
 
-class GMarker extends google.maps.Marker {
-    public content: string;
-}
+// class GMarker extends google.maps.Marker {
+//     public content: string;
+// }
 
 export class TheMap {
     private google: Google;
@@ -26,7 +26,8 @@ export class TheMap {
     private markerClusterer: MarkerClusterer;
     private infoWindow?: google.maps.InfoWindow;
     private icon: string;
-    private gmarkers: GMarker[];
+    private gmarkers: google.maps.Marker[];
+    private markerContent: Map<google.maps.Marker, string>;
     private pinUrl: string;
     private pin: object;
     private spiderfier: OverlappingMarkerSpiderfier;
@@ -38,6 +39,7 @@ export class TheMap {
         this.pinUrl =
             'https://firebasestorage.googleapis.com/v0/b/mapsforall-96ddd.appspot.com/o/images%2Fpins%2F' +
             'transparent-pin-no-border.png?alt=media&token=e5769cf5-15cd-4073-93d8-014349368f7a';
+        this.markerContent = new Map();
     }
 
     public async createMap(google: Google, mapControlId: string, icon: string, pin: string): Promise<void> {
@@ -63,7 +65,7 @@ export class TheMap {
 
     private createSpiderfier(): void {
         this.spiderfier = new OverlappingMarkerSpiderfier(this.map, _spiderfierOptions);
-        this.spiderfier.addListener('click', (gmarker: GMarker) => this.openInfoWindow(gmarker));
+        this.spiderfier.addListener('click', (gmarker: google.maps.Marker) => this.openInfoWindow(gmarker));
 
         const mti = google.maps.MapTypeId;
         if (this.spiderfier.legColors.usual && this.spiderfier.legColors.highlighted) {
@@ -95,7 +97,7 @@ export class TheMap {
         this.map.panTo({lat: markerToFind.lat as number, lng: markerToFind.lng});
 
         const foundMarker = this.gmarkers.find(
-            (gmarker: GMarker) =>
+            (gmarker: google.maps.Marker) =>
                 gmarker.getTitle() === markerToFind.name && gmarker.getPosition().lat() === markerToFind.lat
         );
 
@@ -103,17 +105,17 @@ export class TheMap {
         this.google.maps.event.trigger(foundMarker, 'click');
     }
 
-    private setSpiderfierMarkers(markers: GMarker[]): void {
+    private setSpiderfierMarkers(markers: google.maps.Marker[]): void {
         this.spiderfier.removeAllMarkers();
         markers.forEach(marker => this.spiderfier.addMarker(marker, () => {}));
     }
 
-    private getGMarkers(markers: Marker[]): GMarker[] {
+    private getGMarkers(markers: Marker[]): google.maps.Marker[] {
         this.gmarkers = [];
         this.bounds = new google.maps.LatLngBounds();
 
         markers.forEach(marker => {
-            const gmarker = new GMarker({
+            const gmarker = new google.maps.Marker({
                 position: {lat: marker.lat as number, lng: marker.lng},
                 title: marker.name,
                 icon: this.pin
@@ -126,12 +128,14 @@ export class TheMap {
                 website = `<br><a href="${marker.website.url}" target="_blank">${marker.website.title}</a>`;
             }
 
-            gmarker.content =
+            this.markerContent.set(
+                gmarker,
                 `<img src="${icon}" width="32" height="32"><b> ${marker.name}</b>` +
-                `<br>${marker.displayLocation}` +
-                `${marker.dateRange ? `<br>${marker.dateRange.displayStr}` : ``}` +
-                `${marker.addInfo ? `<br>${marker.addInfo}` : ``}` +
-                `${website}`;
+                    `<br>${marker.displayLocation}` +
+                    `${marker.dateRange ? `<br>${marker.dateRange.displayStr}` : ``}` +
+                    `${marker.addInfo ? `<br>${marker.addInfo}` : ``}` +
+                    `${website}`
+            );
 
             this.bounds.extend(gmarker.getPosition());
             gmarker.addListener('click', () => this.openInfoWindow(gmarker));
@@ -142,12 +146,12 @@ export class TheMap {
         return this.gmarkers;
     }
 
-    private openInfoWindow(gmarker: GMarker): void {
+    private openInfoWindow(gmarker: google.maps.Marker): void {
         if (this.infoWindow != null) {
             this.infoWindow.close();
         }
         this.infoWindow = new google.maps.InfoWindow({
-            content: gmarker.content
+            content: this.markerContent.get(gmarker)
         });
         this.infoWindow.open(this.map, gmarker);
     }
