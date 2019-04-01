@@ -2,6 +2,7 @@ import MarkerClusterer from 'node-js-marker-clusterer';
 import {Google} from './google';
 import {Marker} from '../marker/marker';
 import {OverlappingMarkerSpiderfier} from 'ts-overlapping-marker-spiderfier';
+import {createResetZoomControl, createNoMarkersControl, clearNoMarkersControl} from './overlays';
 
 const _clusterOptions = {
     imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
@@ -14,10 +15,6 @@ const _spiderfierOptions = {
     keepSpiderfied: true,
     spiderfiedShadowColor: false
 };
-
-// class GMarker extends google.maps.Marker {
-//     public content: string;
-// }
 
 export class TheMap {
     private google: Google;
@@ -54,7 +51,7 @@ export class TheMap {
         });
 
         this.createSpiderfier();
-        this.createResetZoomControl();
+        createResetZoomControl(this.map, () => this.map.fitBounds(this.bounds));
 
         if (icon && icon.length > 0) {
             this.icon = icon;
@@ -69,7 +66,6 @@ export class TheMap {
 
         const mti = google.maps.MapTypeId;
         if (this.spiderfier.legColors.usual && this.spiderfier.legColors.highlighted) {
-            console.log('we are setting stuff');
             this.spiderfier.legColors.usual[mti.HYBRID] = this.spiderfier.legColors.usual[mti.SATELLITE] = '#444';
             this.spiderfier.legColors.usual[mti.TERRAIN] = this.spiderfier.legColors.usual[mti.ROADMAP] = '#444';
             this.spiderfier.legColors.highlighted[mti.HYBRID] = this.spiderfier.legColors.highlighted[
@@ -91,6 +87,12 @@ export class TheMap {
         this.markerClusterer = new MarkerClusterer(this.map, this.getGMarkers(markers), _clusterOptions);
         this.setSpiderfierMarkers(this.gmarkers);
         this.map.fitBounds(this.bounds);
+
+        if (markers.length === 0) {
+            createNoMarkersControl(this.map);
+        } else {
+            clearNoMarkersControl(this.map);
+        }
     }
 
     public panTo(markerToFind: Marker): void {
@@ -188,37 +190,5 @@ export class TheMap {
             img.src = imgUrl;
             img.onload = () => resolve(img);
         });
-    }
-
-    private createResetZoomControl(): void {
-        let controlDiv = document.createElement('div');
-
-        // https://developers.google.com/maps/documentation/javascript/controls
-        // Set CSS for the control border.
-        var controlUI = document.createElement('div');
-        controlUI.style.backgroundColor = '#fff';
-        controlUI.style.border = '2px solid #fff';
-        controlUI.style.borderRadius = '3px';
-        controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
-        controlUI.style.cursor = 'pointer';
-        controlUI.style.marginLeft = '10px';
-        controlUI.style.textAlign = 'center';
-        controlUI.title = 'Reset Zoom';
-        controlDiv.appendChild(controlUI);
-
-        // Set CSS for the control interior.
-        let controlText = document.createElement('div');
-        controlText.style.color = 'rgb(25,25,25)';
-        controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-        controlText.style.fontSize = '16px';
-        controlText.style.lineHeight = '38px';
-        controlText.style.paddingLeft = '5px';
-        controlText.style.paddingRight = '5px';
-        controlText.innerHTML = 'Reset Zoom';
-        controlUI.appendChild(controlText);
-
-        controlUI.addEventListener('click', () => this.map.fitBounds(this.bounds));
-
-        this.map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(controlDiv);
     }
 }

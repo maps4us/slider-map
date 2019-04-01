@@ -6,8 +6,7 @@
     "scripts": {
         "build": "webpack --mode production",
         "dev": "webpack --mode development --output-path ../webmap/node_modules/timeline-map/dist/ --watch",
-        "e2e": "mocha -r jsdom-global/register --compilers js:@babel/register --colors ./test/*.spec.js --exit",
-        "unit": "mocha -r ts-node/register --colors ./test/*.spec.ts --exit",
+        "test": "mocha -r ts-node/register --colors ./test/*.spec.ts --exit",
         "lint": "eslint --ext .js,.ts src/",
         "check-types": "tsc",
         "pretty": "prettier --write \"./**/*.{js,ts,json}\"",
@@ -18,7 +17,7 @@
         "@babel/core": "^7.2.2",
         "@babel/plugin-proposal-class-properties": "^7.3.0",
         "@babel/plugin-proposal-object-rest-spread": "^7.3.2",
-        "@babel/preset-env": "^7.3.1",
+        "@babel/preset-env": "^7.4.2",
         "@babel/preset-typescript": "^7.1.0",
         "@babel/register": "^7.0.0",
         "@types/chai": "^4.1.7",
