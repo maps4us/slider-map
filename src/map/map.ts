@@ -3,6 +3,7 @@ import {Google} from './google';
 import {Marker} from '../marker/marker';
 import {OverlappingMarkerSpiderfier} from 'ts-overlapping-marker-spiderfier';
 import {createResetZoomControl, createNoMarkersControl, clearNoMarkersControl} from './overlays';
+import {createPin} from './pin';
 
 const _clusterOptions = {
     imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
@@ -25,8 +26,9 @@ export class TheMap {
     private icon: string;
     private gmarkers: google.maps.Marker[];
     private markerContent: Map<google.maps.Marker, string>;
+    private markerPins: Map<Marker, google.maps.Icon>;
     private pinUrl: string;
-    private pin: object;
+    private pin: google.maps.Icon;
     private spiderfier: OverlappingMarkerSpiderfier;
 
     public constructor() {
@@ -37,6 +39,7 @@ export class TheMap {
             'https://firebasestorage.googleapis.com/v0/b/mapsforall-96ddd.appspot.com/o/images%2Fpins%2F' +
             'transparent-pin-no-border.png?alt=media&token=e5769cf5-15cd-4073-93d8-014349368f7a';
         this.markerContent = new Map();
+        this.markerPins = new Map();
     }
 
     public async createMap(google: Google, mapControlId: string, icon: string, pin: string): Promise<void> {
@@ -57,7 +60,15 @@ export class TheMap {
             this.icon = icon;
         }
 
-        await this.createPin(pin);
+        if (pin && pin.length > 0) {
+            this.pin = await createPin(pin);
+        } else {
+            this.pin = {
+                url: this.pinUrl,
+                anchor: new google.maps.Point(12, 29),
+                scaledSize: new google.maps.Size(24, 29)
+            };
+        }
     }
 
     private createSpiderfier(): void {
@@ -117,10 +128,12 @@ export class TheMap {
         this.bounds = new google.maps.LatLngBounds();
 
         markers.forEach(marker => {
+            const pin = marker.pin ? (marker.pin as google.maps.Icon) : this.pin;
+
             const gmarker = new google.maps.Marker({
                 position: {lat: marker.lat as number, lng: marker.lng},
                 title: marker.name,
-                icon: this.pin
+                icon: pin
             });
 
             const icon = marker.icon ? marker.icon : this.icon;
@@ -156,39 +169,5 @@ export class TheMap {
             content: this.markerContent.get(gmarker)
         });
         this.infoWindow.open(this.map, gmarker);
-    }
-
-    private async createPin(pin: string): Promise<void> {
-        if (pin && pin.length > 0) {
-            const img: HTMLImageElement = await this.getImage(pin);
-
-            let height = img.height;
-            let width = img.width;
-
-            if (img.height > 100 || img.width > 100) {
-                height = height * (32.0 / width);
-                width = 32;
-            }
-
-            this.pin = {
-                url: pin,
-                anchor: new google.maps.Point(width / 2, height),
-                scaledSize: new google.maps.Size(width, height)
-            };
-        } else {
-            this.pin = {
-                url: this.pinUrl,
-                anchor: new google.maps.Point(12, 29),
-                scaledSize: new google.maps.Size(24, 29)
-            };
-        }
-    }
-
-    private getImage(imgUrl: string): Promise<HTMLImageElement> {
-        return new Promise(resolve => {
-            let img = new Image();
-            img.src = imgUrl;
-            img.onload = () => resolve(img);
-        });
     }
 }

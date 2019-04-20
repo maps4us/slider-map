@@ -22,6 +22,7 @@ export class Marker {
     public name: string;
     public addInfo: string;
     public icon: string;
+    public pin: string | google.maps.Icon;
     public website: Website;
 
     public lat: string | number;
