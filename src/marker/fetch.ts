@@ -51,14 +51,15 @@ export async function fetch(mapId: string): Promise<{markers: Marker[]; metaData
     metaData.dateMode = getDateMode(markers);
     metaData.hasDates = hasDates(metaData.dateMode);
 
-    markers = markers.map((marker: Marker) => {
-        marker = Object.assign(new Marker(), marker);
-        marker.process(metaData.hasDates);
-        return marker;
-    });
+    let processedMarkers = [];
+    for (let marker of markers) {
+        let processedMarker = Object.assign(new Marker(), marker);
+        await processedMarker.process(metaData.hasDates);
+        processedMarkers.push(processedMarker);
+    }
 
     metaData.minDate = getMinDate(markers);
     metaData.maxDate = getMaxDate(markers);
 
-    return {markers: markers, metaData};
+    return {markers: processedMarkers, metaData};
 }
