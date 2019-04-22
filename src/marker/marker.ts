@@ -1,5 +1,6 @@
 import {dateFromString, dateFromTime} from '../date/conversion';
 import {MetaData} from './metaData';
+import {createPin} from '../map/pin';
 
 interface Generated {
     location?: string;
@@ -42,7 +43,7 @@ export class Marker {
     public dateRange: DateRange;
     public displayLocation: string;
 
-    public process(hasDates: boolean): void {
+    public async process(hasDates: boolean): Promise<void> {
         this.displayLocation = this.getDisplayLocation(this);
         let dateRange: DateRange = {
             displayStr: ''
@@ -65,6 +66,10 @@ export class Marker {
 
         this.lat = this.getLatForMarker(this);
         this.lng = this.getLongForMarker(this);
+
+        if (typeof this.pin === 'string' && this.pin.length > 0) {
+            this.pin = await createPin(this.pin);
+        }
     }
 
     public static filter(markers: Marker[], dateStartVal: number, dateEndVal: number, metaData: MetaData): Marker[] {

@@ -2,7 +2,6 @@ import axios from 'axios';
 import {Marker} from './marker';
 import {MetaData} from './metaData';
 import {DateMode, hasDates, getDateModeFromString} from '../date/dateMode';
-import {createPin} from '../map/pin';
 
 export function getDateMode(markers: Marker[]): DateMode {
     let dateMode: DateMode = DateMode.NO_DATES;
@@ -52,20 +51,15 @@ export async function fetch(mapId: string): Promise<{markers: Marker[]; metaData
     metaData.dateMode = getDateMode(markers);
     metaData.hasDates = hasDates(metaData.dateMode);
 
-    markers = markers.map((marker: Marker) => {
-        marker = Object.assign(new Marker(), marker);
-        marker.process(metaData.hasDates);
-        return marker;
-    });
-
-    for (let i = 0; i < markers.length; i++) {
-        if (typeof markers[i].pin === 'string' && markers[i].pin.length > 0) {
-            markers[i].pin = await createPin(markers[i].pin);
-        }
+    let processedMarkers = [];
+    for (let marker of markers) {
+        let processedMarker = Object.assign(new Marker(), marker);
+        await processedMarker.process(metaData.hasDates);
+        processedMarkers.push(processedMarker);
     }
 
     metaData.minDate = getMinDate(markers);
     metaData.maxDate = getMaxDate(markers);
 
-    return {markers: markers, metaData};
+    return {markers: processedMarkers, metaData};
 }
