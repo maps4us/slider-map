@@ -58,8 +58,8 @@ export async function fetch(mapId: string): Promise<{markers: Marker[]; metaData
         processedMarkers.push(processedMarker);
     }
 
-    metaData.minDate = getMinDate(markers);
-    metaData.maxDate = getMaxDate(markers);
+    metaData.minDate = getMinDate(processedMarkers);
+    metaData.maxDate = getMaxDate(processedMarkers);
 
     return {markers: processedMarkers, metaData};
 }
