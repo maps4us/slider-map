@@ -54,7 +54,6 @@ export class TheMap {
             }
         });
 
-        
         this.createSpiderfier();
         createResetZoomControl(this.map, () => this.map.fitBounds(this.bounds));
 
