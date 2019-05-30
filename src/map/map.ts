@@ -47,6 +47,7 @@ export class TheMap {
 
         this.map = new google.maps.Map(document.getElementById(mapControlId), {
             zoom: 3,
+            maxZoom: 17,
             center: {
                 lat: -28.024,
                 lng: 140.887
