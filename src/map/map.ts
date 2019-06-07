@@ -44,7 +44,7 @@ export class TheMap {
 
     public async createMap(google: Google, mapControlId: string, icon: string, pin: string): Promise<void> {
         this.google = google;
-
+        let isPinCreated: boolean;
         this.map = new google.maps.Map(document.getElementById(mapControlId), {
             zoom: 3,
             maxZoom: 17,
@@ -61,9 +61,14 @@ export class TheMap {
             this.icon = icon;
         }
 
+        isPinCreated = false;
         if (pin && pin.length > 0) {
             this.pin = await createPin(pin);
-        } else {
+            if (this.pin && this.pin.anchor && this.pin.anchor.x !== 0) {
+                isPinCreated = true;
+            }
+        }
+        if (isPinCreated === false) {
             this.pin = {
                 url: this.pinUrl,
                 anchor: new google.maps.Point(12, 29),
