@@ -68,7 +68,12 @@ export class Marker {
         this.lng = this.getLongForMarker(this);
 
         if (typeof this.pin === 'string' && this.pin.length > 0) {
-            this.pin = await createPin(this.pin);
+            const pin = await createPin(this.pin);
+            if (pin.anchor && pin.anchor.x !== 0) {
+                this.pin = pin;
+            } else {
+                this.pin = '';
+            }
         }
     }
 
