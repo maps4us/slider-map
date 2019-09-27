@@ -9,4 +9,5 @@ export interface MetaData {
     dateMode: DateMode;
     minDate: Date;
     maxDate: Date;
+    viewCount?: number;
 }

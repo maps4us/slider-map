@@ -30,9 +30,9 @@ export default class TimeLineMap {
         this.processArguments(arguments);
     }
 
-    public async create(): Promise<void> {
+    public async create(incrementViewCount = false): Promise<void> {
         this.google = await fetchGoogle();
-        await this.getMapData();
+        await this.getMapData(incrementViewCount);
         this.createMap();
         this.createSlider();
     }
@@ -59,8 +59,8 @@ export default class TimeLineMap {
         domHelper.ensureMapHeight(this.mapControlId);
     }
 
-    private async getMapData(): Promise<void> {
-        ({markers: this.markers, metaData: this.metaData} = await fetch(this.mapId));
+    private async getMapData(incrementViewCount: boolean): Promise<void> {
+        ({markers: this.markers, metaData: this.metaData} = await fetch(this.mapId, incrementViewCount));
         this.sendMetaData(this.metaData);
         this.update(this.markers);
     }
