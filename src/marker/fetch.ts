@@ -43,8 +43,14 @@ export function getMaxDate(markers: Marker[]): Date {
     return new Date();
 }
 
-export async function fetch(mapId: string): Promise<{markers: Marker[]; metaData: MetaData}> {
-    const response = await axios.get(`https://mapsforall-96ddd.firebaseio.com/publishedMaps/${mapId}.json`);
+export async function fetch(
+    mapId: string,
+    incrementViewCount: boolean
+): Promise<{markers: Marker[]; metaData: MetaData}> {
+    const response = await axios.get(
+        `https://us-central1-mapsforall-96ddd.cloudfunctions.net/getPublishedMap?` +
+            `mapId=${mapId}&incrementViewCount=${incrementViewCount.toString()}`
+    );
     let {markers, persons, ...metaData} = response.data;
     markers = markers ? markers : persons;
 
