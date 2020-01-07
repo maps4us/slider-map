@@ -24,6 +24,10 @@ const config = {
                 ]
             }
         ]
+    },
+    devServer: {
+        contentBase: './src',
+        port: 9000
     }
 };
 
