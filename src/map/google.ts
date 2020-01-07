@@ -1,6 +1,6 @@
 import GoogleMapsLoader from 'google-maps';
 
-const key = "QUl6YVN5RENHenRmVXZ2eVNNVHRLX1lSU2Z6M2t4SlB4MzI2clhv";
+const key = 'QUl6YVN5RENHenRmVXZ2eVNNVHRLX1lSU2Z6M2t4SlB4MzI2clhv';
 GoogleMapsLoader.KEY = atob(key);
 
 declare global {
