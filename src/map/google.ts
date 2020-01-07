@@ -1,5 +1,7 @@
 import GoogleMapsLoader from 'google-maps';
 
+GoogleMapsLoader.KEY = 'AIzaSyDCGztfUvvySMTtK_YRSfz3kxJPx326rXo';
+
 declare global {
     interface Window {
         google: Google;
