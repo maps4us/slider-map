@@ -1,5 +1,5 @@
 export function dateFromString(dateStr: string): Date | undefined {
-    if (dateStr.length > 0 && dateStr !== '0') {
+    if (dateStr && dateStr.length > 0 && dateStr !== '0') {
         const count = (dateStr.match(/\//g) || []).length;
 
         if (count === 0) {

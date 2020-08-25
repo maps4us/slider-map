@@ -144,18 +144,18 @@ export class TheMap {
 
             const icon = marker.icon ? marker.icon : this.icon;
 
-            let website = '';
-            if (marker.website) {
-                website = `<br><a href="${marker.website.url}" target="_blank">${marker.website.title}</a>`;
+            let link = '';
+            if (marker.link) {
+                link = `<br><a href="${marker.link.url}" target="_blank">${marker.link.title}</a>`;
             }
 
             this.markerContent.set(
                 gmarker,
                 `<img src="${icon}" width="32" height="32"><b> ${marker.name}</b>` +
                     `<br>${marker.displayLocation}` +
-                    `${marker.dateRange ? `<br>${marker.dateRange.displayStr}` : ``}` +
+                    `${marker.displayData ? `<br>${marker.displayData}` : ``}` +
                     `${marker.addInfo ? `<br>${marker.addInfo}` : ``}` +
-                    `${website}`
+                    `${link}`
             );
 
             this.bounds.extend(gmarker.getPosition());

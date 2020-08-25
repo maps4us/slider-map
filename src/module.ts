@@ -74,7 +74,7 @@ export default class TimeLineMap {
     private async createSlider(): Promise<void> {
         if (this.metaData.hasDates) {
             this.slider = new Slider(this.dateControlId, this.metaData, ([yearStart, yearEnd]: number[]) => {
-                const markers = Marker.filter(this.markers, yearStart, yearEnd, this.metaData);
+                const markers = this.markers.filter(marker => marker.isInRange(yearStart, yearEnd, this.metaData));
                 this.map.updateClusterer(markers);
                 this.update(markers);
             });

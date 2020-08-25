@@ -1,71 +1,28 @@
 import axios from 'axios';
 import {Marker} from './marker';
 import {MetaData} from './metaData';
-import {DateMode, hasDates, getDateModeFromString} from '../date/dateMode';
 
-export function getDateMode(markers: Marker[]): DateMode {
-    let dateMode: DateMode = DateMode.NO_DATES;
-
-    markers.forEach(marker => {
-        const start = getDateModeFromString(marker.dateStart ? marker.dateStart : marker.yearFrom);
-        const end = getDateModeFromString(marker.dateEnd ? marker.dateEnd : marker.yearTo);
-        dateMode = Math.max(start, end, dateMode);
-
-        if (dateMode === DateMode.YEAR_MONTH_DAY_DATES) {
-            return;
-        }
-    });
-
-    return dateMode;
-}
-
-export function getMinDate(markers: Marker[]): Date {
-    const dates = markers
-        .filter(marker => marker.dateRange && marker.dateRange.start)
-        .map(marker => marker.dateRange.start);
-
-    if (dates.length > 0) {
-        return dates.reduce((p, v) => (p && v && p < v ? p : v)) as Date;
-    }
-
-    return new Date();
-}
-
-export function getMaxDate(markers: Marker[]): Date {
-    const dates = markers
-        .filter(marker => marker.dateRange && marker.dateRange.end)
-        .map(marker => marker.dateRange.end);
-
-    if (dates.length > 0) {
-        return dates.reduce((p, v) => (p && v && p > v ? p : v)) as Date;
-    }
-
-    return new Date();
+interface MapResponse {
+    markers: Marker[];
+    metaData: MetaData;
 }
 
 export async function fetch(
     mapId: string,
     incrementViewCount: boolean
 ): Promise<{markers: Marker[]; metaData: MetaData}> {
-    const response = await axios.get(
+    const response = await axios.get<MapResponse>(
         `https://us-central1-mapsforall-96ddd.cloudfunctions.net/getPublishedMap?` +
             `mapId=${mapId}&incrementViewCount=${incrementViewCount.toString()}`
     );
-    let {markers, persons, ...metaData} = response.data;
-    markers = markers ? markers : persons;
 
-    metaData.dateMode = getDateMode(markers);
-    metaData.hasDates = hasDates(metaData.dateMode);
+    const {markers, metaData} = response.data;
 
-    let processedMarkers = [];
     for (let marker of markers) {
-        let processedMarker = Object.assign(new Marker(), marker);
-        await processedMarker.process(metaData.hasDates);
-        processedMarkers.push(processedMarker);
+        marker.init();
     }
 
-    metaData.minDate = getMinDate(processedMarkers);
-    metaData.maxDate = getMaxDate(processedMarkers);
+    metaData.init(markers);
 
-    return {markers: processedMarkers, metaData};
+    return {markers, metaData};
 }

@@ -1,71 +1,64 @@
-import {dateFromString, dateFromTime} from '../date/conversion';
-import {MetaData} from './metaData';
+import {dateFromString} from '../date/conversion';
 import {createPin} from '../map/pin';
+import {MetaData} from './metaData';
+import {dateFromTime} from '../date/conversion';
 
-interface Generated {
-    location?: string;
-    lat?: string;
-    long?: string;
-}
-
-interface Website {
+interface Link {
     title: string;
     url: string;
 }
 
-interface DateRange {
-    displayStr: string;
-    start?: Date;
-    end?: Date;
+interface Location {
+    city: string;
+    country: string;
+    lat: string;
+    long: string;
+    state: string;
 }
+
+interface Data {
+    value?: Value;
+    range: Range;
+}
+
+interface Range {
+    start?: Value;
+    end?: Value;
+}
+
+type Value = string | Date;
 
 export class Marker {
     public name: string;
     public addInfo: string;
     public icon: string;
     public pin: string | google.maps.Icon;
-    public website: Website;
+    public link: Link;
+    public location: Location;
 
-    public lat: string | number;
-    public long: string;
-    public lng: number;
-    public city: string;
-    public state: string;
-    public country: string;
+    public data: Data;
+    public originalData: Data;
 
-    public dateStart?: string;
-    public yearFrom?: string;
-    public dateEnd?: string;
-    public yearTo?: string;
-
-    public generated?: Generated;
-
-    public dateRange: DateRange;
     public displayLocation: string;
+    public displayData?: string;
+    public lat: number;
+    public lng: number;
 
-    public async process(hasDates: boolean): Promise<void> {
+    public async init(): Promise<void> {
         this.displayLocation = this.getDisplayLocation(this);
-        let dateRange: DateRange = {
-            displayStr: ''
-        };
+        this.displayData = this.getDisplayValue(this);
 
-        if (hasDates) {
-            dateRange.displayStr = this.getDateRange(this);
-
-            let dateStartStr = this.yearFrom ? this.yearFrom : this.dateStart;
-            if (dateStartStr) {
-                dateRange.start = dateFromString(dateStartStr);
-            }
-            let dateEndStr = this.yearTo ? this.yearTo : this.dateEnd;
-            if (dateEndStr) {
-                dateRange.end = dateFromString(dateEndStr);
-            }
-
-            this.dateRange = dateRange;
+        if (this.data.value) {
+            this.originalData = this.data;
+            this.data.value = dateFromString(this.data.value as string);
+        } else if (this.data.range) {
+            this.originalData = this.data;
+            this.data.range.start = dateFromString(this.data.range.start as string);
+            this.data.range.end = dateFromString(this.data.range.end as string);
         }
 
-        this.lat = this.getLatForMarker(this);
-        this.lng = this.getLongForMarker(this);
+        this.lat = parseFloat(this.location.lat);
+        this.lng = parseFloat(this.location.long);
 
         if (typeof this.pin === 'string' && this.pin.length > 0) {
             const pin = await createPin(this.pin);
@@ -77,69 +70,48 @@ export class Marker {
         }
     }
 
-    public static filter(markers: Marker[], dateStartVal: number, dateEndVal: number, metaData: MetaData): Marker[] {
+    public isInRange(dateStartVal: number, dateEndVal: number, metaData: MetaData): boolean {
         const dateStart = dateFromTime(dateStartVal);
         const dateEnd = dateFromTime(dateEndVal);
 
-        return markers.filter(marker => {
-            if (marker.dateRange) {
-                const start = marker.dateRange.start ? marker.dateRange.start : metaData.minDate;
-                const end = marker.dateRange.end ? marker.dateRange.end : metaData.maxDate;
-                return start <= dateEnd && end >= dateStart;
-            }
-
-            return true;
-        });
+        if (this.data.value) {
+            return (this.data.value as Date) <= dateEnd && this.data.value >= dateStart;
+        } else if (this.data.range) {
+            const start = this.data.range.start ? this.data.range.start : metaData.minDate;
+            const end = this.data.range.end ? this.data.range.end : metaData.maxDate;
+            return start <= dateEnd && end >= dateStart;
+        }
+        return true;
     }
 
     private getDisplayLocation(marker: Marker): string {
         let displayLocation = '';
-        if (marker.generated && marker.generated.location) {
-            displayLocation = marker.generated.location;
-        } else if (marker.state.length > 0) {
-            displayLocation = `${marker.city}, ${marker.state}, ${marker.country}`;
+        if (marker.location.state.length > 0) {
+            displayLocation = `${marker.location.city}, ${marker.location.state}, ${marker.location.country}`;
         } else {
-            displayLocation = `${marker.city}, ${marker.country}`;
+            displayLocation = `${marker.location.city}, ${marker.location.country}`;
         }
 
         return displayLocation;
     }
 
-    private getLatForMarker(marker: Marker): number {
-        let lat = 0;
+    private getDisplayValue(marker: Marker): string | undefined {
+        if (marker.data.range) {
+            let end = marker.data.range.end;
+            if (end === undefined) {
+                end = 'present';
+            }
 
-        if (typeof marker.lat === 'string' && marker.lat.length > 0) {
-            lat = parseFloat(marker.lat);
-        } else if (marker.generated && marker.generated.lat) {
-            lat = parseFloat(marker.generated.lat);
+            let start = marker.data.range.start;
+            if (start === undefined) {
+                start = 'beginning';
+            }
+
+            return `${start} - ${end}`;
+        } else if (marker.data.value) {
+            return `${marker.data.value}`;
         }
 
-        return lat;
-    }
-
-    private getLongForMarker(marker: Marker): number {
-        let lng = 0;
-
-        if (marker.long.length > 0) {
-            lng = parseFloat(marker.long);
-        } else if (marker.generated && marker.generated.long) {
-            lng = parseFloat(marker.generated.long);
-        }
-
-        return lng;
-    }
-
-    private getDateRange(marker: Marker): string {
-        let dateEnd = marker.dateEnd ? marker.dateEnd : marker.yearTo;
-        if (dateEnd === undefined || dateEnd === '0') {
-            dateEnd = 'present';
-        }
-
-        let dateStart = marker.dateStart ? marker.dateStart : marker.yearFrom;
-        if (dateStart === undefined || dateStart === '0') {
-            dateStart = 'beginning';
-        }
-
-        return `${dateStart} - ${dateEnd}`;
+        return undefined;
     }
 }

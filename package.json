@@ -9,6 +9,7 @@
         "dev:site": "webpack --mode development --output-path ../maps4us/node_modules/timeline-map/dist/ --watch",
         "test": "mocha -r ts-node/register --colors ./test/*.spec.ts --exit",
         "lint": "eslint --ext .js,.ts src/",
+        "lint-fix": "eslint --fix --ext .js,.ts src/",
         "check-types": "tsc",
         "pretty": "prettier --write \"./**/*.{js,ts,json}\"",
         "check-pretty": "prettier --check \"./**/*.{js,ts,json}\""
