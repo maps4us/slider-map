@@ -4,17 +4,17 @@ import {MetaData} from '../src/marker/metaData';
 import {DateMode} from '../src/date/dateMode';
 import {Marker} from '../src/marker/marker';
 import {expect} from 'chai';
-import { markerWithRange, markerWithValue, createEmptyMarker } from './markerUtils';
+import {markerWithRange, markerWithValue, createEmptyMarker} from './markerUtils';
 
 function createEmptyMetaData(): MetaData {
-  const metaData = {
-      pin: '',
-      icon: '',
-      publishedDate: '',
-      title: ''
-  };
+    const metaData = {
+        pin: '',
+        icon: '',
+        publishedDate: '',
+        title: ''
+    };
 
-  return Object.assign(new MetaData(), metaData);
+    return Object.assign(new MetaData(), metaData);
 }
 
 describe('Given metaData functions', () => {

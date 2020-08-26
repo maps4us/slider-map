@@ -16,12 +16,15 @@ export async function fetch(
             `mapId=${mapId}&incrementViewCount=${incrementViewCount.toString()}`
     );
 
-    const {markers, metaData} = response.data;
+    let {markers, metaData} = response.data;
+
+    markers = markers.map(marker => Object.assign(new Marker(), marker));
 
     for (let marker of markers) {
-        marker.init();
+        await marker.init();
     }
 
+    metaData = Object.assign(new MetaData(), metaData)
     metaData.init(markers);
 
     return {markers, metaData};

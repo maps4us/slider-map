@@ -18,7 +18,7 @@ interface Location {
 
 interface Data {
     value?: Value;
-    range: Range;
+    range?: Range;
 }
 
 interface Range {
@@ -49,10 +49,10 @@ export class Marker {
         this.displayData = this.getDisplayValue(this);
 
         if (this.data.value) {
-            this.originalData = this.data;
+            this.originalData =  { value: this.data.value };
             this.data.value = dateFromString(this.data.value as string);
         } else if (this.data.range) {
-            this.originalData = this.data;
+            this.originalData = { range: { start: this.data.range.start, end: this.data.range.end }};
             this.data.range.start = dateFromString(this.data.range.start as string);
             this.data.range.end = dateFromString(this.data.range.end as string);
         }
@@ -98,12 +98,12 @@ export class Marker {
     private getDisplayValue(marker: Marker): string | undefined {
         if (marker.data.range) {
             let end = marker.data.range.end;
-            if (end === undefined) {
+            if (!end) {
                 end = 'present';
             }
 
             let start = marker.data.range.start;
-            if (start === undefined) {
+            if (!start) {
                 start = 'beginning';
             }
 

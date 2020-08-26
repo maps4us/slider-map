@@ -1,8 +1,7 @@
 /* global describe, it, before */
 import {expect} from 'chai';
-import { createEmptyMarker } from './markerUtils';
-import { MetaData } from '../src/marker/metaData';
-
+import {createEmptyMarker} from './markerUtils';
+import {MetaData} from '../src/marker/metaData';
 
 describe('Given marker module', () => {
     it('should populate displayVal field with full range', () => {
@@ -92,7 +91,7 @@ describe('Given marker module', () => {
     });
 
     it('should convert range from string to date', () => {
-      let marker = createEmptyMarker();
+        let marker = createEmptyMarker();
 
         marker.data.range = {start: '2001', end: '2002'};
 
@@ -105,7 +104,7 @@ describe('Given marker module', () => {
     });
 
     it('should convert value from string to date', () => {
-      let marker = createEmptyMarker();
+        let marker = createEmptyMarker();
 
         marker.data.value = '2001';
 
@@ -117,48 +116,46 @@ describe('Given marker module', () => {
     });
 
     it('should return in range if its in range (range)', () => {
-      let marker = createEmptyMarker();
-      marker.data.range = {start: '2001', end: '2007'};
+        let marker = createEmptyMarker();
+        marker.data.range = {start: '2001', end: '2007'};
 
+        marker.init();
 
-      marker.init();
-
-      const start = (new Date('1999')).getTime();
-      const end = (new Date('2005')).getTime();
-      expect(marker.isInRange(start, end, {} as MetaData)).to.be.true;
+        const start = new Date('1999').getTime();
+        const end = new Date('2005').getTime();
+        expect(marker.isInRange(start, end, {} as MetaData)).to.be.true;
     });
 
     it('should return not in range if its in range (range)', () => {
-      let marker = createEmptyMarker();
-      marker.data.range = {start: '2001', end: '2002'};
+        let marker = createEmptyMarker();
+        marker.data.range = {start: '2001', end: '2002'};
 
+        marker.init();
 
-      marker.init();
-
-      const start = (new Date('1999')).getTime();
-      const end = (new Date('2000')).getTime();
-      expect(marker.isInRange(start, end, {} as MetaData)).to.be.false;
+        const start = new Date('1999').getTime();
+        const end = new Date('2000').getTime();
+        expect(marker.isInRange(start, end, {} as MetaData)).to.be.false;
     });
 
     it('should return in range if its in range (value)', () => {
-      let marker = createEmptyMarker();
-      marker.data.value = '2001';
+        let marker = createEmptyMarker();
+        marker.data.value = '2001';
 
-      marker.init();
+        marker.init();
 
-      const start = (new Date('1999')).getTime();
-      const end = (new Date('2005')).getTime();
-      expect(marker.isInRange(start, end, {} as MetaData)).to.be.true;
+        const start = new Date('1999').getTime();
+        const end = new Date('2005').getTime();
+        expect(marker.isInRange(start, end, {} as MetaData)).to.be.true;
     });
 
     it('should return not in range if its in range (value)', () => {
-      let marker = createEmptyMarker();
-      marker.data.value = '2007';
+        let marker = createEmptyMarker();
+        marker.data.value = '2007';
 
-      marker.init();
+        marker.init();
 
-      const start = (new Date('1999')).getTime();
-      const end = (new Date('2005')).getTime();
-      expect(marker.isInRange(start, end, {} as MetaData)).to.be.false;
+        const start = new Date('1999').getTime();
+        const end = new Date('2005').getTime();
+        expect(marker.isInRange(start, end, {} as MetaData)).to.be.false;
     });
 });
