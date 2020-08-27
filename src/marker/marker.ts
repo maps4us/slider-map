@@ -49,10 +49,10 @@ export class Marker {
         this.displayData = this.getDisplayValue(this);
 
         if (this.data.value) {
-            this.originalData =  { value: this.data.value };
+            this.originalData = {value: this.data.value};
             this.data.value = dateFromString(this.data.value as string);
         } else if (this.data.range) {
-            this.originalData = { range: { start: this.data.range.start, end: this.data.range.end }};
+            this.originalData = {range: {start: this.data.range.start, end: this.data.range.end}};
             this.data.range.start = dateFromString(this.data.range.start as string);
             this.data.range.end = dateFromString(this.data.range.end as string);
         }

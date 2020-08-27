@@ -26,7 +26,6 @@ export class TheMap {
     private icon: string;
     private gmarkers: google.maps.Marker[];
     private markerContent: Map<google.maps.Marker, string>;
-    private markerPins: Map<Marker, google.maps.Icon>;
     private pinUrl: string;
     private pin: google.maps.Icon;
     private spiderfier: OverlappingMarkerSpiderfier;
@@ -39,13 +38,12 @@ export class TheMap {
             'https://firebasestorage.googleapis.com/v0/b/mapsforall-96ddd.appspot.com/o/images%2Fpins%2F' +
             'transparent-pin-no-border.png?alt=media&token=e5769cf5-15cd-4073-93d8-014349368f7a';
         this.markerContent = new Map();
-        this.markerPins = new Map();
     }
 
     public async createMap(google: Google, mapControlId: string, icon: string, pin: string): Promise<void> {
         this.google = google;
         let isPinCreated: boolean;
-        this.map = new google.maps.Map(document.getElementById(mapControlId), {
+        this.map = new google.maps.Map(document.getElementById(mapControlId) as HTMLElement, {
             zoom: 3,
             maxZoom: 17,
             center: {
@@ -117,7 +115,8 @@ export class TheMap {
 
         const foundMarker = this.gmarkers.find(
             (gmarker: google.maps.Marker) =>
-                gmarker.getTitle() === markerToFind.name && gmarker.getPosition().lat() === markerToFind.lat
+                gmarker.getTitle() === markerToFind.name &&
+                (gmarker.getPosition() as google.maps.LatLng).lat() === markerToFind.lat
         );
 
         this.map.setZoom(_clusterOptions.maxZoom);
@@ -158,7 +157,7 @@ export class TheMap {
                     `${link}`
             );
 
-            this.bounds.extend(gmarker.getPosition());
+            this.bounds.extend(gmarker.getPosition() as google.maps.LatLng);
             gmarker.addListener('click', () => this.openInfoWindow(gmarker));
 
             this.gmarkers.push(gmarker);

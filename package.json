@@ -60,13 +60,13 @@
     },
     "homepage": "https://github.com/MapsForAll/timelineMap.git",
     "dependencies": {
-        "@types/google-maps": "^3.2.0",
-        "@types/googlemaps": "^3.30.16",
-        "@types/nouislider": "^9.0.5",
-        "axios": "^0.18.0",
-        "google-maps": "^3.2.1",
+        "@types/google-maps": "^3.2.2",
+        "@types/googlemaps": "^3.39.13",
+        "@types/nouislider": "^9.0.7",
+        "axios": "^0.20.0",
+        "google-maps": "^4.3.2",
         "node-js-marker-clusterer": "^1.0.0",
-        "nouislider": "^13.1.0",
+        "nouislider": "^14.6.1",
         "ts-overlapping-marker-spiderfier": "^1.0.3"
     }
 }

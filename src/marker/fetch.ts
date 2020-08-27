@@ -24,7 +24,7 @@ export async function fetch(
         await marker.init();
     }
 
-    metaData = Object.assign(new MetaData(), metaData)
+    metaData = Object.assign(new MetaData(), metaData);
     metaData.init(markers);
 
     return {markers, metaData};
