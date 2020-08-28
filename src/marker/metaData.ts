@@ -11,6 +11,7 @@ export class MetaData {
     public minDate: Date;
     public maxDate: Date;
     public viewCount?: number;
+    public singleHandle: boolean;
 
     public init(markers: Marker[]): void {
         this.dateMode = this.getDateMode(markers);

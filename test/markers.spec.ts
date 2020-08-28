@@ -115,7 +115,7 @@ describe('Given marker module', () => {
         expect(marker.data.range).to.be.undefined;
     });
 
-    it('should return in range if its in range (range)', () => {
+    it('should return in range if data range in slider range (range)', () => {
         let marker = createEmptyMarker();
         marker.data.range = {start: '2001', end: '2007'};
 
@@ -123,10 +123,10 @@ describe('Given marker module', () => {
 
         const start = new Date('1999').getTime();
         const end = new Date('2005').getTime();
-        expect(marker.isInRange(start, end, {} as MetaData)).to.be.true;
+        expect(marker.isInRange([start, end], {} as MetaData)).to.be.true;
     });
 
-    it('should return not in range if its in range (range)', () => {
+    it('should return not in range if data range not in slider range (range)', () => {
         let marker = createEmptyMarker();
         marker.data.range = {start: '2001', end: '2002'};
 
@@ -134,10 +134,10 @@ describe('Given marker module', () => {
 
         const start = new Date('1999').getTime();
         const end = new Date('2000').getTime();
-        expect(marker.isInRange(start, end, {} as MetaData)).to.be.false;
+        expect(marker.isInRange([start, end], {} as MetaData)).to.be.false;
     });
 
-    it('should return in range if its in range (value)', () => {
+    it('should return in range if data value in slider range (value)', () => {
         let marker = createEmptyMarker();
         marker.data.value = '2001';
 
@@ -145,10 +145,10 @@ describe('Given marker module', () => {
 
         const start = new Date('1999').getTime();
         const end = new Date('2005').getTime();
-        expect(marker.isInRange(start, end, {} as MetaData)).to.be.true;
+        expect(marker.isInRange([start, end], {} as MetaData)).to.be.true;
     });
 
-    it('should return not in range if its in range (value)', () => {
+    it('should return not in range if data value not in slider range (value)', () => {
         let marker = createEmptyMarker();
         marker.data.value = '2007';
 
@@ -156,6 +156,26 @@ describe('Given marker module', () => {
 
         const start = new Date('1999').getTime();
         const end = new Date('2005').getTime();
-        expect(marker.isInRange(start, end, {} as MetaData)).to.be.false;
+        expect(marker.isInRange([start, end], {} as MetaData)).to.be.false;
+    });
+
+    it('should return in range if slider value in data range (range)', () => {
+        let marker = createEmptyMarker();
+        marker.data.range = {start: '2001', end: '2007'};
+
+        marker.init();
+
+        const value = new Date('2005').getTime();
+        expect(marker.isInRange([value], {} as MetaData)).to.be.true;
+    });
+
+    it('should return not in range if data value not in data range (range)', () => {
+        let marker = createEmptyMarker();
+        marker.data.range = {start: '2001', end: '2002'};
+
+        marker.init();
+
+        const value = new Date('1999').getTime();
+        expect(marker.isInRange([value], {} as MetaData)).to.be.false;
     });
 });

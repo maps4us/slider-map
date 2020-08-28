@@ -70,9 +70,21 @@ export class Marker {
         }
     }
 
-    public isInRange(dateStartVal: number, dateEndVal: number, metaData: MetaData): boolean {
-        const dateStart = dateFromTime(dateStartVal);
-        const dateEnd = dateFromTime(dateEndVal);
+    public isInRange(values: number[], metaData: MetaData): boolean {
+        if (values.length === 1) {
+            const date = dateFromTime(values[0]);
+
+            if (this.data.value) {
+                return (this.data.value as Date) === date;
+            } else if (this.data.range) {
+                const start = this.data.range.start ? this.data.range.start : metaData.minDate;
+                const end = this.data.range.end ? this.data.range.end : metaData.maxDate;
+                return start <= date && date <= end;
+            }
+            return true;
+        }
+        const dateStart = dateFromTime(values[0]);
+        const dateEnd = dateFromTime(values[1]);
 
         if (this.data.value) {
             return (this.data.value as Date) <= dateEnd && this.data.value >= dateStart;
