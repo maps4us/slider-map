@@ -33,15 +33,15 @@ export default class Slider {
             connect: true,
             range: {
                 min: minDate,
-                max: maxDate
+                max: maxDate,
             },
             tooltips: singleHandle ? this.formatter() : [this.formatter(), this.formatter()],
             pips: {
                 mode: 'positions',
                 values: [0, 25, 50, 75, 100],
                 density: 4,
-                format: this.formatter()
-            }
+                format: this.formatter(),
+            },
         });
     }
 
@@ -49,7 +49,7 @@ export default class Slider {
         return {
             to: (value: number) => {
                 return formatDate(dateFromTime(value), this.dateFormatMode);
-            }
+            },
         };
     }
 }

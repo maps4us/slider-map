@@ -8,13 +8,13 @@ import {createPin} from './pin';
 const _clusterOptions = {
     imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
     gridSize: 10,
-    maxZoom: 15
+    maxZoom: 15,
 };
 
 const _spiderfierOptions = {
     legWeight: 3,
     keepSpiderfied: true,
-    spiderfiedShadowColor: false
+    spiderfiedShadowColor: false,
 };
 
 export class TheMap {
@@ -48,8 +48,8 @@ export class TheMap {
             maxZoom: 17,
             center: {
                 lat: -28.024,
-                lng: 140.887
-            }
+                lng: 140.887,
+            },
         });
 
         this.createSpiderfier();
@@ -70,7 +70,7 @@ export class TheMap {
             this.pin = {
                 url: this.pinUrl,
                 anchor: new google.maps.Point(12, 29),
-                scaledSize: new google.maps.Size(24, 29)
+                scaledSize: new google.maps.Size(24, 29),
             };
         }
     }
@@ -125,20 +125,20 @@ export class TheMap {
 
     private setSpiderfierMarkers(markers: google.maps.Marker[]): void {
         this.spiderfier.removeAllMarkers();
-        markers.forEach(marker => this.spiderfier.addMarker(marker, () => {}));
+        markers.forEach((marker) => this.spiderfier.addMarker(marker, () => {}));
     }
 
     private getGMarkers(markers: Marker[]): google.maps.Marker[] {
         this.gmarkers = [];
         this.bounds = new google.maps.LatLngBounds();
 
-        markers.forEach(marker => {
+        markers.forEach((marker) => {
             const pin = marker.pin ? (marker.pin as google.maps.Icon) : this.pin;
 
             const gmarker = new google.maps.Marker({
                 position: {lat: marker.lat as number, lng: marker.lng},
                 title: marker.name,
-                icon: pin
+                icon: pin,
             });
 
             const icon = marker.icon ? marker.icon : this.icon;
@@ -171,7 +171,7 @@ export class TheMap {
             this.infoWindow.close();
         }
         this.infoWindow = new google.maps.InfoWindow({
-            content: this.markerContent.get(gmarker)
+            content: this.markerContent.get(gmarker),
         });
         this.infoWindow.open(this.map, gmarker);
     }

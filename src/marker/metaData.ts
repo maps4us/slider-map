@@ -23,7 +23,7 @@ export class MetaData {
     private getDateMode(markers: Marker[]): DateMode {
         let dateMode: DateMode = DateMode.NO_DATES;
 
-        markers.forEach(marker => {
+        markers.forEach((marker) => {
             if (marker.originalData.range) {
                 const start = getDateModeFromString(marker.originalData.range.start as string | undefined);
                 const end = getDateModeFromString(marker.originalData.range.end as string | undefined);
@@ -42,8 +42,8 @@ export class MetaData {
 
     private getMinDate(markers: Marker[]): Date {
         const dates = markers
-            .filter(marker => marker.data.value || marker.data.range)
-            .map(marker => {
+            .filter((marker) => marker.data.value || marker.data.range)
+            .map((marker) => {
                 if (marker.data.range) {
                     return marker.data.range.start;
                 }
@@ -59,8 +59,8 @@ export class MetaData {
 
     private getMaxDate(markers: Marker[]): Date {
         const dates = markers
-            .filter(marker => marker.data.value || marker.data.range)
-            .map(marker => {
+            .filter((marker) => marker.data.value || marker.data.range)
+            .map((marker) => {
                 if (marker.data.range) {
                     return marker.data.range.end;
                 }

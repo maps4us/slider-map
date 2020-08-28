@@ -10,7 +10,7 @@ export function createEmptyMarker(): Marker {
             long: '',
             city: '',
             state: '',
-            country: ''
+            country: '',
         },
         data: {},
         originalData: {},
@@ -19,10 +19,10 @@ export function createEmptyMarker(): Marker {
         name: '',
         link: {
             title: '',
-            url: ''
+            url: '',
         },
 
-        displayLocation: ''
+        displayLocation: '',
     };
 
     return Object.assign(new Marker(), marker);
@@ -32,12 +32,12 @@ export function markerWithRange(start: string, end: string): Marker {
     let marker: Marker = createEmptyMarker();
     marker.data.range = {
         start: dateFromString(start),
-        end: dateFromString(end)
+        end: dateFromString(end),
     };
 
     marker.originalData.range = {
         start: start,
-        end: end
+        end: end,
     };
 
     return marker;

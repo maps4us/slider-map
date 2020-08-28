@@ -18,7 +18,7 @@ export interface Google {
 
 export async function fetchGoogle(): Promise<Google> {
     if (window.google !== undefined) {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             resolve(window.google);
         });
     }

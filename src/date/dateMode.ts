@@ -2,7 +2,7 @@ export enum DateMode {
     NO_DATES = -1,
     YEAR_DATES,
     YEAR_MONTH_DATES,
-    YEAR_MONTH_DAY_DATES
+    YEAR_MONTH_DAY_DATES,
 }
 
 export function getDateModeFromString(date: string | undefined): DateMode {

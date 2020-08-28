@@ -18,9 +18,9 @@ export async function fetch(
 
     let {markers, metaData} = response.data;
 
-    markers = markers.map(marker => Object.assign(new Marker(), marker));
+    markers = markers.map((marker) => Object.assign(new Marker(), marker));
 
-    for (let marker of markers) {
+    for (const marker of markers) {
         await marker.init();
     }
 

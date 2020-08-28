@@ -7,7 +7,7 @@ describe('Given pin getDimensions method', () => {
         const dimensions = await getDimensions({height: 256, width: 180});
         expect(dimensions).to.deep.equal({
             height: 45.51111111111111,
-            width: 32
+            width: 32,
         });
     });
 
@@ -15,7 +15,7 @@ describe('Given pin getDimensions method', () => {
         const dimensions = await getDimensions({height: 22, width: 22});
         expect(dimensions).to.deep.equal({
             height: 22,
-            width: 22
+            width: 22,
         });
     });
 });

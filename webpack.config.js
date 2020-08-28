@@ -3,10 +3,10 @@ const config = {
     output: {
         filename: 'TimeLineMap.js',
         libraryTarget: 'umd',
-        umdNamedDefine: true
+        umdNamedDefine: true,
     },
     resolve: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx', '.json']
+        extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
     },
     module: {
         rules: [
@@ -18,17 +18,17 @@ const config = {
                     {
                         loader: 'css-loader',
                         options: {
-                            modules: false
-                        }
-                    }
-                ]
-            }
-        ]
+                            modules: false,
+                        },
+                    },
+                ],
+            },
+        ],
     },
     devServer: {
         contentBase: './src',
-        port: 9000
-    }
+        port: 9000,
+    },
 };
 
 module.exports = config;

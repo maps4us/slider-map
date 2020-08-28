@@ -11,7 +11,7 @@ function createEmptyMetaData(): MetaData {
         pin: '',
         icon: '',
         publishedDate: '',
-        title: ''
+        title: '',
     };
 
     return Object.assign(new MetaData(), metaData);
