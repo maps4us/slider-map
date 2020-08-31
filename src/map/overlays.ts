@@ -1,9 +1,9 @@
 export function createResetZoomControl(map: google.maps.Map, cb: Function): void {
-    let controlDiv = document.createElement('div');
+    const controlDiv = document.createElement('div');
 
     // https://developers.google.com/maps/documentation/javascript/controls
     // Set CSS for the control border.
-    let controlUI = document.createElement('div');
+    const controlUI = document.createElement('div');
     controlUI.style.backgroundColor = '#fff';
     controlUI.style.border = '2px solid #fff';
     controlUI.style.borderRadius = '3px';
@@ -15,7 +15,7 @@ export function createResetZoomControl(map: google.maps.Map, cb: Function): void
     controlDiv.appendChild(controlUI);
 
     // Set CSS for the control interior.
-    let controlText = document.createElement('div');
+    const controlText = document.createElement('div');
     controlText.style.color = 'rgb(25,25,25)';
     controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
     controlText.style.fontSize = '16px';
@@ -32,10 +32,10 @@ export function createResetZoomControl(map: google.maps.Map, cb: Function): void
 
 export function createNoMarkersControl(map: google.maps.Map): void {
     if (map.controls[google.maps.ControlPosition.BOTTOM_CENTER].getLength() === 0) {
-        let controlDiv = document.createElement('div');
+        const controlDiv = document.createElement('div');
 
         // Set CSS for the control border.
-        let controlUI = document.createElement('div');
+        const controlUI = document.createElement('div');
         controlUI.style.backgroundColor = '#fff';
         controlUI.style.border = '2px solid #fff';
         controlUI.style.borderRadius = '3px';
@@ -47,7 +47,7 @@ export function createNoMarkersControl(map: google.maps.Map): void {
         controlDiv.appendChild(controlUI);
 
         // Set CSS for the control interior.
-        let controlText = document.createElement('div');
+        const controlText = document.createElement('div');
         controlText.style.color = 'rgb(25,25,25)';
         controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
         controlText.style.fontSize = '16px';

@@ -21,13 +21,13 @@ export default class TimeLineMap {
     private listeners: Map<string, MapsCallBack>;
     private metaData: MetaData;
 
-    public constructor() {
-        this.mapId = '';
+    public constructor(mapId: string, ...ids: string[]) {
+        this.mapId = mapId;
         this.mapControlId = 'timeLineMapControl';
         this.dateControlId = 'timeLineDateControl';
         this.listeners = new Map<string, MapsCallBack>();
 
-        this.processArguments(arguments);
+        this.processArguments(ids);
     }
 
     public async create(incrementViewCount = false): Promise<void> {
@@ -45,14 +45,13 @@ export default class TimeLineMap {
         this.map.panTo(marker);
     }
 
-    private processArguments(passedArguments: IArguments): void {
-        this.mapId = passedArguments[0];
-        if (passedArguments.length === 3) {
-            this.mapControlId = passedArguments[1];
-            this.dateControlId = passedArguments[2];
+    private processArguments(ids: string[]): void {
+        if (ids.length === 3) {
+            this.mapControlId = ids[0];
+            this.dateControlId = ids[1];
             domHelper.addClasses(this.mapControlId, this.dateControlId);
         } else {
-            const parentDivId = passedArguments[1];
+            const parentDivId = ids[0];
             domHelper.createControlDivs(parentDivId, this.mapControlId, this.dateControlId);
         }
 
@@ -73,8 +72,8 @@ export default class TimeLineMap {
 
     private async createSlider(): Promise<void> {
         if (this.metaData.hasDates) {
-            this.slider = new Slider(this.dateControlId, this.metaData, ([yearStart, yearEnd]: number[]) => {
-                const markers = Marker.filter(this.markers, yearStart, yearEnd, this.metaData);
+            this.slider = new Slider(this.dateControlId, this.metaData, (values: number[]) => {
+                const markers = this.markers.filter((marker) => marker.isInRange(values, this.metaData));
                 this.map.updateClusterer(markers);
                 this.update(markers);
             });

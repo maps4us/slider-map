@@ -12,7 +12,7 @@ export default class Slider {
         this.slider = this.getSliderDom(controlId);
         this.dateFormatMode = metaData.dateMode;
 
-        this.createSlider(metaData.minDate.getTime(), metaData.maxDate.getTime());
+        this.createSlider(metaData.minDate.getTime(), metaData.maxDate.getTime(), metaData.singleHandle);
         this.slider.noUiSlider.on('set', changeCb);
     }
 
@@ -20,28 +20,28 @@ export default class Slider {
         const slider: noUiSlider.Instance = document.getElementById(controlId) as noUiSlider.Instance;
 
         // clear out any slider that might have been created
-        if (slider != null && slider.noUiSlider) {
+        if (slider?.noUiSlider) {
             slider.noUiSlider.destroy();
         }
 
         return slider;
     }
 
-    private createSlider(minDate: number, maxDate: number): void {
+    private createSlider(minDate: number, maxDate: number, singleHandle: boolean): void {
         noUiSlider.create(this.slider, {
-            start: [minDate, maxDate],
+            start: singleHandle ? (minDate + maxDate) / 2 : [minDate, maxDate],
             connect: true,
             range: {
                 min: minDate,
-                max: maxDate
+                max: maxDate,
             },
-            tooltips: [this.formatter(), this.formatter()],
+            tooltips: singleHandle ? this.formatter() : [this.formatter(), this.formatter()],
             pips: {
                 mode: 'positions',
                 values: [0, 25, 50, 75, 100],
                 density: 4,
-                format: this.formatter()
-            }
+                format: this.formatter(),
+            },
         });
     }
 
@@ -49,7 +49,7 @@ export default class Slider {
         return {
             to: (value: number) => {
                 return formatDate(dateFromTime(value), this.dateFormatMode);
-            }
+            },
         };
     }
 }

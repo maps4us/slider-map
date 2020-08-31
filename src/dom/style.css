@@ -7,3 +7,7 @@
 .date-control .noUi-connect {
 	background: linear-gradient(to right, #E63F5B, #FA8A5A, #F5725E);
 }
+
+.date-control .noUi-connects:empty {
+	background: linear-gradient(to right, #E63F5B, #FA8A5A, #F5725E);
+}

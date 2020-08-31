@@ -8,13 +8,13 @@ import {createPin} from './pin';
 const _clusterOptions = {
     imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
     gridSize: 10,
-    maxZoom: 15
+    maxZoom: 15,
 };
 
 const _spiderfierOptions = {
     legWeight: 3,
     keepSpiderfied: true,
-    spiderfiedShadowColor: false
+    spiderfiedShadowColor: false,
 };
 
 export class TheMap {
@@ -26,7 +26,6 @@ export class TheMap {
     private icon: string;
     private gmarkers: google.maps.Marker[];
     private markerContent: Map<google.maps.Marker, string>;
-    private markerPins: Map<Marker, google.maps.Icon>;
     private pinUrl: string;
     private pin: google.maps.Icon;
     private spiderfier: OverlappingMarkerSpiderfier;
@@ -39,19 +38,18 @@ export class TheMap {
             'https://firebasestorage.googleapis.com/v0/b/mapsforall-96ddd.appspot.com/o/images%2Fpins%2F' +
             'transparent-pin-no-border.png?alt=media&token=e5769cf5-15cd-4073-93d8-014349368f7a';
         this.markerContent = new Map();
-        this.markerPins = new Map();
     }
 
     public async createMap(google: Google, mapControlId: string, icon: string, pin: string): Promise<void> {
         this.google = google;
         let isPinCreated: boolean;
-        this.map = new google.maps.Map(document.getElementById(mapControlId), {
+        this.map = new google.maps.Map(document.getElementById(mapControlId) as HTMLElement, {
             zoom: 3,
             maxZoom: 17,
             center: {
                 lat: -28.024,
-                lng: 140.887
-            }
+                lng: 140.887,
+            },
         });
 
         this.createSpiderfier();
@@ -64,7 +62,7 @@ export class TheMap {
         isPinCreated = false;
         if (pin && pin.length > 0) {
             this.pin = await createPin(pin);
-            if (this.pin && this.pin.anchor && this.pin.anchor.x !== 0) {
+            if (this.pin?.anchor && this.pin.anchor.x !== 0) {
                 isPinCreated = true;
             }
         }
@@ -72,7 +70,7 @@ export class TheMap {
             this.pin = {
                 url: this.pinUrl,
                 anchor: new google.maps.Point(12, 29),
-                scaledSize: new google.maps.Size(24, 29)
+                scaledSize: new google.maps.Size(24, 29),
             };
         }
     }
@@ -117,7 +115,8 @@ export class TheMap {
 
         const foundMarker = this.gmarkers.find(
             (gmarker: google.maps.Marker) =>
-                gmarker.getTitle() === markerToFind.name && gmarker.getPosition().lat() === markerToFind.lat
+                gmarker.getTitle() === markerToFind.name &&
+                (gmarker.getPosition() as google.maps.LatLng).lat() === markerToFind.lat
         );
 
         this.map.setZoom(_clusterOptions.maxZoom);
@@ -126,39 +125,39 @@ export class TheMap {
 
     private setSpiderfierMarkers(markers: google.maps.Marker[]): void {
         this.spiderfier.removeAllMarkers();
-        markers.forEach(marker => this.spiderfier.addMarker(marker, () => {}));
+        markers.forEach((marker) => this.spiderfier.addMarker(marker, () => {}));
     }
 
     private getGMarkers(markers: Marker[]): google.maps.Marker[] {
         this.gmarkers = [];
         this.bounds = new google.maps.LatLngBounds();
 
-        markers.forEach(marker => {
+        markers.forEach((marker) => {
             const pin = marker.pin ? (marker.pin as google.maps.Icon) : this.pin;
 
             const gmarker = new google.maps.Marker({
                 position: {lat: marker.lat as number, lng: marker.lng},
                 title: marker.name,
-                icon: pin
+                icon: pin,
             });
 
             const icon = marker.icon ? marker.icon : this.icon;
 
-            let website = '';
-            if (marker.website) {
-                website = `<br><a href="${marker.website.url}" target="_blank">${marker.website.title}</a>`;
+            let link = '';
+            if (marker.link) {
+                link = `<br><a href="${marker.link.url}" target="_blank">${marker.link.title}</a>`;
             }
 
             this.markerContent.set(
                 gmarker,
                 `<img src="${icon}" width="32" height="32"><b> ${marker.name}</b>` +
                     `<br>${marker.displayLocation}` +
-                    `${marker.dateRange ? `<br>${marker.dateRange.displayStr}` : ``}` +
+                    `${marker.displayData ? `<br>${marker.displayData}` : ``}` +
                     `${marker.addInfo ? `<br>${marker.addInfo}` : ``}` +
-                    `${website}`
+                    `${link}`
             );
 
-            this.bounds.extend(gmarker.getPosition());
+            this.bounds.extend(gmarker.getPosition() as google.maps.LatLng);
             gmarker.addListener('click', () => this.openInfoWindow(gmarker));
 
             this.gmarkers.push(gmarker);
@@ -172,7 +171,7 @@ export class TheMap {
             this.infoWindow.close();
         }
         this.infoWindow = new google.maps.InfoWindow({
-            content: this.markerContent.get(gmarker)
+            content: this.markerContent.get(gmarker),
         });
         this.infoWindow.open(this.map, gmarker);
     }
