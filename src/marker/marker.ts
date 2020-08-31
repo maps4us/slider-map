@@ -62,7 +62,7 @@ export class Marker {
 
         if (typeof this.pin === 'string' && this.pin.length > 0) {
             const pin = await createPin(this.pin);
-            if (pin.anchor && pin.anchor.x !== 0) {
+            if (pin.anchor?.x !== 0) {
                 this.pin = pin;
             } else {
                 this.pin = '';

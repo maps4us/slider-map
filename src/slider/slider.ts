@@ -20,7 +20,7 @@ export default class Slider {
         const slider: noUiSlider.Instance = document.getElementById(controlId) as noUiSlider.Instance;
 
         // clear out any slider that might have been created
-        if (slider != null && slider.noUiSlider) {
+        if (slider?.noUiSlider) {
             slider.noUiSlider.destroy();
         }
 

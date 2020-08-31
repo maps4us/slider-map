@@ -62,7 +62,7 @@ export class TheMap {
         isPinCreated = false;
         if (pin && pin.length > 0) {
             this.pin = await createPin(pin);
-            if (this.pin && this.pin.anchor && this.pin.anchor.x !== 0) {
+            if (this.pin?.anchor && this.pin.anchor.x !== 0) {
                 isPinCreated = true;
             }
         }
