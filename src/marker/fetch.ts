@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {Marker} from './marker';
-import {MetaData} from './metaData';
+import {MarkerType, MetaData} from './metaData';
 
 interface MapResponse {
     markers: Marker[];
@@ -20,8 +20,10 @@ export async function fetch(
 
     markers = markers.map((marker) => Object.assign(new Marker(), marker));
 
+    const isValDate = metaData.markerType != MarkerType.DATE;
+
     for (const marker of markers) {
-        await marker.init();
+        await marker.init(isValDate);
     }
 
     metaData = Object.assign(new MetaData(), metaData);

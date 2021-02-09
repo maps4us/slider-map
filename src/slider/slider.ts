@@ -2,7 +2,7 @@ import noUiSlider from 'nouislider';
 import 'nouislider/distribute/nouislider.css';
 import {formatDate} from '../date/format';
 import {dateFromTime} from '../date/conversion';
-import {MetaData} from '../marker/metaData';
+import {MarkerType, MetaData} from '../marker/metaData';
 
 export default class Slider {
     private slider: noUiSlider.Instance;
@@ -12,7 +12,15 @@ export default class Slider {
         this.slider = this.getSliderDom(controlId);
         this.dateFormatMode = metaData.dateMode;
 
-        this.createSlider(metaData.minDate.getTime(), metaData.maxDate.getTime(), metaData.singleHandle);
+        if (metaData.markerType == MarkerType.DATE) {
+            this.createDateSlider(
+                (metaData.min as Date).getTime(),
+                (metaData.max as Date).getTime(),
+                metaData.singleHandle
+            );
+        } else {
+            this.createNumberSlider(metaData.min as number, metaData.max as number, metaData.singleHandle);
+        }
         this.slider.noUiSlider.on('set', changeCb);
     }
 
@@ -27,7 +35,7 @@ export default class Slider {
         return slider;
     }
 
-    private createSlider(minDate: number, maxDate: number, singleHandle: boolean): void {
+    private createDateSlider(minDate: number, maxDate: number, singleHandle: boolean): void {
         noUiSlider.create(this.slider, {
             start: singleHandle ? (minDate + maxDate) / 2 : [minDate, maxDate],
             connect: true,
@@ -41,6 +49,23 @@ export default class Slider {
                 values: [0, 25, 50, 75, 100],
                 density: 4,
                 format: this.formatter(),
+            },
+        });
+    }
+
+    private createNumberSlider(min: number, max: number, singleHandle: boolean): void {
+        noUiSlider.create(this.slider, {
+            start: singleHandle ? (min + max) / 2 : [min, max],
+            connect: true,
+            range: {
+                min: min,
+                max: max,
+            },
+            tooltips: true,
+            pips: {
+                mode: 'positions',
+                values: [0, 25, 50, 75, 100],
+                density: 4,
             },
         });
     }

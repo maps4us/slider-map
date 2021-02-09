@@ -1,23 +1,50 @@
 import {Marker} from './marker';
 import {DateMode, getDateModeFromString} from '../date/dateMode';
 
+export enum MarkerType {
+    DATE,
+    NUMBER,
+}
+
 export class MetaData {
     public pin: string;
     public icon: string;
     public publishedDate: string;
     public title: string;
-    public hasDates: boolean;
+    public markerType: MarkerType;
+    public hasData: boolean;
     public dateMode: DateMode;
-    public minDate: Date;
-    public maxDate: Date;
+    public min: Date | number;
+    public max: Date | number;
     public viewCount?: number;
     public singleHandle: boolean;
 
     public init(markers: Marker[]): void {
-        this.dateMode = this.getDateMode(markers);
-        this.hasDates = this.dateMode !== DateMode.NO_DATES;
-        this.minDate = this.getMinDate(markers);
-        this.maxDate = this.getMaxDate(markers);
+        if (this.markerType == MarkerType.DATE) {
+            this.dateMode = this.getDateMode(markers);
+            this.hasData = this.dateMode !== DateMode.NO_DATES;
+            console.log(this.getMinDate(markers));
+            this.min = this.getMinDate(markers);
+            this.max = this.getMaxDate(markers);
+        } else {
+            this.hasData = this.hasNumberData(markers);
+            this.min = this.getMinNumber(markers);
+            this.max = this.getMaxNumber(markers);
+        }
+
+        console.log(JSON.stringify(this));
+    }
+
+    private hasNumberData(markers: Marker[]): boolean {
+        return markers.some((marker) => {
+            if (marker.originalData.range) {
+                return true;
+            } else if (marker.originalData.value) {
+                return true;
+            }
+
+            return false;
+        });
     }
 
     private getDateMode(markers: Marker[]): DateMode {
@@ -42,15 +69,17 @@ export class MetaData {
 
     private getMinDate(markers: Marker[]): Date {
         const dates = markers
-            .filter((marker) => marker.data.value || marker.data.range)
+            .filter((marker) => marker.data.value || marker.data.range?.start)
             .map((marker) => {
                 if (marker.data.range) {
                     return marker.data.range.start;
                 }
+
                 return marker.data.value;
             });
 
         if (dates.length > 0) {
+            console.log(dates);
             return dates.reduce((p, v) => (p && v && p < v ? p : v)) as Date;
         }
 
@@ -59,7 +88,7 @@ export class MetaData {
 
     private getMaxDate(markers: Marker[]): Date {
         const dates = markers
-            .filter((marker) => marker.data.value || marker.data.range)
+            .filter((marker) => marker.data.value || marker.data.range?.end)
             .map((marker) => {
                 if (marker.data.range) {
                     return marker.data.range.end;
@@ -73,4 +102,38 @@ export class MetaData {
 
         return new Date();
     }
+
+    private getMinNumber(markers: Marker[]): number {
+      const numbers = markers
+          .filter((marker) => marker.data.value || marker.data.range?.start)
+          .map((marker) => {
+              if (marker.data.range) {
+                  return marker.data.range.start;
+              }
+              return marker.data.value;
+          });
+
+      if (numbers.length > 0) {
+          return numbers.reduce((p, v) => (p && v && p < v ? p : v)) as number;
+      }
+
+      return -1;
+  }
+
+  private getMaxNumber(markers: Marker[]): number {
+      const numbers = markers
+          .filter((marker) => marker.data.value || marker.data.range?.end)
+          .map((marker) => {
+              if (marker.data.range) {
+                  return marker.data.range.end;
+              }
+              return marker.data.value;
+          });
+
+      if (numbers.length > 0) {
+          return numbers.reduce((p, v) => (p && v && p > v ? p : v)) as number;
+      }
+
+      return -1;
+  }
 }
