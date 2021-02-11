@@ -1,6 +1,6 @@
 /* global describe, it, before */
 import {formatDate} from '../src/date/format';
-import {MetaData} from '../src/marker/metaData';
+import {MarkerType, MetaData} from '../src/marker/metaData';
 import {DateMode} from '../src/date/dateMode';
 import {Marker} from '../src/marker/marker';
 import {expect} from 'chai';
@@ -12,6 +12,7 @@ function createEmptyMetaData(): MetaData {
         icon: '',
         publishedDate: '',
         title: '',
+        markerType: MarkerType.DATE
     };
 
     return Object.assign(new MetaData(), metaData);
@@ -27,7 +28,7 @@ describe('Given metaData functions', () => {
 
         const metaData = createEmptyMetaData();
         metaData.init(markers);
-        const dateStr = formatDate(metaData.minDate, DateMode.YEAR_MONTH_DAY_DATES);
+        const dateStr = formatDate(metaData.min as Date, DateMode.YEAR_MONTH_DAY_DATES);
         expect(dateStr).to.equal('1/5/1965');
     });
 
@@ -39,7 +40,7 @@ describe('Given metaData functions', () => {
 
         const metaData = createEmptyMetaData();
         metaData.init(markers);
-        const dateStr = formatDate(metaData.minDate, DateMode.YEAR_MONTH_DAY_DATES);
+        const dateStr = formatDate(metaData.min as Date, DateMode.YEAR_MONTH_DAY_DATES);
         expect(dateStr).to.equal('1/5/1965');
     });
 
@@ -51,7 +52,7 @@ describe('Given metaData functions', () => {
 
         const metaData = createEmptyMetaData();
         metaData.init(markers);
-        const dateStr = formatDate(metaData.minDate, DateMode.YEAR_MONTH_DAY_DATES);
+        const dateStr = formatDate(metaData.min as Date, DateMode.YEAR_MONTH_DAY_DATES);
         expect(dateStr).to.equal('1/5/1965');
     });
 
@@ -63,7 +64,7 @@ describe('Given metaData functions', () => {
 
         const metaData = createEmptyMetaData();
         metaData.init(markers);
-        const dateStr = formatDate(metaData.maxDate, DateMode.YEAR_MONTH_DAY_DATES);
+        const dateStr = formatDate(metaData.max as Date, DateMode.YEAR_MONTH_DAY_DATES);
         expect(dateStr).to.equal('5/6/1999');
     });
 
@@ -75,7 +76,7 @@ describe('Given metaData functions', () => {
 
         const metaData = createEmptyMetaData();
         metaData.init(markers);
-        const dateStr = formatDate(metaData.maxDate, DateMode.YEAR_MONTH_DAY_DATES);
+        const dateStr = formatDate(metaData.max as Date, DateMode.YEAR_MONTH_DAY_DATES);
         expect(dateStr).to.equal('5/6/1999');
     });
 
@@ -87,7 +88,7 @@ describe('Given metaData functions', () => {
 
         const metaData = createEmptyMetaData();
         metaData.init(markers);
-        const dateStr = formatDate(metaData.maxDate, DateMode.YEAR_MONTH_DAY_DATES);
+        const dateStr = formatDate(metaData.max as Date, DateMode.YEAR_MONTH_DAY_DATES);
         expect(dateStr).to.equal('5/6/1999');
     });
 

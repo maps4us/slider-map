@@ -29,7 +29,7 @@ export function createEmptyMarker(): Marker {
 }
 
 export function markerWithRange(start: string, end: string): Marker {
-    let marker: Marker = createEmptyMarker();
+    const marker: Marker = createEmptyMarker();
     marker.data.range = {
         start: dateFromString(start),
         end: dateFromString(end),
@@ -44,7 +44,7 @@ export function markerWithRange(start: string, end: string): Marker {
 }
 
 export function markerWithValue(val: string): Marker {
-    let marker: Marker = createEmptyMarker();
+    const marker: Marker = createEmptyMarker();
     marker.data.value = dateFromString(val);
     marker.originalData.value = val;
 

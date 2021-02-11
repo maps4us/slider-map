@@ -23,7 +23,6 @@ export class MetaData {
         if (this.markerType == MarkerType.DATE) {
             this.dateMode = this.getDateMode(markers);
             this.hasData = this.dateMode !== DateMode.NO_DATES;
-            console.log(this.getMinDate(markers));
             this.min = this.getMinDate(markers);
             this.max = this.getMaxDate(markers);
         } else {
@@ -31,8 +30,6 @@ export class MetaData {
             this.min = this.getMinNumber(markers);
             this.max = this.getMaxNumber(markers);
         }
-
-        console.log(JSON.stringify(this));
     }
 
     private hasNumberData(markers: Marker[]): boolean {
@@ -79,7 +76,6 @@ export class MetaData {
             });
 
         if (dates.length > 0) {
-            console.log(dates);
             return dates.reduce((p, v) => (p && v && p < v ? p : v)) as Date;
         }
 
@@ -104,36 +100,36 @@ export class MetaData {
     }
 
     private getMinNumber(markers: Marker[]): number {
-      const numbers = markers
-          .filter((marker) => marker.data.value || marker.data.range?.start)
-          .map((marker) => {
-              if (marker.data.range) {
-                  return marker.data.range.start;
-              }
-              return marker.data.value;
-          });
+        const numbers = markers
+            .filter((marker) => marker.data.value || marker.data.range?.start)
+            .map((marker) => {
+                if (marker.data.range) {
+                    return marker.data.range.start;
+                }
+                return marker.data.value;
+            });
 
-      if (numbers.length > 0) {
-          return numbers.reduce((p, v) => (p && v && p < v ? p : v)) as number;
-      }
+        if (numbers.length > 0) {
+            return numbers.reduce((p, v) => (p && v && p < v ? p : v)) as number;
+        }
 
-      return -1;
-  }
+        return -1;
+    }
 
-  private getMaxNumber(markers: Marker[]): number {
-      const numbers = markers
-          .filter((marker) => marker.data.value || marker.data.range?.end)
-          .map((marker) => {
-              if (marker.data.range) {
-                  return marker.data.range.end;
-              }
-              return marker.data.value;
-          });
+    private getMaxNumber(markers: Marker[]): number {
+        const numbers = markers
+            .filter((marker) => marker.data.value || marker.data.range?.end)
+            .map((marker) => {
+                if (marker.data.range) {
+                    return marker.data.range.end;
+                }
+                return marker.data.value;
+            });
 
-      if (numbers.length > 0) {
-          return numbers.reduce((p, v) => (p && v && p > v ? p : v)) as number;
-      }
+        if (numbers.length > 0) {
+            return numbers.reduce((p, v) => (p && v && p > v ? p : v)) as number;
+        }
 
-      return -1;
-  }
+        return -1;
+    }
 }

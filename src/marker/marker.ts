@@ -1,6 +1,6 @@
 import {dateFromString} from '../date/conversion';
 import {createPin} from '../map/pin';
-import {MetaData} from './metaData';
+import {MarkerType, MetaData} from './metaData';
 import {dateFromTime} from '../date/conversion';
 
 interface Link {
@@ -46,7 +46,7 @@ export class Marker {
 
     public async init(isValDate: boolean): Promise<void> {
         this.displayLocation = this.getDisplayLocation(this);
-        this.displayData = this.getDisplayValue(this);
+        this.displayData = this.getDisplayValue(this, isValDate);
 
         if (this.data.value) {
             this.originalData = {value: this.data.value};
@@ -77,30 +77,53 @@ export class Marker {
     }
 
     public isInRange(values: number[], metaData: MetaData): boolean {
-        // NUMBER CHECK
-        if (values.length === 1) {
-            const date = dateFromTime(values[0]);
+        if (metaData.markerType == MarkerType.NUMBER) {
+            if (values.length === 1) {
+                if (this.data.value) {
+                    return (this.data.value as number) === values[0];
+                } else if (this.data.range) {
+                    const start = this.data.range.start ? this.data.range.start : metaData.min;
+                    const end = this.data.range.end ? this.data.range.end : metaData.max;
+                    return start <= values[0] && values[0] <= end;
+                }
+                return true;
+            }
+            const start = values[0];
+            const end = values[1];
 
             if (this.data.value) {
-                return (this.data.value as Date) === date;
+                return (this.data.value as number) <= end && this.data.value >= start;
             } else if (this.data.range) {
                 const start = this.data.range.start ? this.data.range.start : metaData.min;
                 const end = this.data.range.end ? this.data.range.end : metaData.max;
-                return start <= date && date <= end;
+                return start <= end && end >= start;
+            }
+            return true;
+        } else {
+            if (values.length === 1) {
+                const date = dateFromTime(values[0]);
+
+                if (this.data.value) {
+                    return (this.data.value as Date) === date;
+                } else if (this.data.range) {
+                    const start = this.data.range.start ? this.data.range.start : metaData.min;
+                    const end = this.data.range.end ? this.data.range.end : metaData.max;
+                    return start <= date && date <= end;
+                }
+                return true;
+            }
+            const dateStart = dateFromTime(values[0]);
+            const dateEnd = dateFromTime(values[1]);
+
+            if (this.data.value) {
+                return (this.data.value as Date) <= dateEnd && this.data.value >= dateStart;
+            } else if (this.data.range) {
+                const start = this.data.range.start ? this.data.range.start : metaData.min;
+                const end = this.data.range.end ? this.data.range.end : metaData.max;
+                return start <= dateEnd && end >= dateStart;
             }
             return true;
         }
-        const dateStart = dateFromTime(values[0]);
-        const dateEnd = dateFromTime(values[1]);
-
-        if (this.data.value) {
-            return (this.data.value as Date) <= dateEnd && this.data.value >= dateStart;
-        } else if (this.data.range) {
-            const start = this.data.range.start ? this.data.range.start : metaData.min;
-            const end = this.data.range.end ? this.data.range.end : metaData.max;
-            return start <= dateEnd && end >= dateStart;
-        }
-        return true;
     }
 
     private getDisplayLocation(marker: Marker): string {
@@ -114,16 +137,16 @@ export class Marker {
         return displayLocation;
     }
 
-    private getDisplayValue(marker: Marker): string | undefined {
+    private getDisplayValue(marker: Marker, isValDate: boolean): string | undefined {
         if (marker.data.range) {
             let end = marker.data.range.end;
             if (!end) {
-                end = 'present';
+                end = isValDate ? 'present' : '';
             }
 
             let start = marker.data.range.start;
             if (!start) {
-                start = 'beginning';
+                start = isValDate ? 'beginning' : '';
             }
 
             return `${start} - ${end}`;
