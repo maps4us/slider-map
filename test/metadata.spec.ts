@@ -12,7 +12,7 @@ function createEmptyMetaData(): MetaData {
         icon: '',
         publishedDate: '',
         title: '',
-        markerType: MarkerType.DATE
+        markerType: MarkerType.DATE,
     };
 
     return Object.assign(new MetaData(), metaData);

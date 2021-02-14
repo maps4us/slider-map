@@ -51,16 +51,16 @@ export class Marker {
         if (this.data.value) {
             this.originalData = {value: this.data.value};
             this.data.value = isValDate
-                ? parseInt(this.data.value as string)
-                : dateFromString(this.data.value as string);
+                ? dateFromString(this.data.value as string)
+                : parseInt(this.data.value as string);
         } else if (this.data.range) {
             this.originalData = {range: {start: this.data.range.start, end: this.data.range.end}};
             this.data.range.start = isValDate
-                ? parseInt(this.data.range.start as string)
-                : dateFromString(this.data.range.start as string);
+                ? dateFromString(this.data.range.start as string)
+                : parseInt(this.data.range.start as string);
             this.data.range.end = isValDate
-                ? parseInt(this.data.range.end as string)
-                : dateFromString(this.data.range.end as string);
+                ? dateFromString(this.data.range.end as string)
+                : parseInt(this.data.range.end as string);
         }
 
         this.lat = parseFloat(this.location.lat);
