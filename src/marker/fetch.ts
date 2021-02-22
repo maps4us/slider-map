@@ -20,7 +20,7 @@ export async function fetch(
 
     markers = markers.map((marker) => Object.assign(new Marker(), marker));
 
-    const isValDate = metaData.markerType != MarkerType.DATE;
+    const isValDate = metaData.markerType == MarkerType.DATE;
 
     for (const marker of markers) {
         await marker.init(isValDate);

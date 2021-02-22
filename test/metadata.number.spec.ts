@@ -18,7 +18,7 @@ function createEmptyMetaData(): MetaData {
     return Object.assign(new MetaData(), metaData);
 }
 
-describe('Given metaData functions', () => {
+describe('Given metaData functions with numerical markers', () => {
     it('should return min year (all range)', () => {
         const markers: Marker[] = [];
 
