@@ -1,7 +1,7 @@
 /* global describe, it, before */
 import {expect} from 'chai';
 import {createEmptyMarker} from './markerUtils';
-import {MetaData} from '../src/marker/metaData';
+import {MarkerType, MetaData} from '../src/marker/metaData';
 
 describe('Given marker module with date data', () => {
     it('should populate displayVal field with full range', () => {
@@ -9,7 +9,7 @@ describe('Given marker module with date data', () => {
 
         marker.data.range = {start: '2001', end: '2002'};
 
-        marker.init(true);
+        marker.init(MarkerType.DATE);
 
         expect(marker.displayData).to.equal('2001 - 2002');
         expect(marker.data.range.start).to.not.be.undefined;
@@ -22,7 +22,7 @@ describe('Given marker module with date data', () => {
 
         marker.data.range = {start: '2001'};
 
-        marker.init(true);
+        marker.init(MarkerType.DATE);
 
         expect(marker.displayData).to.equal('2001 - present');
         expect(marker.data.range.start).to.not.be.undefined;
@@ -35,7 +35,7 @@ describe('Given marker module with date data', () => {
 
         marker.data.range = {end: '2002'};
 
-        marker.init(true);
+        marker.init(MarkerType.DATE);
 
         expect(marker.displayData).to.equal('beginning - 2002');
         expect(marker.data.range.start).to.be.undefined;
@@ -48,7 +48,7 @@ describe('Given marker module with date data', () => {
 
         marker.data.value = '2001';
 
-        marker.init(true);
+        marker.init(MarkerType.DATE);
 
         expect(marker.displayData).to.equal('2001');
         expect(marker.data.value).to.not.be.undefined;
@@ -60,7 +60,7 @@ describe('Given marker module with date data', () => {
 
         marker.data.range = {start: '2001', end: '2002'};
 
-        marker.init(true);
+        marker.init(MarkerType.DATE);
 
         expect(marker.data.range.start).to.be.a('date');
         expect(marker.data.range.end).to.be.a('date');
@@ -73,7 +73,7 @@ describe('Given marker module with date data', () => {
 
         marker.data.value = '2001';
 
-        marker.init(true);
+        marker.init(MarkerType.DATE);
 
         expect(marker.data.value).to.be.a('date');
         expect(marker.originalData.value).to.not.be.undefined;
@@ -84,7 +84,7 @@ describe('Given marker module with date data', () => {
         const marker = createEmptyMarker();
         marker.data.range = {start: '2001', end: '2007'};
 
-        marker.init(true);
+        marker.init(MarkerType.DATE);
 
         const start = new Date('1999').getTime();
         const end = new Date('2005').getTime();
@@ -95,7 +95,7 @@ describe('Given marker module with date data', () => {
         const marker = createEmptyMarker();
         marker.data.range = {start: '2001', end: '2002'};
 
-        marker.init(true);
+        marker.init(MarkerType.DATE);
 
         const start = new Date('1999').getTime();
         const end = new Date('2000').getTime();
@@ -106,7 +106,7 @@ describe('Given marker module with date data', () => {
         const marker = createEmptyMarker();
         marker.data.value = '2001';
 
-        marker.init(true);
+        marker.init(MarkerType.DATE);
 
         const start = new Date('1999').getTime();
         const end = new Date('2005').getTime();
@@ -117,7 +117,7 @@ describe('Given marker module with date data', () => {
         const marker = createEmptyMarker();
         marker.data.value = '2007';
 
-        marker.init(true);
+        marker.init(MarkerType.DATE);
 
         const start = new Date('1999').getTime();
         const end = new Date('2005').getTime();
@@ -128,7 +128,7 @@ describe('Given marker module with date data', () => {
         const marker = createEmptyMarker();
         marker.data.range = {start: '2001', end: '2007'};
 
-        marker.init(true);
+        marker.init(MarkerType.DATE);
 
         const value = new Date('2005').getTime();
         expect(marker.isInRange([value], {} as MetaData)).to.be.true;
@@ -138,7 +138,7 @@ describe('Given marker module with date data', () => {
         const marker = createEmptyMarker();
         marker.data.range = {start: '2001', end: '2002'};
 
-        marker.init(true);
+        marker.init(MarkerType.DATE);
 
         const value = new Date('1999').getTime();
         expect(marker.isInRange([value], {} as MetaData)).to.be.false;

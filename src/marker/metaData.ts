@@ -34,7 +34,7 @@ export class MetaData {
 
     private hasNumberData(markers: Marker[]): boolean {
         return markers.some((marker) => {
-            if (marker.originalData.range) {
+            if (marker.originalData.range?.end || marker.originalData.range?.start) {
                 return true;
             } else if (marker.originalData.value) {
                 return true;
@@ -48,7 +48,7 @@ export class MetaData {
         let dateMode: DateMode = DateMode.NO_DATES;
 
         markers.forEach((marker) => {
-            if (marker.originalData.range) {
+            if (marker.originalData.range?.end || marker.originalData.range?.start) {
                 const start = getDateModeFromString(marker.originalData.range.start as string | undefined);
                 const end = getDateModeFromString(marker.originalData.range.end as string | undefined);
                 dateMode = Math.max(start, end, dateMode);
@@ -68,7 +68,7 @@ export class MetaData {
         const dates = markers
             .filter((marker) => marker.data.value || marker.data.range?.start)
             .map((marker) => {
-                if (marker.data.range) {
+                if (marker.data.range?.start) {
                     return marker.data.range.start;
                 }
 
@@ -86,7 +86,7 @@ export class MetaData {
         const dates = markers
             .filter((marker) => marker.data.value || marker.data.range?.end)
             .map((marker) => {
-                if (marker.data.range) {
+                if (marker.data.range?.end) {
                     return marker.data.range.end;
                 }
                 return marker.data.value;
@@ -103,7 +103,7 @@ export class MetaData {
         const numbers = markers
             .filter((marker) => marker.data.value || marker.data.range?.start)
             .map((marker) => {
-                if (marker.data.range) {
+                if (marker.data.range?.start) {
                     return marker.data.range.start;
                 }
                 return marker.data.value;
@@ -120,7 +120,7 @@ export class MetaData {
         const numbers = markers
             .filter((marker) => marker.data.value || marker.data.range?.end)
             .map((marker) => {
-                if (marker.data.range) {
+                if (marker.data.range?.end) {
                     return marker.data.range.end;
                 }
                 return marker.data.value;
