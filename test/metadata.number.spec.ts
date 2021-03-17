@@ -1,10 +1,8 @@
-/* global describe, it, before */
-import {formatDate} from '../src/date/format';
+/* global describe, it */
 import {MarkerType, MetaData} from '../src/marker/metaData';
-import {DateMode} from '../src/date/dateMode';
-import {Marker} from '../src/marker/marker';
+import Marker from '../src/marker/marker';
 import {expect} from 'chai';
-import {markerWithRange, markerWithValue, createEmptyMarker} from './markerUtils';
+import {markerWithRange, markerWithValue} from './markerUtils';
 
 function createEmptyMetaData(): MetaData {
     const metaData = {
@@ -12,193 +10,77 @@ function createEmptyMetaData(): MetaData {
         icon: '',
         publishedDate: '',
         title: '',
-        markerType: MarkerType.DATE,
+        markerType: MarkerType.NUMBER,
     };
 
     return Object.assign(new MetaData(), metaData);
 }
 
 describe('Given metaData functions with numerical markers', () => {
-    it('should return min year (all range)', () => {
+    it('should return min number (all range)', () => {
         const markers: Marker[] = [];
 
-        markers.push(markerWithRange('1/1/1981', '5/6/1992'));
-        markers.push(markerWithRange('1/1/1975', '5/6/1992'));
-        markers.push(markerWithRange('1/5/1965', '5/6/1992'));
+        markers.push(markerWithRange(1, 7));
+        markers.push(markerWithRange(2, 3));
+        markers.push(markerWithRange(2, 6));
 
         const metaData = createEmptyMetaData();
         metaData.init(markers);
-        const dateStr = formatDate(metaData.min as Date, DateMode.YEAR_MONTH_DAY_DATES);
-        expect(dateStr).to.equal('1/5/1965');
+        expect(metaData.min).to.equal(1);
     });
 
-    it('should return min year (all value)', () => {
+    it('should return min number (all value)', () => {
         const markers: Marker[] = [];
-        markers.push(markerWithValue('1/1/1981'));
-        markers.push(markerWithValue('5/6/1992'));
-        markers.push(markerWithValue('1/5/1965'));
+        markers.push(markerWithValue(5));
+        markers.push(markerWithValue(1));
+        markers.push(markerWithValue(7));
 
         const metaData = createEmptyMetaData();
         metaData.init(markers);
-        const dateStr = formatDate(metaData.min as Date, DateMode.YEAR_MONTH_DAY_DATES);
-        expect(dateStr).to.equal('1/5/1965');
+        expect(metaData.min).to.equal(1);
     });
 
-    it('should return min year (mix)', () => {
+    it('should return min number (mix)', () => {
         const markers: Marker[] = [];
-        markers.push(markerWithRange('1/1/1981', '5/6/1992'));
-        markers.push(markerWithRange('1/1/1975', '5/6/1992'));
-        markers.push(markerWithValue('1/5/1965'));
+        markers.push(markerWithRange(2, 4));
+        markers.push(markerWithRange(5, 8));
+        markers.push(markerWithValue(1));
 
         const metaData = createEmptyMetaData();
         metaData.init(markers);
-        const dateStr = formatDate(metaData.min as Date, DateMode.YEAR_MONTH_DAY_DATES);
-        expect(dateStr).to.equal('1/5/1965');
+        expect(metaData.min).to.equal(1);
     });
 
-    it('should return max year (all range)', () => {
+    it('should return max number (all range)', () => {
         const markers: Marker[] = [];
-        markers.push(markerWithRange('1/1/1981', '5/6/1992'));
-        markers.push(markerWithRange('1/1/1975', '5/6/1997'));
-        markers.push(markerWithRange('1/1/1965', '5/6/1999'));
+        markers.push(markerWithRange(3, 4));
+        markers.push(markerWithRange(1, 3));
+        markers.push(markerWithRange(2, 9));
 
         const metaData = createEmptyMetaData();
         metaData.init(markers);
-        const dateStr = formatDate(metaData.max as Date, DateMode.YEAR_MONTH_DAY_DATES);
-        expect(dateStr).to.equal('5/6/1999');
+        expect(metaData.max).to.equal(9);
     });
 
-    it('should return max year (all value)', () => {
+    it('should return max number (all value)', () => {
         const markers: Marker[] = [];
-        markers.push(markerWithValue('1/1/1981'));
-        markers.push(markerWithValue('5/6/1997'));
-        markers.push(markerWithValue('5/6/1999'));
+        markers.push(markerWithValue(3));
+        markers.push(markerWithValue(7));
+        markers.push(markerWithValue(5));
 
         const metaData = createEmptyMetaData();
         metaData.init(markers);
-        const dateStr = formatDate(metaData.max as Date, DateMode.YEAR_MONTH_DAY_DATES);
-        expect(dateStr).to.equal('5/6/1999');
+        expect(metaData.max).to.equal(7);
     });
 
-    it('should return max year (mix)', () => {
+    it('should return max number (mix)', () => {
         const markers: Marker[] = [];
-        markers.push(markerWithRange('1/1/1981', '5/6/1992'));
-        markers.push(markerWithRange('1/1/1975', '5/6/1997'));
-        markers.push(markerWithValue('5/6/1999'));
+        markers.push(markerWithRange(1, 6));
+        markers.push(markerWithRange(3, 7));
+        markers.push(markerWithValue(9));
 
         const metaData = createEmptyMetaData();
         metaData.init(markers);
-        const dateStr = formatDate(metaData.max as Date, DateMode.YEAR_MONTH_DAY_DATES);
-        expect(dateStr).to.equal('5/6/1999');
-    });
-
-    it('should return date mode: no date', () => {
-        const markers: Marker[] = [];
-        markers.push(createEmptyMarker());
-        markers.push(createEmptyMarker());
-        markers.push(createEmptyMarker());
-
-        const metaData = createEmptyMetaData();
-        metaData.init(markers);
-        expect(metaData.dateMode).to.equal(DateMode.NO_DATES);
-    });
-
-    it('should return date mode years (all range)', () => {
-        const markers: Marker[] = [];
-        markers.push(markerWithRange('1981', '1992'));
-        markers.push(markerWithRange('1975', '1997'));
-        markers.push(markerWithRange('1965', '1999'));
-
-        const metaData = createEmptyMetaData();
-        metaData.init(markers);
-        expect(metaData.dateMode).to.equal(DateMode.YEAR_DATES);
-    });
-
-    it('should return date mode years (all value)', () => {
-        const markers: Marker[] = [];
-        markers.push(markerWithValue('1992'));
-        markers.push(markerWithValue('1997'));
-        markers.push(markerWithValue('1999'));
-
-        const metaData = createEmptyMetaData();
-        metaData.init(markers);
-        expect(metaData.dateMode).to.equal(DateMode.YEAR_DATES);
-    });
-
-    it('should return date mode years (mix)', () => {
-        const markers: Marker[] = [];
-        markers.push(markerWithRange('1981', '1992'));
-        markers.push(markerWithRange('1975', '1997'));
-        markers.push(markerWithValue('1999'));
-
-        const metaData = createEmptyMetaData();
-        metaData.init(markers);
-        expect(metaData.dateMode).to.equal(DateMode.YEAR_DATES);
-    });
-
-    it('should return date mode month/years (all range)', () => {
-        const markers: Marker[] = [];
-        markers.push(markerWithRange('1981', '2/1992'));
-        markers.push(markerWithRange('2/1975', '1997'));
-        markers.push(markerWithRange('1965', '2/1999'));
-
-        const metaData = createEmptyMetaData();
-        metaData.init(markers);
-        expect(metaData.dateMode).to.equal(DateMode.YEAR_MONTH_DATES);
-    });
-
-    it('should return date mode month/years (all value)', () => {
-        const markers: Marker[] = [];
-        markers.push(markerWithValue('1981'));
-        markers.push(markerWithValue('2/1975'));
-        markers.push(markerWithValue('2/1999'));
-
-        const metaData = createEmptyMetaData();
-        metaData.init(markers);
-        expect(metaData.dateMode).to.equal(DateMode.YEAR_MONTH_DATES);
-    });
-
-    it('should return date mode month/years (mix)', () => {
-        const markers: Marker[] = [];
-        markers.push(markerWithRange('1981', '2/1992'));
-        markers.push(markerWithRange('2/1975', '1997'));
-        markers.push(markerWithValue('2/1999'));
-
-        const metaData = createEmptyMetaData();
-        metaData.init(markers);
-        expect(metaData.dateMode).to.equal(DateMode.YEAR_MONTH_DATES);
-    });
-
-    it('should return date mode day/month/years (all range)', () => {
-        const markers: Marker[] = [];
-        markers.push(markerWithRange('1981', '2/1992'));
-        markers.push(markerWithRange('2/1975', '1997'));
-        markers.push(markerWithRange('1965', '1/1/1999'));
-
-        const metaData = createEmptyMetaData();
-        metaData.init(markers);
-        expect(metaData.dateMode).to.equal(DateMode.YEAR_MONTH_DAY_DATES);
-    });
-
-    it('should return date mode day/month/years (all value)', () => {
-        const markers: Marker[] = [];
-        markers.push(markerWithValue('2/1992'));
-        markers.push(markerWithValue('1997'));
-        markers.push(markerWithValue('1/1/1999'));
-
-        const metaData = createEmptyMetaData();
-        metaData.init(markers);
-        expect(metaData.dateMode).to.equal(DateMode.YEAR_MONTH_DAY_DATES);
-    });
-
-    it('should return date mode day/month/years (all range)', () => {
-        const markers: Marker[] = [];
-        markers.push(markerWithRange('1981', '2/1992'));
-        markers.push(markerWithRange('2/1975', '1997'));
-        markers.push(markerWithValue('1/1/1999'));
-
-        const metaData = createEmptyMetaData();
-        metaData.init(markers);
-        expect(metaData.dateMode).to.equal(DateMode.YEAR_MONTH_DAY_DATES);
+        expect(metaData.max).to.equal(9);
     });
 });

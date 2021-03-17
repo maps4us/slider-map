@@ -1,8 +1,8 @@
-/* global describe, it, before */
+/* global describe, it */
 import {formatDate} from '../src/date/format';
 import {MarkerType, MetaData} from '../src/marker/metaData';
 import {DateMode} from '../src/date/dateMode';
-import {Marker} from '../src/marker/marker';
+import Marker from '../src/marker/marker';
 import {expect} from 'chai';
 import {markerWithRange, markerWithValue, createEmptyMarker} from './markerUtils';
 

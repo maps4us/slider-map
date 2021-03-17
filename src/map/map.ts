@@ -1,6 +1,6 @@
 import MarkerClusterer from 'node-js-marker-clusterer';
 import {Google} from './google';
-import {Marker} from '../marker/marker';
+import Marker from '../marker/marker';
 import {OverlappingMarkerSpiderfier} from 'ts-overlapping-marker-spiderfier';
 import {createResetZoomControl, createNoMarkersControl, clearNoMarkersControl} from './overlays';
 import {createPin} from './pin';

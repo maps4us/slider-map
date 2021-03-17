@@ -18,6 +18,7 @@ describe('Given fetch', () => {
                 publishedDate: 'Fri, 10 Jul 2020 03:16:38 GMT',
                 title: 'my map',
                 viewCount: 2,
+                markerType: 0,
             },
             markers: [
                 {
@@ -112,6 +113,7 @@ describe('Given fetch', () => {
                 publishedDate: 'Fri, 10 Jul 2020 03:16:38 GMT',
                 title: 'my map',
                 viewCount: 2,
+                markerType: 1,
             },
             markers: [
                 {
@@ -150,7 +152,7 @@ describe('Given fetch', () => {
                         country: 'USA',
                         state: 'WA',
                     },
-                    name: 'sloam',
+                    name: 'sloan',
                     pin: '',
                     link: {
                         title: '',
@@ -191,6 +193,6 @@ describe('Given fetch', () => {
 
         const markers = await fetch('1512409330904', false);
         expect(markers).to.not.be.empty;
-        expect(markers.markers[0].data.value).to.be.a('number');
+        expect(markers.markers[1].data.value).to.be.a('number');
     });
 });

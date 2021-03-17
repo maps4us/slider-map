@@ -1,4 +1,4 @@
-import {Marker} from './marker/marker';
+import Marker from './marker/marker';
 import {MetaData} from './marker/metaData';
 import {fetch} from './marker/fetch';
 import * as domHelper from './dom/dom';
@@ -72,7 +72,7 @@ export default class TimeLineMap {
 
     private async createSlider(): Promise<void> {
         if (this.metaData.hasData) {
-            this.slider = new Slider(this.dateControlId, this.metaData, (values: number[]) => {
+            this.slider = Slider.create(this.dateControlId, this.metaData, (values: number[]) => {
                 const markers = this.markers.filter((marker) => marker.isInRange(values, this.metaData));
                 this.map.updateClusterer(markers);
                 this.update(markers);

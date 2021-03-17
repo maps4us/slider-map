@@ -1,4 +1,4 @@
-import {Marker} from './marker';
+import Marker from './marker';
 import {DateMode, getDateModeFromString} from '../date/dateMode';
 
 export enum MarkerType {
