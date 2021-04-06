@@ -19,6 +19,10 @@ export class MetaData {
     public viewCount?: number;
     public singleHandle: boolean;
 
+    public constructor() {
+      this.markerType = MarkerType.DATE;
+    }
+
     public init(markers: Marker[]): void {
         if (this.markerType == MarkerType.DATE) {
             this.dateMode = this.getDateMode(markers);

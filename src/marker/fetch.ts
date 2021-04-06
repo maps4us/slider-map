@@ -19,9 +19,8 @@ export async function fetch(
 
     let {markers, metaData} = response.data;
 
-    markers = await Promise.all(markers.map(async (marker) => MarkerFactory.create(marker, metaData.markerType)));
-
     metaData = Object.assign(new MetaData(), metaData);
+    markers = await Promise.all(markers.map(async (marker) => MarkerFactory.create(marker, metaData.markerType)));
     metaData.init(markers);
 
     return {markers, metaData};
