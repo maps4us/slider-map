@@ -20,7 +20,7 @@ export class MetaData {
     public singleHandle: boolean;
 
     public constructor() {
-      this.markerType = MarkerType.DATE;
+        this.markerType = MarkerType.DATE;
     }
 
     public init(markers: Marker[]): void {
