@@ -58,7 +58,7 @@ describe('Given marker module with date data', () => {
 
         expect(marker.data.range?.start).to.be.a('date');
         expect(marker.data.range?.end).to.be.a('date');
-        expect(marker.originalData.range).to.not.be.undefined;
+        expect(marker.originalData?.range).to.not.be.undefined;
         expect(marker.data.value).to.be.undefined;
     });
 
@@ -68,7 +68,7 @@ describe('Given marker module with date data', () => {
         marker = await MarkerFactory.create(marker, MarkerType.DATE);
 
         expect(marker.data.value).to.be.a('date');
-        expect(marker.originalData.value).to.not.be.undefined;
+        expect(marker.originalData?.value).to.not.be.undefined;
         expect(marker.data.range).to.be.undefined;
     });
 

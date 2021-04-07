@@ -55,7 +55,7 @@ describe('Given marker module with numerical data', () => {
 
         expect(marker.data.range?.start).to.be.a('number');
         expect(marker.data.range?.end).to.be.a('number');
-        expect(marker.originalData.range).to.not.be.undefined;
+        expect(marker.originalData?.range).to.not.be.undefined;
         expect(marker.data.value).to.be.undefined;
     });
 
@@ -65,7 +65,7 @@ describe('Given marker module with numerical data', () => {
         marker = await MarkerFactory.create(marker, MarkerType.NUMBER);
 
         expect(marker.data.value).to.be.a('number');
-        expect(marker.originalData.value).to.not.be.undefined;
+        expect(marker.originalData?.value).to.not.be.undefined;
         expect(marker.data.range).to.be.undefined;
     });
 

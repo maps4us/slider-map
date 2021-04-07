@@ -34,13 +34,13 @@ export default abstract class Marker {
     public location: Location;
 
     public data: Data;
-    public originalData: Data;
+    public originalData?: Data;
 
     public displayLocation: string;
     public displayData?: string;
     public lat: number;
     public lng: number;
 
-    public abstract async init(): Promise<void>;
+    public abstract init(): Promise<void>;
     public abstract isInRange(values: number[], metaData: MetaData): boolean;
 }

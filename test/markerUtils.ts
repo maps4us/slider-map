@@ -42,6 +42,7 @@ export function markerWithRange(start: string | number, end: string | number): M
         };
     }
 
+    marker.originalData = {};
     marker.originalData.range = {
         start: start,
         end: end,
@@ -58,6 +59,7 @@ export function markerWithValue(val: string | number): Marker {
     } else {
         marker.data.value = val;
     }
+    marker.originalData = {};
     marker.originalData.value = val;
 
     return marker;

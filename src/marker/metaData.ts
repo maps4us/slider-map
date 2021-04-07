@@ -38,9 +38,9 @@ export class MetaData {
 
     private hasNumberData(markers: Marker[]): boolean {
         return markers.some((marker) => {
-            if (marker.originalData.range?.end || marker.originalData.range?.start) {
+            if (marker.originalData?.range?.end || marker.originalData?.range?.start) {
                 return true;
-            } else if (marker.originalData.value) {
+            } else if (marker.originalData?.value) {
                 return true;
             }
 
@@ -52,11 +52,11 @@ export class MetaData {
         let dateMode: DateMode = DateMode.NO_DATES;
 
         markers.forEach((marker) => {
-            if (marker.originalData.range?.end || marker.originalData.range?.start) {
+            if (marker.originalData?.range?.end || marker.originalData?.range?.start) {
                 const start = getDateModeFromString(marker.originalData.range.start as string | undefined);
                 const end = getDateModeFromString(marker.originalData.range.end as string | undefined);
                 dateMode = Math.max(start, end, dateMode);
-            } else if (marker.originalData.value) {
+            } else if (marker.originalData?.value) {
                 dateMode = getDateModeFromString(marker.originalData.value as string | undefined);
             }
 
