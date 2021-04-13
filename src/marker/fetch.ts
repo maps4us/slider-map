@@ -1,5 +1,6 @@
 import axios from 'axios';
-import {Marker} from './marker';
+import Marker from './marker';
+import MarkerFactory from './markerFactory';
 import {MetaData} from './metaData';
 
 interface MapResponse {
@@ -18,13 +19,8 @@ export async function fetch(
 
     let {markers, metaData} = response.data;
 
-    markers = markers.map((marker) => Object.assign(new Marker(), marker));
-
-    for (const marker of markers) {
-        await marker.init();
-    }
-
     metaData = Object.assign(new MetaData(), metaData);
+    markers = await Promise.all(markers.map(async (marker) => MarkerFactory.create(marker, metaData.markerType)));
     metaData.init(markers);
 
     return {markers, metaData};

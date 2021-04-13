@@ -1,10 +1,11 @@
-import {Marker} from './marker/marker';
+import Marker from './marker/marker';
 import {MetaData} from './marker/metaData';
 import {fetch} from './marker/fetch';
 import * as domHelper from './dom/dom';
 import Slider from './slider/slider';
 import {TheMap} from './map/map';
 import {Google, fetchGoogle} from './map/google';
+import SliderFactory from './slider/sliderFactory';
 
 export interface MapsCallBack {
     (data: object): void;
@@ -71,8 +72,8 @@ export default class TimeLineMap {
     }
 
     private async createSlider(): Promise<void> {
-        if (this.metaData.hasDates) {
-            this.slider = new Slider(this.dateControlId, this.metaData, (values: number[]) => {
+        if (this.metaData.hasData) {
+            this.slider = SliderFactory.create(this.dateControlId, this.metaData, (values: number[]) => {
                 const markers = this.markers.filter((marker) => marker.isInRange(values, this.metaData));
                 this.map.updateClusterer(markers);
                 this.update(markers);
