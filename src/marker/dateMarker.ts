@@ -61,25 +61,21 @@ export default class DateMarker extends Marker {
         return true;
     }
 
-    private getDisplayLocation(marker: Marker): string {\
-        let displayLocation = "";
+    private getDisplayLocation(marker: Marker): string {
+        let displayLocation = '';
 
         if (marker.location.country.length > 0) {
-          displayLocation = marker.location.country;
+            displayLocation = marker.location.country;
         }
 
         if (marker.location.state.length > 0) {
-          displayLocation =
-            displayLocation.length > 0
-              ? `${marker.location.state}, ${displayLocation}`
-              : marker.location.state;
+            displayLocation =
+                displayLocation.length > 0 ? `${marker.location.state}, ${displayLocation}` : marker.location.state;
         }
 
         if (marker.location.city.length > 0) {
-          displayLocation =
-            displayLocation.length > 0
-              ? `${marker.location.city}, ${displayLocation}`
-              : marker.location.city;
+            displayLocation =
+                displayLocation.length > 0 ? `${marker.location.city}, ${displayLocation}` : marker.location.city;
         }
 
         return displayLocation;
