@@ -1,12 +1,12 @@
 {
-    "name": "timeline-map",
-    "version": "2.1.1",
-    "description": "TimeLine Map Component from MapsForAll",
-    "main": "dist/TimeLineMap.js",
+    "name": "slider-map",
+    "version": "1.0.0",
+    "description": "Slider Map Component from MapsForAll",
+    "main": "dist/SliderMap.js",
     "scripts": {
         "build": "webpack --mode production",
         "dev:server": "webpack-dev-server --open",
-        "dev:site": "webpack --mode development --output-path ../maps4us/node_modules/timeline-map/dist/ --watch",
+        "dev:site": "webpack --mode development --output-path ../maps4us/node_modules/slider-map/dist/ --watch",
         "test": "mocha -r ts-node/register --colors ./test/*.spec.ts --exit",
         "lint": "eslint --ext .ts src/",
         "lint-fix": "eslint --fix --ext .ts src/",
@@ -38,7 +38,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/MapsForAll/timelineMap.git"
+        "url": "https://github.com/MapsForAll/sliderMap.git"
     },
     "keywords": [
         "map"
@@ -46,9 +46,9 @@
     "author": "MapsForAll",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/MapsForAll/timelineMap.git/issues"
+        "url": "https://github.com/MapsForAll/sliderMap.git/issues"
     },
-    "homepage": "https://github.com/MapsForAll/timelineMap.git",
+    "homepage": "https://github.com/MapsForAll/sliderMap.git",
     "dependencies": {
         "@types/google-maps": "^3.2.2",
         "@types/googlemaps": "^3.39.13",

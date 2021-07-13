@@ -166,7 +166,7 @@ jobs:
 
 workflows:
   version: 2
-  timeline_component_workflow:
+  slider_map_component_workflow:
     jobs:
       - lint
       - check-pretty

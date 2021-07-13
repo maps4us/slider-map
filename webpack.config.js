@@ -1,7 +1,7 @@
 /* global __dirname, require, module*/
 const config = {
     output: {
-        filename: 'TimeLineMap.js',
+        filename: 'SliderMap.js',
         libraryTarget: 'umd',
         umdNamedDefine: true,
     },

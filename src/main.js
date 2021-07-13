@@ -1,2 +1,2 @@
-const map = new TimeLineMap('testmap', 'mapid', 'controlid');
+const map = new SliderMap('testmap', 'mapid', 'controlid');
 map.create();
