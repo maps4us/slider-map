@@ -1,6 +1,6 @@
 {
     "name": "slider-map",
-    "version": "2.1.1",
+    "version": "1.0.0",
     "description": "Slider Map Component from MapsForAll",
     "main": "dist/SliderMap.js",
     "scripts": {
