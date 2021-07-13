@@ -104,7 +104,7 @@ export class TheMap {
         this.map.fitBounds(this.bounds);
 
         if (markers.length === 0) {
-            this.map.panTo({lat:-28.024, lng: 140.887});
+            this.map.panTo({lat: -28.024, lng: 140.887});
             this.map.setZoom(1);
             createNoMarkersControl(this.map);
         } else {
