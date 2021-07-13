@@ -11,7 +11,7 @@ export interface MapsCallBack {
     (data: object): void;
 }
 
-export default class TimeLineMap {
+export default class SliderMap {
     private google: Google;
     private map: TheMap;
     private mapId: string;
@@ -24,8 +24,8 @@ export default class TimeLineMap {
 
     public constructor(mapId: string, ...ids: string[]) {
         this.mapId = mapId;
-        this.mapControlId = 'timeLineMapControl';
-        this.dateControlId = 'timeLineDateControl';
+        this.mapControlId = 'sliderMapControl';
+        this.dateControlId = 'sliderDateControl';
         this.listeners = new Map<string, MapsCallBack>();
 
         this.processArguments(ids);

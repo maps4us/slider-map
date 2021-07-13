@@ -1,2 +1,2 @@
-import TimeLineMap from './module';
-export {TimeLineMap};
+import SliderMap from './module';
+export {SliderMap};
